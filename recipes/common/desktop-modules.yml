@@ -16,4 +16,3 @@ modules:
       scripts:
         - enableflatpakautoupdate.sh
     - type: yafti
-g
