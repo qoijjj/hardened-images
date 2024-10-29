@@ -23,3 +23,6 @@ modules:
     - type: gschema-overrides
       include:
         - zz1-secureblue.gschema.override
+    - type: script
+      scripts:
+        - removedkmshelper.sh
