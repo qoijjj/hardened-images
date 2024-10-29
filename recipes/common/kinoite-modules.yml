@@ -9,6 +9,7 @@ modules:
       - krfb
       - krfb-libs
       - plasma-discover
+      - plasma-discover-rpm-ostree
   - type: files
     files:  
       - source: system/kinoite
