@@ -20,6 +20,7 @@ modules:
         - malcontent-ui-libs
         - malcontent-control
         - fedora-chromium-config-gnome
+        - gnome-software
     - type: gschema-overrides
       include:
         - zz1-secureblue.gschema.override
