@@ -8,6 +8,7 @@ modules:
       - fuse-encfs
       - krfb
       - krfb-libs
+      - plasma-discover
   - type: files
     files:  
       - source: system/kinoite
