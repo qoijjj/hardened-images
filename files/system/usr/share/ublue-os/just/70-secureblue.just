@@ -25,7 +25,7 @@ set-kargs-hardening:
     fi
     echo "Applying boot parameters..."
     rpm-ostree kargs \
-      ${UNSTABLE_YES:+$UNSTABLE_YES} ${IAEMU_NO:+$IAEMU_NO} ${NOSMT_FORCE:+$NOSMT_YES} \
+      ${UNSTABLE_YES:+$UNSTABLE_YES} ${IAEMU_NO:+$IAEMU_NO} ${NOSMT_YES:+$NOSMT_YES} \
       --append-if-missing="init_on_alloc=1" \
       --append-if-missing="init_on_free=1" \
       --append-if-missing="slab_nomerge" \
