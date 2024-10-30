@@ -9,7 +9,8 @@ modules:
       - gstreamer1-plugins-bad-fluidsynth
       - gstreamer1-plugins-bad  
       - gstreamer1-plugins-ugly  
-      - gstreamer1-vaapi  
+      - gstreamer1-vaapi
+      - heif-pixbuf-loader
       - ffmpeg
       - ffmpeg-libs
       - ffmpegthumbnailer
