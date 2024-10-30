@@ -1,0 +1,31 @@
+modules:
+    - type: script
+      scripts:
+        - installproprietarypackages.sh
+    - type: rpm-ostree
+      install:
+      - gstreamer1-plugin-libav  
+      - gstreamer1-plugin-vaapi  
+      - gstreamer1-plugins-bad-fluidsynth
+      - gstreamer1-plugins-bad  
+      - gstreamer1-plugins-ugly  
+      - gstreamer1-vaapi  
+      - ffmpeg
+      - ffmpeg-libs
+      - ffmpegthumbnailer
+      - pipewire-libs-extra
+      - fdk-aac
+      remove:
+      - libfdk-aac
+      - ffmpeg-free
+      - libavcodec-free  
+      - libavdevice-free
+      - libavfilter-free
+      - libavformat-free  
+      - libavutil-free  
+      - libpostproc-free  
+      - libswresample-free  
+      - libswscale-free  
+    - type: script
+      scripts:
+        - removeunusedrepos.sh
