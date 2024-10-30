@@ -4,12 +4,6 @@ modules:
         - installproprietarypackages.sh
     - type: rpm-ostree
       install:
-      - gstreamer1-plugin-libav  
-      - gstreamer1-plugin-vaapi  
-      - gstreamer1-plugins-bad-fluidsynth
-      - gstreamer1-plugins-bad  
-      - gstreamer1-plugins-ugly  
-      - gstreamer1-vaapi
       - heif-pixbuf-loader
       - ffmpeg
       - ffmpeg-libs

@@ -6,7 +6,6 @@ set -oue pipefail
 curl -Lo /etc/yum.repos.d/negativo17-fedora-multimedia.repo https://negativo17.org/repos/fedora-multimedia.repo
 sed -i '0,/enabled=1/{s/enabled=1/enabled=1\npriority=90/}' /etc/yum.repos.d/negativo17-fedora-multimedia.repo
 
-# use override to replace mesa and others with less crippled versions
 rpm-ostree override replace \
   --experimental \
   --from repo='fedora-multimedia' \
@@ -21,4 +20,9 @@ rpm-ostree override replace \
     mesa-libglapi \
     mesa-libxatracker \
     mesa-va-drivers \
-    mesa-vulkan-drivers
+    mesa-vulkan-drivers \
+    gstreamer1-plugin-libav \
+    gstreamer1-plugin-vaapi \
+    gstreamer1-plugins-bad \
+    gstreamer1-plugins-bad \
+    gstreamer1-plugins-ugly  
