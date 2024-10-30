@@ -15,6 +15,7 @@ modules:
 
       remove:
       - gstreamer1-plugins-bad-free
+      - gstreamer1-plugins-bad-free-libs
       - gstreamer1-plugins-ugly-free
       - fdk-aac-free
       - ffmpeg-free
