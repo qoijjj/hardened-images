@@ -15,9 +15,9 @@ modules:
       - ffmpeg-libs
       - ffmpegthumbnailer
       - pipewire-libs-extra
-      - fdk-aac
+      - libfdk-aac    
       remove:
-      - libfdk-aac
+      - fdk-aac-free
       - ffmpeg-free
       - libavcodec-free  
       - libavdevice-free
