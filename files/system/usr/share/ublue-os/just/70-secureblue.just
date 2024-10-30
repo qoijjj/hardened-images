@@ -8,7 +8,7 @@ set-kargs-hardening:
         IAEMU_NO='--append-if-missing="ia32_emulation=0"'
         echo "Disabling 32-bit support, for the next boot."
     fi
-    read -p "Do you want to force disable Simultaneous Multithreading (SMT) / Hyperthreading? (This can cause a reduction in the performance of certain tasks in favor of security) (Note that in most hardware SMT will be disabled anyways to mitigate a known vulnerability, this turns it off on newer hardware as well) [y/N]: " YES
+    read -p "Do you want to force disable Simultaneous Multithreading (SMT) / Hyperthreading? (This can cause a reduction in the performance of certain tasks in favor of security) (Note that in most hardware SMT will be disabled anyways to mitigate a known vulnerability, this turns it off on all hardware as well regardless) [y/N]: " YES
     if [[ "$YES" == [Yy]* ]]; then
         NOSMT_YES='--append-if-missing="nosmt=force"'
         echo "SMT/Hyperthreading disabled, requires reboot to take effect."
