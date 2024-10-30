@@ -8,12 +8,12 @@ set-kargs-hardening:
         IAEMU_NO='--append-if-missing="ia32_emulation=0"'
         echo "Disabling 32-bit support, for the next boot."
     fi
-    read -p "Do you want to disable Simultaneous Multithreading (SMT) / Hyperthreading? (This can signigicantly reduce the performance of certain tasks in favor of security) [y/N]: " YES
+    read -p "Do you want to disable Simultaneous Multithreading (SMT) / Hyperthreading? (This can cause a reduction in the performance of certain tasks in favor of security) [y/N]: " YES
     if [[ "$YES" == [Yy]* ]]; then
-        echo "Keeping SMT/Hyperthreading."
+        NOSMT_YES='--append-if-missing="nosmt=force"'
+        echo "SMT/Hyperthreading disabled, requires reboot to take effect."
     else
-        NOSMT_FORCE='--append-if-missing="nosmt=force"'
-        echo "Disabling SMT/Hyperthreading, for the next boot."
+        echo "Leaving SMT/Hyperthreading enabled."
     fi
     read -p "Would you like to set additional (unstable) hardening kargs? (Warning: Setting these kargs may lead to boot issues on some hardware.) [y/N]: " YES
     if [[ "$YES" == [Yy]* ]]; then
@@ -25,7 +25,7 @@ set-kargs-hardening:
     fi
     echo "Applying boot parameters..."
     rpm-ostree kargs \
-      ${UNSTABLE_YES:+$UNSTABLE_YES} ${IAEMU_NO:+$IAEMU_NO} ${NOSMT_FORCE:+$NOSMT_FORCE} \
+      ${UNSTABLE_YES:+$UNSTABLE_YES} ${IAEMU_NO:+$IAEMU_NO} ${NOSMT_FORCE:+$NOSMT_YES} \
       --append-if-missing="init_on_alloc=1" \
       --append-if-missing="init_on_free=1" \
       --append-if-missing="slab_nomerge" \
