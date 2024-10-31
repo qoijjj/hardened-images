@@ -5,13 +5,13 @@ set-kargs-hardening:
     if [[ "$YES" == [Yy]* ]]; then
         echo "Keeping 32-bit support."
     else
-        IAEMU_NO='--append-if-missing="ia32_emulation=0"'
+        IAEMU_NO="--append-if-missing=ia32_emulation=0"
         echo "Disabling 32-bit support, for the next boot."
     fi
     read -p "Would you like to set additional (unstable) hardening kargs? (Warning: Setting these kargs may lead to boot issues on some hardware.) [y/N]: " YES
     if [[ "$YES" == [Yy]* ]]; then
-    UNSTABLE_YES='--append-if-missing="efi=disable_early_pci_dma" \
-        --append-if-missing="debugfs=off"'
+    UNSTABLE_YES="--append-if-missing=efi=disable_early_pci_dma \
+        --append-if-missing=debugfs=off"
         echo "Setting unstable hardening kargs."
     else
         echo "Not setting unstable hardening kargs."
@@ -19,27 +19,27 @@ set-kargs-hardening:
     echo "Applying boot parameters..."
     rpm-ostree kargs \
       ${UNSTABLE_YES:+$UNSTABLE_YES} ${IAEMU_NO:+$IAEMU_NO} \
-      --append-if-missing="init_on_alloc=1" \
-      --append-if-missing="init_on_free=1" \
-      --append-if-missing="slab_nomerge" \
-      --append-if-missing="page_alloc.shuffle=1" \
-      --append-if-missing="randomize_kstack_offset=on" \
-      --append-if-missing="vsyscall=none" \
-      --append-if-missing="lockdown=confidentiality" \
-      --append-if-missing="random.trust_cpu=off" \
-      --append-if-missing="random.trust_bootloader=off" \
-      --append-if-missing="iommu=force" \
-      --append-if-missing="intel_iommu=on" \
-      --append-if-missing="amd_iommu=force_isolation" \
-      --append-if-missing="iommu.passthrough=0" \
-      --append-if-missing="iommu.strict=1" \
-      --append-if-missing="pti=on" \
-      --append-if-missing="module.sig_enforce=1" \
-      --append-if-missing="mitigations=auto,nosmt" \
-      --append-if-missing="spectre_v2=on" \
-      --append-if-missing="spec_store_bypass_disable=on" \
-      --append-if-missing="l1d_flush=on" \
-      --append-if-missing="gather_data_sampling=force" 
+      --append-if-missing=init_on_alloc=1 \
+      --append-if-missing=init_on_free=1 \
+      --append-if-missing=slab_nomerge \
+      --append-if-missing=page_alloc.shuffle=1 \
+      --append-if-missing=randomize_kstack_offset=on \
+      --append-if-missing=vsyscall=none \
+      --append-if-missing=lockdown=confidentiality \
+      --append-if-missing=random.trust_cpu=off \
+      --append-if-missing=random.trust_bootloader=off \
+      --append-if-missing=iommu=force \
+      --append-if-missing=intel_iommu=on \
+      --append-if-missing=amd_iommu=force_isolation \
+      --append-if-missing=iommu.passthrough=0 \
+      --append-if-missing=iommu.strict=1 \
+      --append-if-missing=pti=on \
+      --append-if-missing=module.sig_enforce=1 \
+      --append-if-missing=mitigations=auto,nosmt \
+      --append-if-missing=spectre_v2=on \
+      --append-if-missing=spec_store_bypass_disable=on \
+      --append-if-missing=l1d_flush=on \
+      --append-if-missing=gather_data_sampling=force 
     echo "Hardening kargs applied."
 
 # Remove all hardening boot parameters (requires reboot)
