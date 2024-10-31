@@ -27,3 +27,4 @@ modules:
     - type: script
       scripts:
         - excludepcsc.sh
+        - setserverdefaultzone.sh
