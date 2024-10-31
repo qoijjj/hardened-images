@@ -4,6 +4,4 @@
 set -oue pipefail
 
 systemctl enable rpm-ostreed-automatic.timer
-systemctl enable brew-upgrade.timer
-systemctl enable brew-update.timer
 systemctl --global enable podman-auto-update.timer
