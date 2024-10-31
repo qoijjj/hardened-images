@@ -1,0 +1,18 @@
+modules:
+  - type: rpm-ostree
+    remove:
+      - kde-connect
+      - kde-connect-libs
+      - kdeconnectd
+      - fedora-chromium-config-kde
+      - fuse-encfs
+      - krfb
+      - krfb-libs
+      - plasma-discover-rpm-ostree
+      
+      # depends on fedora-flathub-remote
+      - plasma-welcome-fedora
+  - type: files
+    files:  
+      - source: system/kinoite
+        destination: /

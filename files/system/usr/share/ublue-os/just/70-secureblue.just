@@ -1,39 +1,53 @@
 # Add additional boot parameters for hardening (requires reboot)
 set-kargs-hardening:
     #!/usr/bin/pkexec /usr/bin/bash
+    read -p "Do you need support for 32-bit processes/syscalls? (This is mostly used by legacy software, with some exceptions, such as Steam) [y/N]: " YES
+    if [[ "$YES" == [Yy]* ]]; then
+        echo "Keeping 32-bit support."
+    else
+        IAEMU_NO="--append-if-missing=ia32_emulation=0"
+        echo "Disabling 32-bit support, for the next boot."
+    fi
+    read -p "Do you want to force disable Simultaneous Multithreading (SMT) / Hyperthreading? (This can cause a reduction in the performance of certain tasks in favor of security) (Note that in most hardware SMT will be disabled anyways to mitigate a known vulnerability, this turns it off on all hardware regardless) [y/N]: " YES
+    if [[ "$YES" == [Yy]* ]]; then
+        NOSMT_YES="--append-if-missing=nosmt=force"
+        echo "Force disabling SMT/Hyperthreading."
+    else
+        echo "Not force disabling SMT/Hyperthreading."
+    fi
+    read -p "Would you like to set additional (unstable) hardening kargs? (Warning: Setting these kargs may lead to boot issues on some hardware.) [y/N]: " YES
+    if [[ "$YES" == [Yy]* ]]; then
+    UNSTABLE_YES="--append-if-missing=efi=disable_early_pci_dma \
+        --append-if-missing=debugfs=off"
+        echo "Setting unstable hardening kargs."
+    else
+        echo "Not setting unstable hardening kargs."
+    fi
+    echo "Applying boot parameters..."
     rpm-ostree kargs \
-      --append-if-missing="init_on_alloc=1" \
-      --append-if-missing="init_on_free=1" \
-      --append-if-missing="slab_nomerge" \
-      --append-if-missing="page_alloc.shuffle=1" \
-      --append-if-missing="randomize_kstack_offset=on" \
-      --append-if-missing="vsyscall=none" \
-      --append-if-missing="lockdown=confidentiality" \
-      --append-if-missing="random.trust_cpu=off" \
-      --append-if-missing="random.trust_bootloader=off" \
-      --append-if-missing="iommu=force" \
-      --append-if-missing="intel_iommu=on" \
-      --append-if-missing="amd_iommu=force_isolation" \
-      --append-if-missing="iommu.passthrough=0" \
-      --append-if-missing="iommu.strict=1" \
-      --append-if-missing="pti=on" \
-      --append-if-missing="module.sig_enforce=1" \
-      --append-if-missing="mitigations=auto,nosmt" \
-      --append-if-missing="spectre_v2=on" \
-      --append-if-missing="spec_store_bypass_disable=on" \
-      --append-if-missing="l1d_flush=on" \
-      --append-if-missing="gather_data_sampling=force"
-    echo "Hardening kargs set."
-
-# Add additional (unstable) boot parameters for hardening (requires reboot)
-set-kargs-hardening-unstable:
-    #!/usr/bin/pkexec /usr/bin/bash
-    echo "Warning: setting these kargs may lead to boot issues on some hardware."
-    rpm-ostree kargs \
-      --append-if-missing="efi=disable_early_pci_dma" \
-      --append-if-missing="debugfs=off"
-
-    echo "Unstable hardening kargs set."
+      ${UNSTABLE_YES:+$UNSTABLE_YES} ${IAEMU_NO:+$IAEMU_NO} ${NOSMT_YES:+$NOSMT_YES} \
+      --append-if-missing=init_on_alloc=1 \
+      --append-if-missing=init_on_free=1 \
+      --append-if-missing=slab_nomerge \
+      --append-if-missing=page_alloc.shuffle=1 \
+      --append-if-missing=randomize_kstack_offset=on \
+      --append-if-missing=vsyscall=none \
+      --append-if-missing=lockdown=confidentiality \
+      --append-if-missing=random.trust_cpu=off \
+      --append-if-missing=random.trust_bootloader=off \
+      --append-if-missing=iommu=force \
+      --append-if-missing=intel_iommu=on \
+      --append-if-missing=amd_iommu=force_isolation \
+      --append-if-missing=iommu.passthrough=0 \
+      --append-if-missing=iommu.strict=1 \
+      --append-if-missing=pti=on \
+      --append-if-missing=module.sig_enforce=1 \
+      --append-if-missing=mitigations=auto,nosmt \
+      --append-if-missing=spectre_v2=on \
+      --append-if-missing=spec_store_bypass_disable=on \
+      --append-if-missing=l1d_flush=on \
+      --append-if-missing=gather_data_sampling=force 
+    echo "Hardening kargs applied."
 
 # Remove all hardening boot parameters (requires reboot)
 remove-kargs-hardening:
@@ -61,7 +75,8 @@ remove-kargs-hardening:
       --delete-if-present="spectre_v2=on" \
       --delete-if-present="spec_store_bypass_disable=on" \
       --delete-if-present="l1d_flush=on" \
-      --delete-if-present="gather_data_sampling=force"
+      --delete-if-present="gather_data_sampling=force" \
+      --delete-if-present="ia32_emulation=0"
     echo "Hardening kargs removed."
 
 # Harden flatpaks by preloading hardened_malloc (highest supported hwcap)
@@ -388,6 +403,7 @@ audit-secureblue:
         "gather_data_sampling=force"
         "efi=disable_early_pci_dma"
         "debugfs=off"
+        "ia32_emulation=0"
     )
 
     for karg in "${KARGS_LIST[@]}"; do
@@ -400,10 +416,40 @@ audit-secureblue:
     done
 
     SYSCTL_TEST_STRING="Ensuring no sysctl overrides"
-    if diff /usr/etc/sysctl.d/hardening.conf /etc/sysctl.d/hardening.conf > /dev/null; then
+    readarray -t sysctl_hardening_conf < <(grep -v -E -e "^#" -e "^$" </usr/etc/sysctl.d/hardening.conf)
+    declare -A sysctl_hardening
+    for line in "${sysctl_hardening_conf[@]}"; do
+        parameter="$(sed -E -e "s/(.*) = .*/\1/"  <<<"$line")"
+        value="$(sed -E "s/.* = (.*)/\1/" <<<"$line")"
+        sysctl_hardening["$parameter"]+="$value"
+    done
+    sysctl_results="$(sysctl -a 2> >(grep -v "sysctl: permission denied on key "))"
+    sysctl_errors=()
+    for sysctl_parameter in "${!hardening[@]}"; do
+        hardened_parameter_value="${hardening["$sysctl_parameter"]}"
+        parameter_name="$(sed -E -e "s/\./\\\./g" -e "s/\*/\.\*/" <<<"$sysctl_parameter")"
+        readarray -t sysctl_parameter_values < <(grep -E "^$key = " <<<"$sysctl_results")
+        for parameter_value in "${sysctl_parameter_values[@]}"; do
+            parameter_value="$(sed -E  -e "s/.* = (.*)/\1/" -e "s/\t/ /g" <<<"$result" | tr -s " " )"
+            if [[ "$parameter_value" != "$hardened_parameter_value" && ("$hardened_parameter_value" != 0 && "$parameter_value" != disabled) ]]; then
+                sysctl_errors+=("$sysctl_parameter should be $hardened_parameter_value, found $parameter_value")
+            fi
+        done
+    done
+    if [[ "${#sysctl_errors}" == 0 ]] && diff /usr/etc/sysctl.d/hardening.conf /etc/sysctl.d/hardening.conf > /dev/null; then
         print_status "$SYSCTL_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$SYSCTL_TEST_STRING" "$STATUS_FAILURE"
+        for error in "${sysctl_errors[@]}"; do
+            echo "> $error"
+        done
+    fi
+
+    SIGNED_IMAGE_TEST_STRING="Ensuring a signed image is in use"
+    if rpm-ostree status | grep -q "● ostree-image-signed"; then
+        print_status "$SIGNED_IMAGE_TEST_STRING" "$STATUS_SUCCESS"
+    else
+        print_status "$SIGNED_IMAGE_TEST_STRING" "$STATUS_FAILURE"
     fi
 
     MODPROBE_TEST_STRING="Ensuring no modprobe overrides"
@@ -435,6 +481,12 @@ audit-secureblue:
         print_status "$AUTHSELECT_TEST_STRING" "$STATUS_FAILURE"
     fi
 
+    CONTAINER_POLICY_TEST_STRING="Ensuring no container policy overrides"
+    if diff /usr/etc/containers/policy.json /etc/containers/policy.json > /dev/null && [ ! -f $HOME/.config/containers/policy.json ]; then
+        print_status "$CONTAINER_POLICY_TEST_STRING" "$STATUS_SUCCESS"
+    else
+        print_status "$CONTAINER_POLICY_TEST_STRING" "$STATUS_FAILURE"
+    fi
 
     USBGUARD_TEST_STRING="Ensuring usbguard is active"
     if systemctl is-active --quiet usbguard; then
@@ -606,6 +658,10 @@ audit-secureblue:
             if [[ "$ptrace_allowed" == "true" ]] && hasPermission "$permissions" "features" "devel"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f has ptrace access!")
+            fi
+            if hasPermission "$permissions" "shared" "ipc"; then
+            status="$STATUS_FAILURE"
+                warnings+=("> $f has inter-process communications access!")
             fi
             flatpak_test_string="Auditing $f"
             print_status "$flatpak_test_string" "$status"

@@ -2,7 +2,7 @@ There are multiple options available for donation:
 
 ## Github Sponsors
 
-[Become a sponsor](https://github.com/sponsors/qoijjj)
+[Become a sponsor](https://github.com/sponsors/RoyalOughtness)
 
 ## Bitcoin
 
