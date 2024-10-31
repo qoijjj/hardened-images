@@ -13,7 +13,6 @@ install:
   - setroubleshoot
   - setools
   - fscrypt
-  - heif-pixbuf-loader
   - vim
   - alsa-firmware
   
@@ -22,6 +21,9 @@ install:
   - pam_yubico
   - pamu2fcfg
   - yubikey-manager
+
+  # ensure universal font coverage
+  - google-noto-fonts-all
 remove:
   - firefox
   - firefox-langpacks

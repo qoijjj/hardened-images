@@ -78,6 +78,7 @@ screens:
           default: true
           packages:
             - Flatseal (Permission Manager): com.github.tchx84.Flatseal
+            - Warehouse (App Installer/Manager): io.github.flattool.Warehouse
 
   final-screen:
     source: yafti.screen.title
