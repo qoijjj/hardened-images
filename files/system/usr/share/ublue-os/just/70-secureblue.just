@@ -343,6 +343,7 @@ install-negativo:
     #!/usr/bin/pkexec /usr/bin/bash
     curl -o /etc/yum.repos.d/negativo17-fedora-multimedia.repo https://negativo17.org/repos/fedora-multimedia.repo
     chmod 644 /etc/yum.repos.d/negativo17-fedora-multimedia.repo
+    sed -i '0,/enabled=1/{s/enabled=1/enabled=1\npriority=90/}' /etc/yum.repos.d/negativo17-fedora-multimedia.repo
 
 # Audit secureblue
 audit-secureblue:
