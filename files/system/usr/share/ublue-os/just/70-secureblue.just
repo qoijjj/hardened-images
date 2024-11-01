@@ -338,6 +338,12 @@ toggle-bash-environment-lockdown:
       echo "Capitalization matters when you type \"YES I UNDERSTAND\""
     fi
 
+# Install negativo repo
+install-negativo:
+    #!/usr/bin/pkexec /usr/bin/bash
+    curl -o /etc/yum.repos.d/negativo17-fedora-multimedia.repo https://negativo17.org/repos/fedora-multimedia.repo
+    chmod 644 /etc/yum.repos.d/negativo17-fedora-multimedia.repo
+
 # Audit secureblue
 audit-secureblue:
     #!/bin/bash
@@ -405,11 +411,6 @@ audit-secureblue:
         "debugfs=off"
         "ia32_emulation=0"
     )
-
-# Install negativo repo
-install-negativo:
-    sudo curl -o /etc/yum.repos.d/negativo.repo https://negativo17.org/repos/fedora-multimedia.repo
-    sudo chmod 644 /etc/yum.repos.d/negativo.repo
 
     for karg in "${KARGS_LIST[@]}"; do
         KARG_TEST_STRING="Checking for $karg karg"
