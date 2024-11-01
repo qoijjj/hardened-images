@@ -16,3 +16,5 @@ modules:
       scripts:
         - enableflatpakautoupdate.sh
     - type: yafti
+    - type: brew 
+      brew-analytics: false
