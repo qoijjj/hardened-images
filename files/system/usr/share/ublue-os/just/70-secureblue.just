@@ -406,6 +406,11 @@ audit-secureblue:
         "ia32_emulation=0"
     )
 
+# Install negativo repo
+install-negativo:
+    sudo curl -o /etc/yum.repos.d/negativo.repo https://negativo17.org/repos/fedora-multimedia.repo
+    sudo chmod 644 /etc/yum.repos.d/negativo.repo
+
     for karg in "${KARGS_LIST[@]}"; do
         KARG_TEST_STRING="Checking for $karg karg"
         if echo "$KARGS" | grep -q "$karg"; then
@@ -670,4 +675,3 @@ audit-secureblue:
             done
         done
     fi
-
