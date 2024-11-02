@@ -28,8 +28,5 @@ A clear and concise description of what actually happened.
 **Your current image**
  - `rpm-ostree status` contents
 
-**If you're using a secureblue Bluefin image**
- - Confirm you can repro on a secureblue silverblue image
-
 **For all images**
 - Confirm you cannot repro on a uBlue base image
