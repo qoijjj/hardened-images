@@ -622,12 +622,9 @@ audit-secureblue:
         done <<< "$remotes"
         
         declare -A flatpaks
-        flatpakList=$(flatpak list | sort -k 1 | cut --fields 2,4)
-        if [[ -n $flatpakList ]]; then
-            while read -r ref version; do
-                flatpaks+=(["${ref}"]="${ref}//${version}")
-            done <<< "$flatpakList"
-        fi
+        while read -r ref version; do
+            flatpaks+=(["${ref}"]="${ref}//${version}")
+        done < <(flatpak list | sort -k 1 | cut --fields 2,4)
 
         for f in ${!flatpaks[@]}; do
             warnings=()
