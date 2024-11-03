@@ -1,0 +1,24 @@
+name: trivy
+on:
+  schedule:
+    - cron: "00 8 * * *" # build at 8:00 UTC every day 
+                         # 120 minutes after secureblue images start building
+  push:
+    branches:
+      - live
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ghcr.io/secureblue/silverblue-main-userns-hardened:latest'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
