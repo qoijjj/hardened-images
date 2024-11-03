@@ -10,7 +10,7 @@ on:
   workflow_dispatch: # allow manually triggering builds
 jobs:
   build:
-    name: Build
+    name: Trivy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
