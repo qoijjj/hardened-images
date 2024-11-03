@@ -5,7 +5,7 @@ The recommended method to install secureblue is to rebase from an upstream silve
 ## Preinstall guide
 
 > [!TIP]
-> If you don't yet have a Fedora Atomic installation medium, you should obtain an image from the official Fedora Project website, [here](https://fedoraproject.org/atomic-desktops/). Once you have downloaded an image, it is *highly reccomended* that you [verify](https://fedoraproject.org/security) it for security and integrity.
+> The cross-platform Fedora Media Writer is the *official, tested and supported* method for the creation of bootable media, instructions (alongside a word on alternative methods) are available [here](https://docs.fedoraproject.org/en-US/fedora/latest/preparing-boot-media/).
 
 ### Fedora Installation
 - Select the option to encrypt the drive you're installing to.
