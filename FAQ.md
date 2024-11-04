@@ -42,16 +42,13 @@ Override `LD_PRELOAD` for that app. For flatpaks, this is as simple as removing 
 
 First check if the README already has an equivalent or better feature. If it doesn't, open a new github issue.
 
-#### How do I install steam?
+#### How do I install Steam?
 
-To use steam you can either:
+To use Steam you can either:
 
 - Install the [flatpak](https://flathub.org/apps/com.valvesoftware.Steam)
-- Layer the rpm with:
-
-```
-rpm-ostree install steam
-```
+- Install Steam via the [bazzite-arch](https://github.com/ublue-os/bazzite-arch) distrobox
+- Layering Steam is not recommended
 
 #### Why are bluetooth kernel modules disabled? How do I enable them?
 
