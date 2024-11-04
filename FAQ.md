@@ -10,10 +10,7 @@ https://github.com/secureblue/secureblue/issues/193#issuecomment-1953323680
 
 #### My fans are really loud, is this normal?
 
-During rpm-ostree operations, it's normal. Outside of that:
-
-- Make sure you followed the nvidia steps in the readme if you're using nvidia.
-- Make sure you're using an `asus` image if you're using asus.
+During rpm-ostree operations, it's normal. Outside of that, make sure you followed the nvidia steps in the readme if you're using nvidia.
 
 #### Should I use firejail?
 
