@@ -51,7 +51,7 @@ If you answer `N`, or press enter without any input, support for 32-bit programs
 
 However, there are certain exceptions. A couple common usecases are if you need Steam, or run an ocassional application in Wine you'll likely want to keep support for 32-bit programs. If this is the case, answer `Y`.
 ### Unstable hardening kargs
-If you answer `Y` when prompted, additional (unstable) hardening kargs will be applied, which can cause issues on some hardware, but stable on other hardware. 
+If you answer `Y` when prompted, additional (unstable) hardening kargs will be applied, which can cause issues on some hardware, but stable on other hardware.
 
 ## Setup USBGuard
 
@@ -122,7 +122,7 @@ To enable TPM2 LUKS unlocking, run:
 
 ```
 ujust setup-luks-tpm-unlock
-``` 
+```
 Type `Y` when asked if you want to set a PIN.
 
 ## Validation
