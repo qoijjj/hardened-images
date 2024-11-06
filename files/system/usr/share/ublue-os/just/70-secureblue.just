@@ -642,7 +642,7 @@ audit-secureblue:
                 status="$STATUS_FAILURE"
                 warnings+=("> $f has x11 access!
 > To remove it use Flatseal or run:
-> 'flatpak override -u --nosocket=x11 --nosocket=fallback-x11 $f'")
+> 'flatpak override -u --nosocket=x11 $f'")
             fi
             if hasPermission "$permissions" "sockets" "session-bus"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
