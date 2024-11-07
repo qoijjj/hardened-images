@@ -35,6 +35,16 @@ Override `LD_PRELOAD` for that app. For flatpaks, this is as simple as removing 
 3. Consider using distrobox or brew to install it
 4. Layer it using `rpm-ostree install`, as a last option
 
+#### How can I install command-line tools?
+
+[Homebrew](https://brew.sh/) is a package manager for Linux. It can be installed on secureblue by running `ujust brew`. Once installed, you can install packages with `brew install`. Homebrew installs packages in a separate home directory, but at the moment packages are not sandboxed, and will have the same access as any other tool. You may be able to use `bubblejail` for sandboxing instead.
+
+Homebrew is disabled on securecore images.
+
+[Distrobox](https://distrobox.it/) is a tool to manage Linux containers. You can run `ujust distrobox-assemble` to create a container, and enter it with `distrobox enter <container name>`. Inside, you can use the container's package manager to install command-line tools. Note that distrobox does *not* sandbox the containers, and should not be used to run untrusted binaries.
+
+If neither of the above options are suitable, you can layer Fedora packages with `rpm-ostree install`. This will significantly slow most `rpm-ostree` operations, including updates. Consider making a [custom Bluebuild image](https://github.com/secureblue/secureblue/#customization) instead.
+
 #### Another security project has a feature that's missing in secureblue, can you add it?
 
 First check if the README already has an equivalent or better feature. If it doesn't, open a new github issue.
