@@ -107,7 +107,7 @@ systemctl stop cups && \
 systemctl daemon-reload && \
 echo "Cups disabled."'
     else
-      pkexec sh -c'
+      pkexec sh -c '
 firewall-cmd --permanent --add-port=631/tcp && \
 firewall-cmd --permanent --add-port=631/udp && \
 firewall-cmd --reload && \
