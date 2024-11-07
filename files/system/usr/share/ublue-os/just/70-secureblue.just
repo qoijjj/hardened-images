@@ -97,23 +97,25 @@ harden-flatpak:
 toggle-cups:
     #!/usr/bin/pkexec /usr/bin/bash
     if systemctl is-enabled --quiet cups; then
-      firewall-cmd --permanent --remove-port=631/tcp
-      firewall-cmd --permanent --remove-port=631/udp 
-      firewall-cmd --reload 
-      systemctl mask cups
-      systemctl disable cups
-      systemctl stop cups
-      systemctl daemon-reload
-      echo "Cups disabled."
+      pkexec sh -c '
+firewall-cmd --permanent --remove-port=631/tcp && \
+firewall-cmd --permanent --remove-port=631/udp && \
+firewall-cmd --reload && \
+systemctl mask cups && \
+systemctl disable cups && \
+systemctl stop cups && \
+systemctl daemon-reload && \
+echo "Cups disabled."'
     else
-      firewall-cmd --permanent --add-port=631/tcp
-      firewall-cmd --permanent --add-port=631/udp 
-      firewall-cmd --reload 
-      systemctl unmask cups
-      systemctl enable cups
-      systemctl start cups
-      systemctl daemon-reload
-      echo "Cups enabled."
+      pkexec sh -c'
+firewall-cmd --permanent --add-port=631/tcp && \
+firewall-cmd --permanent --add-port=631/udp && \
+firewall-cmd --reload && \
+systemctl unmask cups && \
+systemctl enable cups && \
+systemctl start cups && \
+systemctl daemon-reload && \
+echo "Cups enabled."'
     fi
 
 # Toggle bluetooth kernel modules on/off (requires reboot)
