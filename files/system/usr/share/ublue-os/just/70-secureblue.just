@@ -660,7 +660,7 @@ audit-secureblue:
                 status="$STATUS_FAILURE"
                 warnings+=("> $f is not using hardened_malloc!
 > To enable it run:
-> 'ujust harden-flatpak'")
+> 'flatpak override -u --LD_PRELOAD=/var/run/host/usr/lib64/libhardened_malloc.so $f'")
             fi
             if [[ "$bluetooth_loaded" == "true" ]] && hasPermission "$permissions" "features" "bluetooth"; then
                 status="$STATUS_FAILURE"
