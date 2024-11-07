@@ -14,7 +14,7 @@ During rpm-ostree operations, it's normal. Outside of that, make sure you follow
 
 #### Should I use firejail?
 
-[No](https://madaidans-insecurities.github.io/linux.html#firejail), use ``bubblejail`` if there's no flatpak available for an app. 
+[No](https://madaidans-insecurities.github.io/linux.html#firejail), use ``bubblejail`` if there's no flatpak available for an app.
 
 #### An app I use won't start due to a malloc issue. How do I fix it?
 
@@ -61,7 +61,7 @@ This is an issue with rpm-ostree image-based systems generally, and not specific
 
 #### Why can't I install new KDE themes?
 
-The functionality that provides this, called GHNS, is disabled by default due to the risk posed by the installation of potentially damaging or malicious scripts. This has caused [real damage](https://blog.davidedmundson.co.uk/blog/kde-store-content/). 
+The functionality that provides this, called GHNS, is disabled by default due to the risk posed by the installation of potentially damaging or malicious scripts. This has caused [real damage](https://blog.davidedmundson.co.uk/blog/kde-store-content/).
 
 If you still want to enable this functionality, run:
 
@@ -106,9 +106,9 @@ On the secureblue github page, click "Watch", and then "Custom", and select Rele
 
 #### Why don't my AppImages work?
 
-AppImages depend on fuse2, which is unmaintained and depends on a suid root binary. For this reason, fuse2 support is removed by default. It's strongly recommended that you find alternative mechanisms to install your applications (flatpak, distrobox, etc). If you can't find an alternative and still need fuse2, you can add it back by layering something that depends on it. 
+AppImages depend on fuse2, which is unmaintained and depends on a suid root binary. For this reason, fuse2 support is removed by default. It's strongly recommended that you find alternative mechanisms to install your applications (flatpak, distrobox, etc). If you can't find an alternative and still need fuse2, you can add it back by layering something that depends on it.
 
-For example: 
+For example:
 
 ```
 rpm-ostree install zfs-fuse
