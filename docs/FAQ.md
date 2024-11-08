@@ -43,6 +43,8 @@ Homebrew is disabled on securecore images.
 
 [Distrobox](https://distrobox.it/) is a tool to manage Linux containers. You can run `ujust distrobox-assemble` to create a container and enter it with `distrobox enter <container name>`. Inside, you can use the container's package manager to install command-line tools. Note that distrobox does *not* sandbox the containers and should not be used to run untrusted binaries.
 
+Due to Distrobox's lesser convenience, Homebrew is recommended over Distrobox for general-purpose tools.
+
 If neither of the above options are suitable, you can layer Fedora packages with `rpm-ostree install`. This will significantly slow most `rpm-ostree` operations, including updates. Consider making a [custom Bluebuild image](https://github.com/secureblue/secureblue/#customization) instead.
 
 #### Another security project has a feature that's missing in secureblue, can you add it?
