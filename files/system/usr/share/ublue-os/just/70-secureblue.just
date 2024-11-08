@@ -652,6 +652,11 @@ audit-secureblue:
                 status="$STATUS_FAILURE"
                 warnings+=("> $f is not using hardened_malloc!")
             fi
+            if ! hasPermission "$permissions" "filesystems" "host-os:ro"; then
+                status="$STATUS_FAILURE"
+                warnings+=("> $f is missing host-os:ro permission,
+> which is needed to load hardened_malloc!")
+            fi
             if [[ "$bluetooth_loaded" == "true" ]] && hasPermission "$permissions" "features" "bluetooth"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f has bluetooth access!")
@@ -663,6 +668,10 @@ audit-secureblue:
             if hasPermission "$permissions" "shared" "ipc"; then
             status="$STATUS_FAILURE"
                 warnings+=("> $f has inter-process communications access!")
+            fi
+            if hasPermission "$permissions" "device" "all"; then
+                [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
+                warnings+=("> $f has access to all devices!")
             fi
             flatpak_test_string="Auditing $f"
             print_status "$flatpak_test_string" "$status"
