@@ -672,7 +672,7 @@ audit-secureblue:
             if hasPermission "$permissions" "devices" "all"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
                 warnings+=("> $f has device=all permission,
-> granting access to GPU, input devices, virtualization, and shared memory!")
+> granting access to GPU, input devices, and virtualization!")
             fi
             flatpak_test_string="Auditing $f"
             print_status "$flatpak_test_string" "$status"
