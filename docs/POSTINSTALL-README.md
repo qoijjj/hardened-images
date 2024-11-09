@@ -86,16 +86,16 @@ Creating a dedicated wheel user and removing wheel from your primary user helps 
 > [!CAUTION]
 > If you do these steps out of order, it is possible to end up without the ability to administrate your system. You will not be able to use the [traditional GRUB-based method](https://linuxconfig.org/recover-reset-forgotten-linux-root-password) of fixing mistakes like this, either, as this will leave your system in a broken state. However, simply rolling back to an older snapshot of your system, should resolve the problem.
 
-1. ```sudo adduser admin```
-2. ```sudo usermod -aG wheel admin```
-3. ```sudo passwd admin```
+1. ```run0 adduser admin```
+2. ```run0 usermod -aG wheel admin```
+3. ```run0 passwd admin```
 4. ```reboot```
 
 > [!NOTE]
 > We log in as admin to do the final step of removing the user account's wheel privileges in order to make the operation of removing those privileges depend on having access to your admin account, and the admin account functioning correctly first.
 
 5. Log in as `admin`
-6. ```sudo gpasswd -d {your username here} wheel```
+6. ```run0 gpasswd -d {your username here} wheel```
 7. ```reboot```
 
 When using a non-wheel user, you can add the user to other groups if you want. For example:
