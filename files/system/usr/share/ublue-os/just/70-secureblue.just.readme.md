@@ -80,7 +80,7 @@
 
 ### Force disable simultaneous multithreading
 
-**Disables this hardware feature on user request, regardless of mitigation necessity**
+**Disables this hardware feature on user request, regardless of whether it is affected by known vulnerabilities**
 
 `nosmt=force`
 
