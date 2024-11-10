@@ -93,6 +93,19 @@ harden-flatpak:
         flatpak override --user --env=LD_PRELOAD=/var/run/host/usr/lib64/glibc-hwcaps/x86-64-v"$bestuarch"/libhardened_malloc.so
     fi
 
+# Harden a specified flatpak by preloading hardened_malloc (highest supported hwcap)
+harden-one-flatpak:
+    #!/usr/bin/bash
+    uarches="$(/usr/lib64/ld-linux-x86-64.so.2 --help | grep '(supported, searched)' | cut -d'v' -f2)"
+    bestuarch="${uarches:0:1}"
+    if [ -z "$bestuarch" ] ; then
+        echo "No microarchitecture support detected. Using default x86-64-v1 architecture for $1's malloc."
+        flatpak override --user --env=LD_PRELOAD=/var/run/host/usr/lib64/libhardened_malloc.so "$1"
+    else
+        echo "x86-64-v$bestuarch support detected. Using x86-64-v$bestuarch microarchitecture for $1's malloc."
+        flatpak override --user --env=LD_PRELOAD=/var/run/host/usr/lib64/glibc-hwcaps/x86-64-v"$bestuarch"/libhardened_malloc.so "$1"
+    fi
+
 # Toggle the cups service on/off
 toggle-cups:
     #!/usr/bin/pkexec /usr/bin/bash
