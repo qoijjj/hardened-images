@@ -672,3 +672,7 @@ audit-secureblue:
         done
     fi
 
+#Debug pastebin for issue reporting
+debug-info: 
+    #!/usr/bin/bash 
+    fpaste <(echo "=== Rpm-Ostree Status ===" && rpm-ostree status) <(fpaste --sysinfo --printonly) <(echo "=== Flatpaks Installed ===" && flatpak list --columns=application,version,options) <(echo "=== Audit Results ===" && ujust audit-secureblue) <(echo "=== Listing Local Overrides ===" && ujust check-local-overrides) <(echo "=== Recent System Events ===" && journalctl -b -p err..alert --since "1 hour ago") <(echo "=== Failed Services ===" && systemctl list-units --state=failed)
