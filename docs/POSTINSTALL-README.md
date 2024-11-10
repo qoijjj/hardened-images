@@ -52,12 +52,10 @@ If you answer `N`, or press enter without any input, support for 32-bit programs
 However, there are certain exceptions. A couple common usecases are if you need Steam, or run an ocassional application in Wine you'll likely want to keep support for 32-bit programs. If this is the case, answer `Y`.
 
 ### Force disable simultaneous multithreading
-If you answer `Y` when prompted, simultaneous multithreading (SMT, often called Hyperthreading) will be forcefully disabled. This can cause a reduction in the performance of certain tasks in favor of security.
-
-Note that in most hardware SMT will be disabled anyways to mitigate a known vulnerability. This option turns it off on all hardware regardless.
+If you answer `Y` when prompted, simultaneous multithreading (SMT, often called Hyperthreading) will be disabled on all hardware, regardless of known vulnerabilities. This can cause a reduction in the performance of certain tasks in favor of security.
 
 ### Unstable hardening kargs
-If you answer `Y` when prompted, unstable hardening kargs will be aditionally applied, which can cause issues on some hardware, but are stable on other hardware.
+If you answer `Y` when prompted, unstable hardening kargs will be additionally applied, which can cause issues on some hardware, but are stable on other hardware.
 
 ## Setup USBGuard
 
