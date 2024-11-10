@@ -57,7 +57,7 @@ If you answer `Y` when prompted, simultaneous multithreading (SMT, often called 
 Note that in most hardware SMT will be disabled anyways to mitigate a known vulnerability. This option turns it off on all hardware regardless.
 
 ### Unstable hardening kargs
-If you answer `Y` when prompted, additional (unstable) hardening kargs will be applied, which can cause issues on some hardware, but stable on other hardware.
+If you answer `Y` when prompted, unstable hardening kargs will be aditionally applied, which can cause issues on some hardware, but are stable on other hardware.
 
 ## Setup USBGuard
 
