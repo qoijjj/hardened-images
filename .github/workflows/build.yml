@@ -11,7 +11,7 @@ on:
 jobs:
   bluebuild:
     name: Build secureblue
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -89,10 +89,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Add yq (for reading recipe.yml)
-        uses: mikefarah/yq@v4.44.3
+        uses: mikefarah/yq@bbdd97482f2d439126582a59689eb1c855944955 # v4.44.3
 
       - name: Gather image data from recipe
         run: |
@@ -103,7 +103,7 @@ jobs:
 
       - name: Verify base image
         if: ${{ contains(env.IMAGE_NAME, 'wayblue') }}
-        uses: EyeCantCU/cosign-action/verify@v0.3.0
+        uses: EyeCantCU/cosign-action/verify@58722a084c82190b57863002d494c91eabbe9e79 # v0.3.0
         with:
           containers: ${{ env.BASE_IMAGE_NAME }}:${{ env.IMAGE_MAJOR_VERSION }}
           registry: 'ghcr.io/wayblueorg'
@@ -111,11 +111,7 @@ jobs:
 
       - name: Validate server kernel and kmod versions
         if: ${{ contains(env.IMAGE_NAME, 'securecore') }}
-        uses: Wandalen/wretry.action@v3.5.0
-        with:
-          attempt_limit: 3
-          attempt_delay: 15000
-          command: |
+        run: |
             set -eo pipefail
             linux=$(skopeo inspect docker://ghcr.io/ublue-os/coreos-testing-kernel:41 | jq -r '.Labels["ostree.linux"]')
             AKMODS_KERNEL_VERSION=$(skopeo inspect docker://ghcr.io/ublue-os/akmods:coreos-testing-41 | jq -r '.Labels["ostree.linux"]')
@@ -127,11 +123,7 @@ jobs:
 
       - name: Validate desktop kernel and kmod versions
         if: ${{ !contains(env.IMAGE_NAME, 'securecore') }}
-        uses: Wandalen/wretry.action@v3.5.0
-        with:
-          attempt_limit: 3
-          attempt_delay: 15000
-          command: |
+        run: |
             set -eo pipefail
             linux=$(skopeo inspect docker://ghcr.io/ublue-os/main-kernel:41 | jq -r '.Labels["ostree.linux"]')
             AKMODS_KERNEL_VERSION=$(skopeo inspect docker://ghcr.io/ublue-os/akmods:main-41 | jq -r '.Labels["ostree.linux"]')
@@ -143,7 +135,7 @@ jobs:
 
 
       - name: Build secureblue
-        uses: blue-build/github-action@v1.6.1
+        uses: blue-build/github-action@33ee8cc4011b0d47666ea7026d08bb5b941ac90c # v1.7.0
         with:          
           cli_version: v0.8.20
           recipe: ${{ matrix.recipe }}
