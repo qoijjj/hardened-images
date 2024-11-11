@@ -1,4 +1,6 @@
 modules:
+    - type: justfiles
+      validate: true
     - type: script
       scripts:
         - createautostartdir.sh
