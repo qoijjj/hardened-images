@@ -78,6 +78,12 @@
 
 `gather_data_sampling=force`
 
+### Force disable simultaneous multithreading
+
+**Disables this hardware feature on user request, regardless of whether it is affected by known vulnerabilities**
+
+`nosmt=force`
+
 ### Additional (unstable) kargs
 
 **Fill IOMMU protection gap by setting the busmaster bit during early boot**
