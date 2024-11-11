@@ -91,6 +91,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Check just syntax
+        uses: ublue-os/just-action@v2
+        
       - name: Add yq (for reading recipe.yml)
         uses: mikefarah/yq@v4.44.3
 
