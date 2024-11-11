@@ -92,7 +92,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check just syntax
-        uses: ublue-os/just-action@v2
+        uses: ublue-os/just-action@bda593098a84a84973b002b4377709166a68be52 # v2
         
       - name: Add yq (for reading recipe.yml)
         uses: mikefarah/yq@v4.44.3
