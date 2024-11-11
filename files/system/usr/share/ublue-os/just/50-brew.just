@@ -17,7 +17,7 @@ install-brew:
           echo "Capitalization matters when you type \"YES I UNDERSTAND\""
         fi
     fi
-    
+
 # Removes homebrew from system
 remove-brew:
     echo "Removing homebrew ..."
