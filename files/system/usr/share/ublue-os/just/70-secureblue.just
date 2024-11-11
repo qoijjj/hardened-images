@@ -649,6 +649,11 @@ audit-secureblue:
             if ! hasPermission "$permissions" "LD_PRELOAD" .*"/libhardened_malloc.so"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f is not using hardened_malloc!")
+            fi            
+            if ! hasPermission "$permissions" "filesystems" "host-os:ro"; then
+                status="$STATUS_FAILURE"
+                warnings+=("> $f is missing host-os:ro permission,
+> which is needed to load hardened_malloc!")
             fi
             if [[ "$bluetooth_loaded" == "true" ]] && hasPermission "$permissions" "features" "bluetooth"; then
                 status="$STATUS_FAILURE"
