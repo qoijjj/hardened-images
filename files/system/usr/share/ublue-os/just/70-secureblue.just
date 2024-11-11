@@ -1,6 +1,6 @@
 # Add additional boot parameters for hardening (requires reboot)
 set-kargs-hardening:
-    #!/usr/bin/pkexec /usr/bin/bash
+    #!/usr/bin/bash
     read -p "Do you need support for 32-bit processes/syscalls? (This is mostly used by legacy software, with some exceptions, such as Steam) [y/N]: " YES
     if [[ "$YES" == [Yy]* ]]; then
         echo "Keeping 32-bit support."
@@ -51,7 +51,7 @@ set-kargs-hardening:
 
 # Remove all hardening boot parameters (requires reboot)
 remove-kargs-hardening:
-    #!/usr/bin/pkexec /usr/bin/bash
+    #!/usr/bin/bash
     rpm-ostree kargs \
       --delete-if-present="init_on_alloc=1" \
       --delete-if-present="init_on_free=1" \
