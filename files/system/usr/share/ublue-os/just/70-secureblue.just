@@ -160,7 +160,7 @@ override-enable-module mod_name:
       sudo chmod 644 $MOD_FILE
       echo "Override created to enable $MOD_NAME module. Reboot to take effect."
     fi
-  
+
 # reset the override by `just override-enable-module`, i.e. disable the module again (requires restart)
 override-reset-module mod_name:
     #!/usr/bin/pkexec /usr/bin/bash
@@ -172,7 +172,6 @@ override-reset-module mod_name:
     else
       echo "No override found for $MOD_NAME module."
     fi
-
 
 # Setup USBGuard
 setup-usbguard:
@@ -192,7 +191,6 @@ setup-usbguard:
 # Rerun Yafti
 rerun-yafti:
     yafti -f /usr/share/ublue-os/firstboot/yafti.yml
-
 
 # Toggle anticheat support by changing ptrace scope (requires restart)
 toggle-anticheat-support:
@@ -620,7 +618,7 @@ audit-secureblue:
                 print_status "$remote_string" "$STATUS_SUCCESS"
             fi
         done <<< "$remotes"
-        
+
         declare -A flatpaks
         while read -r ref version; do
             flatpaks+=(["${ref}"]="${ref}//${version}")
@@ -671,4 +669,3 @@ audit-secureblue:
             done
         done
     fi
-
