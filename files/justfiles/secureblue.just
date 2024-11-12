@@ -670,7 +670,8 @@ audit-secureblue:
     fi
 
 # Debug dump pastebin for issue reporting
-debug-info: 
+
+debug-info:
     #!/usr/bin/bash
     rpm_ostree_status=$(echo -e "=== Rpm-Ostree Status ===\n"; rpm-ostree status --verbose)
     sysinfo=$(echo -e "\n"; fpaste --sysinfo --printonly)
@@ -681,4 +682,3 @@ debug-info:
     failed_services=$(echo -e "\n=== Failed Services ===\n"; systemctl list-units --state=failed)
     content="$rpm_ostree_status$sysinfo$flatpaks$audit_results$local_overrides$recent_events$failed_services"
     echo "$content" | fpaste --confirm --private=1
-
