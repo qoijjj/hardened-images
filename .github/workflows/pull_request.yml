@@ -1,0 +1,28 @@
+name: build-pullrequest
+on:
+  pull_request:
+    branches:
+      - live
+jobs:
+  bluebuild:
+    name: PR build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false # stop GH from cancelling all matrix builds if one fails
+      matrix:
+        recipe:
+          - general/recipe-silverblue-main-userns.yml
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Build secureblue
+        uses: blue-build/github-action@33ee8cc4011b0d47666ea7026d08bb5b941ac90c # v1.7.0
+        with:          
+          cli_version: v0.8.20
+          recipe: ${{ matrix.recipe }}
+          maximize_build_space: true
+          squash: true
