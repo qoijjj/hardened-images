@@ -79,6 +79,12 @@ remove-kargs-hardening:
       --delete-if-present="ia32_emulation=0"
     echo "Hardening kargs removed."
 
+# Ensure the signed image is being used
+switch-to-signed:
+    RPM_OSTREE_STATUS=$(rpm-ostree status --json --booted)
+    IMAGE_REF_NAME=$(echo $RPM_OSTREE_STATUS | jq -r '.deployments[0]."container-image-reference" // empty | split("/")[-1]')
+    rpm-ostree rebase ostree-image-signed:docker://ghcr.io/secureblue/$IMAGE_REF_NAME
+
 # Harden flatpaks by preloading hardened_malloc (highest supported hwcap)
 harden-flatpak:
     #!/usr/bin/bash
