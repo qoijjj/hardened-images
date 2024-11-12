@@ -88,7 +88,7 @@ Creating a dedicated wheel user and removing wheel from your primary user helps 
 
 1. ```run0 adduser admin```
 2. ```run0 usermod -aG wheel admin```
-3. ```run0 passwd admin```
+3. ```sudo passwd admin```
 4. ```reboot```
 
 > [!NOTE]
