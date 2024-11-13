@@ -960,7 +960,7 @@ dns-selector:
 DNSSEC=allow-downgrade
 DNSOverTLS=opportunistic
 EOF
-        systemctl restart systemd-resolved.service
+        systemctl restart systemd-resolved
         echo "Configuration file for resolved reset and service restarted."
         exit 0
     fi
@@ -993,7 +993,7 @@ DNSOverTLS=true
 $resolved_conf_dns_string
 EOF
 
-    systemctl restart systemd-resolved.service
+    systemctl restart systemd-resolved
 
     echo "Config file for resolved configured with selected resolver and service restarted."
 
