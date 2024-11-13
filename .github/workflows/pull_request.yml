@@ -22,6 +22,20 @@ jobs:
       - name: Maximize build space
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
 
+      - name: Determine Vars
+        id: build_vars
+        shell: bash
+        env:
+          RECIPE: ${{ inputs.recipe }}
+        run: |
+          RECIPE_PATH=""
+          if [ -f "./config/${RECIPE}" ]; then
+            RECIPE_PATH="./config/${RECIPE}"
+          else
+            RECIPE_PATH="./recipes/${RECIPE}"
+          fi
+          echo "recipe_path=${RECIPE_PATH}" >> ${GITHUB_OUTPUT}
+          
       - name: Install BlueBuild
         shell: bash
         env:
@@ -38,7 +52,7 @@ jobs:
         shell: bash
         working-directory: ${{ inputs.working_directory }}
         env:
-          RECIPE_PATH: ${{ matrix.recipe }}
+          RECIPE_PATH: ${{ steps.build_vars.outputs.recipe_path }}
           RUST_LOG_STYLE: always
           CLICOLOR_FORCE: '1'
         run: |
