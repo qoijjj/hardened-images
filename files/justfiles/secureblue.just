@@ -728,6 +728,14 @@ dns-selector:
     case "$resolver_selection" in
         0)
             echo "Resetting resolved to default state."
+            if [[ -f "$policy_file" ]]; then
+                rm $policy_file
+                echo "Removed browser policy."
+            fi
+            cp /usr$resolved_conf $resolved_conf
+            systemctl restart systemd-resolved
+            echo "Configuration file for resolved reset and service restarted."
+            exit 0
             ;;
         1)
             resolver_has_second_ip="y"
@@ -949,21 +957,6 @@ dns-selector:
             read -p "Please enter the second resolver's hostname (e.g. 'security.cloudflare-dns.com'): " resolver_hostname
             ;;
     esac
-
-    if [[ "$resolver_selection" == 0 ]]; then
-        if [[ -f "$policy_file" ]]; then
-            rm $policy_file
-            echo "Removed browser policy."
-        fi
-        cat << EOF > "$resolved_conf"
-[Resolve]
-DNSSEC=allow-downgrade
-DNSOverTLS=opportunistic
-EOF
-        systemctl restart systemd-resolved
-        echo "Configuration file for resolved reset and service restarted."
-        exit 0
-    fi
 
     read -p "Would you like the resolver to be set in the default browser (hardened-chromium) via management policy? [Y/n] " set_browser_policy
     if [[ "$set_browser_policy" == [Yy]* && "$resolver_selection" == 5 ]]; then
