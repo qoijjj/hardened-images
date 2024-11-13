@@ -4,7 +4,7 @@ on:
     branches:
       - live
     paths:
-      - '**.just'
+      - "**.just"
 jobs:
   bluebuild:
     name: Just lint
