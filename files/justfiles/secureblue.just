@@ -510,7 +510,7 @@ audit-secureblue:
             print_status "$SECUREDNS_TEST_STRING" "$STATUS_FAILURE"
         fi
     else
-        print_status "$SECUREDNS_TEST_STRING" "$STATUS_WARNING"
+        print_status "$SECUREDNS_TEST_STRING" "$STATUS_FAILURE"
     fi
 
     BASH_TEST_STRING="Ensuring bash environment lockdown"
