@@ -108,6 +108,13 @@ When using a non-wheel user, you can add the user to other groups if you want. F
 - use `adb` and `fastboot`: `plugdev`
 - use systemwide flatpaks: `flatpak`
 
+## Setup system DNS
+
+Interactively setup system DNS resolution for systemd-resolved (optionally also set the resolver for hardened-chromium via management policy):
+
+```
+ujust dns-selector
+```
 
 ## Bash environment lockdown
 
