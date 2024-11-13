@@ -993,11 +993,11 @@ dns-selector:
     fi
 
     cat << EOF > "$resolved_conf"
-[Resolve]
-DNSSEC=true
-DNSOverTLS=true
-$resolved_conf_dns_string
-EOF
+    [Resolve]
+    DNSSEC=true
+    DNSOverTLS=true
+    $resolved_conf_dns_string
+    EOF
 
     systemctl restart systemd-resolved
 
@@ -1007,10 +1007,10 @@ EOF
         exit 0
     fi
     cat << EOF > "$policy_file"
-{
-     "DnsOverHttpsMode": "secure",
-     "DnsOverHttpsTemplates": "$resolver_https_address"
-}
-EOF
+    {
+        "DnsOverHttpsMode": "secure",
+        "DnsOverHttpsTemplates": "$resolver_https_address"
+    }
+    EOF
 
     echo "Browser policy set with selected resolver."
