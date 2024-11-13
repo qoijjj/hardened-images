@@ -726,7 +726,7 @@ dns-selector:
     echo "    2) Mullvad - has content filtering, anycast"
     echo "    3) Cloudflare - very fast with some data collection, anycast"
     echo "    4) DNSForge - powerful filtering but can be very slow"
-    echo "    5) Custom Resolver - use a custom resolver (must support DoT/DoQ and DNSSEC, ideally also DoH)"
+    echo "    5) Custom Resolver - use a custom resolver (must support DoT/DoQ and DNSSEC, DoH support is also required to set a browser policy should that be desired)"
     while [[ "$valid_input" == "0" ]]; do
         read -p "Selection [0-5]: " resolver_selection
         if [[ "$resolver_selection" == [012345]* ]]; then
