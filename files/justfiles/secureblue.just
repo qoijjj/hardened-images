@@ -632,7 +632,7 @@ audit-secureblue:
             if hasPermission "$permissions" "shared" "network"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
                 warnings+=("> $f has network access!")
-                warnings+=(">To remove it use Flatseal or run:")
+                warnings+=("> To remove it use Flatseal or run:")
                 warnings+=("> 'flatpak override -u --unshare=network $f'")
             fi
             if hasPermission "$permissions" "sockets" "x11" && ! hasPermission "$permissions" "sockets" "fallback-x11"; then
