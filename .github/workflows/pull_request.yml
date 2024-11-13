@@ -55,6 +55,7 @@ jobs:
           RECIPE_PATH: ${{ steps.build_vars.outputs.recipe_path }}
           RUST_LOG_STYLE: always
           CLICOLOR_FORCE: '1'
+          GH_PR_EVENT_NUMBER: ${{ github.event.number }}
         run: |
           BUILD_OPTS="--build-driver podman --squash"
           bluebuild build -v ${BUILD_OPTS} ${RECIPE_PATH}
