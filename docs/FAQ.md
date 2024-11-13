@@ -28,12 +28,12 @@ Override `LD_PRELOAD` for that app. For flatpaks, this is as simple as removing 
 
 [USERNS](USERNS.md)
 
-#### How do I install `x`?
+#### How do I install software?
 
 1. Check if it's already installed using `rpm -qa | grep x`
-2. Check if there's a flatpak available at https://flathub.org
-3. Consider using distrobox or brew to install it
-4. Layer it using `rpm-ostree install`, as a last option
+2. For GUI packages, you can install the flatpak if available using the Software store or using `flatpak install`. A catalogue of flatpaks is available at https://flathub.org.
+3. For CLI packages, you can install from brew if available using `brew install`. A catalogue of brew packages is available at https://formulae.brew.sh.
+4. If a package isn't available via the other two options, or if a package requires greater system integration, `rpm-ostree install` can be used to layer rpms directly into your subsequent deployments.
 
 #### Another security project has a feature that's missing in secureblue, can you add it?
 
