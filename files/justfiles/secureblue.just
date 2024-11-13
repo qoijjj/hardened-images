@@ -500,6 +500,19 @@ audit-secureblue:
         print_status "$CHRONYD_TEST_STRING" "$STATUS_FAILURE"
     fi
 
+    SECUREDNS_TEST_STRING="Ensuring system DNS resolution is secure"
+    if systemctl is-active --quiet systemd-resolved; then
+        DNSSEC_STATUS="$(cat /etc/systemd/resolved.conf.d/10-securedns.conf | grep "DNSSEC")"
+        DOT_STATUS="$(cat /etc/systemd/resolved.conf.d/10-securedns.conf | grep "DNSOverTLS")"
+        if [[ "$DNSSEC_STATUS" == "DNSSEC=true" && "$DOT_STATUS" == "DNSOverTLS=true" ]]; then
+            print_status "$SECUREDNS_TEST_STRING" "$STATUS_SUCCESS"
+        else
+            print_status "$SECUREDNS_TEST_STRING" "$STATUS_FAILURE"
+        fi
+    else
+        print_status "$SECUREDNS_TEST_STRING" "$STATUS_WARNING"
+    fi
+
     BASH_TEST_STRING="Ensuring bash environment lockdown"
     BASH_ENV_FILES=(~/.bashrc ~/.bash_profile)
     all_locked=1
