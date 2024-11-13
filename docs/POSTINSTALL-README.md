@@ -116,6 +116,8 @@ Interactively setup system DNS resolution for systemd-resolved (optionally also 
 ujust dns-selector
 ```
 
+NOTE: If you intend to use a VPN, use the system default state (network provided resolver). This will ensure your system uses the VPN provided DNS resolver to prevent DNS leaks. ESPECIALLY avoid setting the browser DNS policy in this case.
+
 ## Bash environment lockdown
 
 To mitigate [LD_PRELOAD attacks](https://github.com/Aishou/wayland-keylogger), run:
