@@ -26,7 +26,7 @@ jobs:
         id: build_vars
         shell: bash
         env:
-          RECIPE: ${{ inputs.recipe }}
+          RECIPE: ${{ matrix.recipe }}
         run: |
           RECIPE_PATH=""
           if [ -f "./config/${RECIPE}" ]; then
