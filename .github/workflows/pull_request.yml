@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: read
     strategy:
-      fail-fast: false # stop GH from cancelling all matrix builds if one fails
+      fail-fast: false 
       matrix:
         recipe:
           - general/recipe-silverblue-main-userns.yml
