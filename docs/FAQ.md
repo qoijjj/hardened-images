@@ -16,6 +16,9 @@ During rpm-ostree operations, it's normal. Outside of that, make sure you follow
 
 [No](https://madaidans-insecurities.github.io/linux.html#firejail), use ``bubblejail`` if there's no flatpak available for an app.
 
+#### Help! My browser won't start!
+Try starting your browser from the commandline. If you get an error about the current profile already running on another device, this is an issue with chromium (therefore hardened-chromium and all other chromium-based browsers) which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/Singleton*`, replacing "chromium" with your browser's config folder if you use something other than hardened-chromium (not recommended)
+
 #### An app I use won't start due to a malloc issue. How do I fix it?
 
 Override `LD_PRELOAD` for that app. For flatpaks, this is as simple as removing the environment variable via Flatseal.
