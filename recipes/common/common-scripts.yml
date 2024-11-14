@@ -8,3 +8,4 @@ scripts:
   - removesuid.sh
   - disablegeoclue.sh
   - hardencontainerpolicy.sh
+  - enablesecurebluefirstrun.sh
