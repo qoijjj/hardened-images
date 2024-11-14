@@ -756,10 +756,10 @@ dns-selector:
             echo "Setting resolver Control D."
             echo "What content would you like to filter:"
             echo "    0) No filtering"
-            echo "    1) Malware filtering"
-            echo "    2) Previous plus ad and tracker filtering"
-            echo "    3) Previous plus social media filtering"
-            echo "    4) Previous plus adult content filtering (also enables safe search in major search engines)"
+            echo "    1) Malware: Malware filtering"
+            echo "    2) Standard: Malware + ad and tracker filtering"
+            echo "    3) Social: Standard + social media filtering"
+            echo "    4) Family: Social + adult content filtering (also enables safe search in major search engines)"
             while [[ "$valid_input" == "0" ]]; do
                 read -p "Selection [0-4]: " resolver_subselection
                 if [[ "$resolver_subselection" == [01234]* ]]; then
@@ -818,11 +818,11 @@ dns-selector:
             echo "Setting resolver Mullvad."
             echo "What content would you like to filter:"
             echo "    0) No filtering"
-            echo "    1) Ad and tracker filtering"
-            echo "    2) Previous plus malware filtering"
-            echo "    3) Previous plus social media filtering"
-            echo "    4) Previous plus gambling adult content filtering, without social media"
-            echo "    5) Previous plus social media filtering"
+            echo "    1) Standard: Ad and tracker filtering"
+            echo "    2) Base: Standard + malware filtering"
+            echo "    3) Extended: Base + social media filtering"
+            echo "    4) Family: Base + gambling adult content filtering"
+            echo "    5) All: Family + social media filtering"
             while [[ "$valid_input" == "0" ]]; do
                 read -p "Selection [0-5]: " resolver_subselection
                 if [[ "$resolver_subselection" == [012345]* ]]; then
@@ -872,8 +872,8 @@ dns-selector:
             echo "Setting resolver Cloudflare. (glory to the cloud)"
             echo "What content would you like to filter:"
             echo "    0) No filtering"
-            echo "    1) Malware filtering"
-            echo "    2) Previous plus adult content filtering"
+            echo "    1) Security: Malware filtering"
+            echo "    2) Family: Security + adult content filtering"
             while [[ "$valid_input" == "0" ]]; do
                 read -p "Selection [0-2]: " resolver_subselection
                 if [[ "$resolver_subselection" == [012]* ]]; then
@@ -913,9 +913,9 @@ dns-selector:
             resolver_supports_ipv6="y"
             echo "Setting resolver DNSForge."
             echo "What content would you like to filter:"
-            echo "    0) Ad, tracker, and malware filtering"
-            echo "    1) Previous plus adult content filtering"
-            echo "    2) Previous but stricter ad, tracker, and malware filtering"
+            echo "    0) Standard: Ad, tracker, and malware filtering"
+            echo "    1) Clean: Standard + adult content filtering"
+            echo "    2) Hard: Clean + stricter ad, tracker, and malware filtering"
             while [[ "$valid_input" == "0" ]]; do
                 read -p "Selection [0-2]: " resolver_subselection
                 if [[ "$resolver_subselection" == [012]* ]]; then
