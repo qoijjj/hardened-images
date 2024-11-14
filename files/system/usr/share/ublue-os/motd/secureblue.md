@@ -9,6 +9,6 @@ Your image is: `%IMAGE_REF_NAME%`
 %TIP%
 
 - [Report an issue](https://github.com/secureblue/secureblue/issues)
-- [FAQ](https://github.com/secureblue/secureblue/blob/live/FAQ.md)
-- [Donate](https://github.com/secureblue/secureblue/blob/live/DONATE.md)
+- [FAQ](https://github.com/secureblue/secureblue/blob/live/docs/FAQ.md)
+- [Donate](https://github.com/secureblue/secureblue/blob/live/docs/DONATE.md)
 - [Discord](https://discord.gg/qMTv5cKfbF)
