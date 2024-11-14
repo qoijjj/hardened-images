@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+[[ -d /home/linuxbrew/.linuxbrew && $- == *i* ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
 # Install required brew packages
 brew install fzf gum glow
 
-# Ensure we are on signed
-RPM_OSTREE_STATUS=$(rpm-ostree status --json --booted)
-IMAGE_REF_NAME=$(echo $RPM_OSTREE_STATUS | jq -r '.deployments[0]."container-image-reference" // empty | split("/")[-1]')
-rpm-ostree rebase ostree-image-signed:docker://ghcr.io/secureblue/$IMAGE_REF_NAME
