@@ -3,7 +3,7 @@ Your image is: `%IMAGE_REF_NAME%`
 
 | Command | Description |
 | ------- | ----------- |
-| `ujust`  | List all available commands |
+| `ujust --choose`  | List all available commands |
 | `ujust toggle-user-motd` | Toggle this banner on/off |
 
 %TIP%
