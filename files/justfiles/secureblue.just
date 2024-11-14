@@ -821,7 +821,7 @@ dns-selector:
             echo "    1) Standard: Ad and tracker filtering"
             echo "    2) Base: Standard + malware filtering"
             echo "    3) Extended: Base + social media filtering"
-            echo "    4) Family: Base + gambling adult content filtering"
+            echo "    4) Family: Base + gambling and adult content filtering"
             echo "    5) All: Family + social media filtering"
             while [[ "$valid_input" == "0" ]]; do
                 read -p "Selection [0-5]: " resolver_subselection
