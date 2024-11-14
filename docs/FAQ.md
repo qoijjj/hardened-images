@@ -135,7 +135,7 @@ mkdir -p ~/.config/environment.d && echo "GSK_RENDERER=gl" >> ~/.config/environm
 This should no longer be required as of F41: https://discussion.fedoraproject.org/t/gdk-message-error-71-protocol-error-dispatching-to-wayland-display/127927/42
 
 #### Why won't my browser start?
-Try starting your browser from the commandline. If you get an error about the current profile already running on another device, this is an issue with chromium (therefore hardened-chromium and all other chromium-based browsers) which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/Singleton*`, replacing "chromium" with your browser's config folder if you use something other than hardened-chromium (not recommended)
+Try starting your browser from the commandline. If you get an error about the current profile already running on another device, this is an issue with chromium (therefore hardened-chromium and all other chromium-based browsers) which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/Singleton*`
 
 #### Why won't `hardened-chromium` start on Nvidia?
 
