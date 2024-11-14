@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Source the Brew environment
-eval "\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 # Install required brew packages
 brew install fzf gum glow
 
