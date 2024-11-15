@@ -660,7 +660,12 @@ audit-secureblue:
             fi
             if ! hasPermission "$permissions" "LD_PRELOAD" .*"/libhardened_malloc.so"; then
                 status="$STATUS_FAILURE"
-                warnings+=("> $f is not using hardened_malloc!")
+                warnings+=("> $f is not requesting hardened_malloc!")
+            fi
+            if ! hasPermission "$permissions" "filesystems" "host-os:ro"; then
+                status="$STATUS_FAILURE"
+                warnings+=("> $f is missing host-os:ro permission,")
+                warnings+=("> which is needed to load hardened_malloc!")
             fi
             if [[ "$bluetooth_loaded" == "true" ]] && hasPermission "$permissions" "features" "bluetooth"; then
                 status="$STATUS_FAILURE"
@@ -671,8 +676,14 @@ audit-secureblue:
                 warnings+=("> $f has ptrace access!")
             fi
             if hasPermission "$permissions" "shared" "ipc"; then
-            status="$STATUS_FAILURE"
+                status="$STATUS_FAILURE"
                 warnings+=("> $f has inter-process communications access!")
+            fi
+            if hasPermission "$permissions" "devices" "all"; then
+                [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
+                warnings+=("> $f has device=all permission,")
+                warnings+=("> granting access to GPU, input devices, raw USB, and virtualization,")
+                warnings+=("> and introducing a vector for sandbox escapes!")
             fi
             flatpak_test_string="Auditing $f"
             print_status "$flatpak_test_string" "$status"
