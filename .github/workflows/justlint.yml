@@ -3,6 +3,8 @@ on:
   pull_request:
     branches:
       - live
+    paths:
+      - "**.just"
 jobs:
   bluebuild:
     name: Just lint
