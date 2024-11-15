@@ -704,6 +704,9 @@ audit-secureblue:
                 warnings+=("> and introducing a vector for sandbox escapes!")
                 warnings+=("> To remove it use Flatseal or run:")
                 warnings+=("> 'flatpak override -u --nodevice=all $f'")
+                warnings+=("> We recommend you enable device=dri to grant GPU access")
+                warnings+=("> To add GPU access use Flatseal or run:")
+                warnings+=("> 'flatpak override -u --device=dri $f'")
             fi
             flatpak_test_string="Auditing $f"
             print_status "$flatpak_test_string" "$status"
