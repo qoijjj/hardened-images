@@ -80,7 +80,7 @@ remove-kargs-hardening:
     echo "Hardening kargs removed."
 
 # Harden flatpaks by preloading hardened_malloc (highest supported hwcap)
-harden-flatpak:
+harden-flatpak ACTION="":
     #!/usr/bin/bash
     var1={{ ACTION }}
     flatpak="${var1:-}"
