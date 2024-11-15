@@ -4,5 +4,5 @@ set -euo pipefail
 [[ -d /home/linuxbrew/.linuxbrew && $- == *i* ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Install required brew packages
-brew install fzf gum glow
+/home/linuxbrew/.linuxbrew/bin/brew install fzf gum glow
 
