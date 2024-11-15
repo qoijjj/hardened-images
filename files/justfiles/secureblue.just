@@ -672,7 +672,7 @@ audit-secureblue:
                 status="$STATUS_FAILURE"
                 warnings+=("> $f is not requesting hardened_malloc!")
                 warnings+=("> To enable it run:")
-                warnings+=("> 'flatpak override -u --env=LD_PRELOAD=/var/run/host/usr/lib64/libhardened_malloc.so $f'")
+                warnings+=("> 'ujust harden-flatpak $f'")
             fi
             if ! hasPermission "$permissions" "filesystems" "host-os:ro"; then
                 status="$STATUS_FAILURE"
