@@ -134,6 +134,9 @@ mkdir -p ~/.config/environment.d && echo "GSK_RENDERER=gl" >> ~/.config/environm
 
 This should no longer be required as of F41: https://discussion.fedoraproject.org/t/gdk-message-error-71-protocol-error-dispatching-to-wayland-display/127927/42
 
+#### Why won't `hardened-chromium` start?
+Try starting `hardened-chromium` from the commandline by running `chromium-browser`. If you get an error about the current profile already running on another device, this is an issue with upstream chromium which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/Singleton*`
+
 #### Why won't `hardened-chromium` start on Nvidia?
 
 On some Nvidia machines, `hardened-chromium` defaults to the X11 backend. Since secureblue disables Xwayland by default, this means that you will need to run `ujust toggle-xwayland` and reboot, for `hardened-chromium` to work.
