@@ -1,6 +1,6 @@
 alias brew := install-brew
 
-# Install Homebrew (Brew is now included by default. This is included for utility.)
+# Install Homebrew (Brew is now included by default. This command remains included for utility.)
 install-brew:
     #!/usr/bin/env bash
     source /usr/lib/ujust/ujust.sh
