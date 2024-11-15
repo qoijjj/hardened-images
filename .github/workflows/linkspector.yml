@@ -15,3 +15,4 @@ jobs:
           filter_mode: nofilter
           reporter: github-pr-review
           fail_on_error: true
+          config_file: .github/workflows/config/linkspector.yml
