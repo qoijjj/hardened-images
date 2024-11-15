@@ -127,6 +127,7 @@ toggle-bluetooth-modules:
       sudo sh -c 'echo "install bluetooth /sbin/modprobe --ignore-install bluetooth" >> "$1"' _ "$BLUE_MOD_FILE"
       sudo sh -c 'echo "install btusb /sbin/modprobe --ignore-install btusb" >> "$1"' _ "$BLUE_MOD_FILE"
       sudo chmod 644 $BLUE_MOD_FILE
+      sudo restorecon $BLUE_MOD_FILE
       echo "Bluetooth kernel modules enabled. Reboot to take effect."
     fi
 
@@ -158,6 +159,7 @@ override-enable-module mod_name:
     else
       sudo sh -c 'echo "install $1 /sbin/modprobe --ignore-install $1" >> "$2"' _ "$MOD_NAME" "$MOD_FILE" 
       sudo chmod 644 $MOD_FILE
+      sudo restorecon $MOD_FILE
       echo "Override created to enable $MOD_NAME module. Reboot to take effect."
     fi
 
@@ -183,6 +185,7 @@ setup-usbguard:
         mkdir -p /etc/usbguard
         chmod 755 /etc/usbguard
         usbguard generate-policy > /etc/usbguard/rules.conf
+        restorecon -R /etc/usbguard
         systemctl enable --now usbguard.service
         usbguard add-user $1
     ' -- $ACTIVE_USERNAME
@@ -256,6 +259,7 @@ toggle-xwayland ACTION="prompt":
       else
         sudo cp /usr$GNOME_XWAYLAND_FILE $GNOME_XWAYLAND_FILE
         sudo chmod 644 $GNOME_XWAYLAND_FILE
+        sudo restorecon $GNOME_XWAYLAND_FILE
         echo "Xwayland for GNOME has been disabled."
       fi
     elif [ "$OPTION" == "KDE Plasma" ] || [ "${OPTION,,}" == "plasma" ]; then
@@ -266,6 +270,7 @@ toggle-xwayland ACTION="prompt":
       else
         sudo cp /usr$PLASMA_XWAYLAND_FILE $PLASMA_XWAYLAND_FILE
         sudo chmod 644 $PLASMA_XWAYLAND_FILE
+        sudo restorecon $PLASMA_XWAYLAND_FILE
         echo "Xwayland for KDE Plasma has been disabled."
       fi
     elif [ "$OPTION" == "Sway" ] || [ "${OPTION,,}" == "sway" ]; then
@@ -276,6 +281,7 @@ toggle-xwayland ACTION="prompt":
       else
         sudo cp /usr$SWAY_XWAYLAND_FILE $SWAY_XWAYLAND_FILE
         sudo chmod 644 $SWAY_XWAYLAND_FILE
+        sudo restorecon $SWAY_XWAYLAND_FILE
         echo "Xwayland for Sway has been disabled."
       fi
     fi
@@ -730,6 +736,8 @@ dns-selector:
     readonly policy_file="/etc/chromium/policies/managed/10-securedns-browser.json"
     mkdir -p /etc/systemd/resolved.conf.d/
     mkdir -p /etc/chromium/policies/managed/
+    restorecon -R /etc/systemd/resolved.conf.d
+    restorecon -R /etc/chromium/policies/managed
     # variables
     valid_input="0"
     resolver_selection=""
