@@ -10,14 +10,11 @@ https://github.com/secureblue/secureblue/issues/193#issuecomment-1953323680
 
 #### My fans are really loud, is this normal?
 
-During rpm-ostree operations, it's normal. Outside of that:
-
-- Make sure you followed the nvidia steps in the readme if you're using nvidia.
-- Make sure you're using an `asus` image if you're using asus.
+During rpm-ostree operations, it's normal. Outside of that, make sure you followed the nvidia steps in the readme if you're using nvidia.
 
 #### Should I use firejail?
 
-[No](https://madaidans-insecurities.github.io/linux.html#firejail), use ``bubblejail`` if there's no flatpak available for an app. 
+[No](https://madaidans-insecurities.github.io/linux.html#firejail), use ``bubblejail`` if there's no flatpak available for an app.
 
 #### An app I use won't start due to a malloc issue. How do I fix it?
 
@@ -31,27 +28,24 @@ Override `LD_PRELOAD` for that app. For flatpaks, this is as simple as removing 
 
 [USERNS](USERNS.md)
 
-#### How do I install `x`?
+#### How do I install software?
 
 1. Check if it's already installed using `rpm -qa | grep x`
-2. Check if there's a flatpak available at https://flathub.org
-3. Consider using distrobox or brew to install it
-4. Layer it using `rpm-ostree install`, as a last option
+2. For GUI packages, you can install the flatpak if available using the Software store or using `flatpak install`. A catalogue of flatpaks is available at https://flathub.org.
+3. For CLI packages, you can install from brew if available using `brew install`. A catalogue of brew packages is available at https://formulae.brew.sh.
+4. If a package isn't available via the other two options, or if a package requires greater system integration, `rpm-ostree install` can be used to layer rpms directly into your subsequent deployments.
 
 #### Another security project has a feature that's missing in secureblue, can you add it?
 
 First check if the README already has an equivalent or better feature. If it doesn't, open a new github issue.
 
-#### How do I install steam?
+#### How do I install Steam?
 
-To use steam you can either:
+To use Steam you can either:
 
 - Install the [flatpak](https://flathub.org/apps/com.valvesoftware.Steam)
-- Layer the rpm with:
-
-```
-rpm-ostree install steam
-```
+- Install Steam via the [bazzite-arch](https://github.com/ublue-os/bazzite-arch) distrobox
+- Layering Steam is not recommended
 
 #### Why are bluetooth kernel modules disabled? How do I enable them?
 
@@ -67,7 +61,7 @@ This is an issue with rpm-ostree image-based systems generally, and not specific
 
 #### Why can't I install new KDE themes?
 
-The functionality that provides this, called GHNS, is disabled by default due to the risk posed by the installation of potentially damaging or malicious scripts. This has caused [real damage](https://blog.davidedmundson.co.uk/blog/kde-store-content/). 
+The functionality that provides this, called GHNS, is disabled by default due to the risk posed by the installation of potentially damaging or malicious scripts. This has caused [real damage](https://blog.davidedmundson.co.uk/blog/kde-store-content/).
 
 If you still want to enable this functionality, run:
 
@@ -112,9 +106,9 @@ On the secureblue github page, click "Watch", and then "Custom", and select Rele
 
 #### Why don't my AppImages work?
 
-AppImages depend on fuse2, which is unmaintained and depends on a suid root binary. For this reason, fuse2 support is removed by default. It's strongly recommended that you find alternative mechanisms to install your applications (flatpak, distrobox, etc). If you can't find an alternative and still need fuse2, you can add it back by layering something that depends on it. 
+AppImages depend on fuse2, which is unmaintained and depends on a suid root binary. For this reason, fuse2 support is removed by default. It's strongly recommended that you find alternative mechanisms to install your applications (flatpak, distrobox, etc). If you can't find an alternative and still need fuse2, you can add it back by layering something that depends on it.
 
-For example: 
+For example:
 
 ```
 rpm-ostree install zfs-fuse
@@ -139,6 +133,9 @@ mkdir -p ~/.config/environment.d && echo "GSK_RENDERER=gl" >> ~/.config/environm
 ```
 
 This should no longer be required as of F41: https://discussion.fedoraproject.org/t/gdk-message-error-71-protocol-error-dispatching-to-wayland-display/127927/42
+
+#### Why won't `hardened-chromium` start?
+Try starting `hardened-chromium` from the commandline by running `chromium-browser`. If you get an error about the current profile already running on another device, this is an issue with upstream chromium which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/Singleton*`
 
 #### Why won't `hardened-chromium` start on Nvidia?
 

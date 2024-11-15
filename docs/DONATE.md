@@ -27,5 +27,3 @@ There are multiple options available for donation:
 <img src="https://github.com/secureblue/secureblue/assets/129108030/f7f241d9-e4bf-4858-81bd-242b2c268647" width=200 />
 
 `0x10289B51aEF109BBc07F68341F2Df8Ef60a5b618`
-
-

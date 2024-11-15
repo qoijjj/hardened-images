@@ -19,6 +19,8 @@ modules:
       scripts:
         - installrpmfusion.sh
     - from-file: common/common-packages.yml
+    - type: justfiles
+      validate: true
     - type: files
       files:
         - source: system/usr

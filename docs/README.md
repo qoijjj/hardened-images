@@ -32,12 +32,12 @@ The following are not in scope:
 - Remove SUID-root from [numerous binaries](https://github.com/secureblue/secureblue/blob/live/files/scripts/removesuid.sh) and replace functionality [using capabilities](https://github.com/secureblue/secureblue/blob/live/files/system/usr/bin/setcapsforunsuidbinaries)
 - Disable Xwayland by default (for GNOME, Plasma, and Sway images)
 - Mitigation of [LD_PRELOAD attacks](https://github.com/Aishou/wayland-keylogger) via `ujust toggle-bash-environment-lockdown`
-- Disabling coredumps 
+- Disabling coredumps
 - Disabling all ports and services for firewalld
 - Adds per-network MAC randomization
 - Blacklisting numerous unused kernel modules to reduce attack surface <sup>[details](https://github.com/secureblue/secureblue/blob/live/files/system/etc/modprobe.d/blacklist.conf)</sup>
 - Enabling only the [flathub-verified](https://flathub.org/apps/collection/verified/1) remote by default
-- Sets numerous hardening kernel arguments (Inspired by [Madaidan's Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html)) <sup>[details](https://github.com/secureblue/secureblue/blob/live/files/system/usr/share/ublue-os/just/70-secureblue.just.readme.md)</sup>
+- Sets numerous hardening kernel arguments (Inspired by [Madaidan's Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html)) <sup>[details](KARGS.md)</sup>
 - Reduce the sudo timeout to 1 minute
 - Require wheel user authentication via polkit for `rpm-ostree install` <sup>[why?](https://github.com/rohanssrao/silverblue-privesc)
 - Brute force protection by locking user accounts for 24 hours after 50 failed login attempts, hardened password encryption and password quality suggestions
@@ -63,7 +63,7 @@ For more info on BlueBuild, check out the [BlueBuild homepage](https://blue-buil
 
 # Customization
 
-If you want to add your own customizations on top of secureblue, you are advised strongly against forking. Instead, create a repo for your own image by using the [BlueBuild template](https://github.com/blue-build/template), then change your `base-image` to a secureblue image. This will allow you to apply your customizations to secureblue in a concise and maintainable way, without the need to constantly sync with upstream. 
+If you want to add your own customizations on top of secureblue, you are advised strongly against forking. Instead, create a repo for your own image by using the [BlueBuild template](https://github.com/blue-build/template), then change your `base-image` to a secureblue image. This will allow you to apply your customizations to secureblue in a concise and maintainable way, without the need to constantly sync with upstream.
 
 # FAQ
 
@@ -78,8 +78,8 @@ Sponsorship options are on the [Donate](DONATE.md) page. All donations are appre
 Have a look at [PREINSTALL-README](PREINSTALL-README.md) before proceeding.
 
 ## Rebasing (Recommended)
-> [!NOTE] 
-> If you don't already have a Fedora Atomic installation, use a Fedora Atomic ISO that matches your secureblue target image to install one. If you want to use a secureblue Silverblue image, start with the Fedora Silverblue ISO, Kinoite for Kinoite, Sericea (Sway Atomic) for Sericea and all the Wayblue images, and CoreOS for all the securecore images. 
+> [!NOTE]
+> If you don't already have a Fedora Atomic installation, use a Fedora Atomic ISO that matches your secureblue target image to install one. If you want to use a secureblue Silverblue image, start with the Fedora Silverblue ISO, Kinoite for Kinoite, Sericea (Sway Atomic) for Sericea and all the Wayblue images, and CoreOS for all the securecore images.
 
 To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, follow these steps<sup>‡</sup>:
 
@@ -104,7 +104,7 @@ To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedo
   ```
 <sup>‡</sup> Replace `IMAGE_NAME` with the *full name* of your preferred image from the [list below](README.md#images).
 
-## ISO 
+## ISO
 
 While it's recommended to use a Fedora Atomic ISO to install and then rebase that installation to secureblue, you can also generate an ISO and install that directly using [this script](generate_secureblue_iso.sh). Please note you should still follow the [post-install steps](README.md#post-install) when installing from a generated ISO:
 
@@ -201,8 +201,8 @@ While it's recommended to use a Fedora Atomic ISO to install and then rebase tha
 | `wayblue-sway-nvidia-open-userns-hardened` | Wayblue-Sway       | Yes, open drivers       | Yes                          |
 
 ## Server
-> [!NOTE] 
-> After you finish setting up your [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, you will need to disable `zincati.service` before rebasing to securecore. 
+> [!NOTE]
+> After you finish setting up your [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, you will need to disable `zincati.service` before rebasing to securecore.
 
 | Name                                      | Base      | Nvidia Support         | ZFS Support | Unpriv. Userns |
 |-------------------------------------------|-----------|-------------------------|-------------|------------------------------|
@@ -246,5 +246,5 @@ Follow the [contributing documentation](CONTRIBUTING.md#contributing), and make 
 
 For local Development [building locally](CONTRIBUTING.md#building-locally) is the recommended approach.
 
-## Community 
+## Community
 Opening issues is preferred, but [Discord](https://discord.gg/qMTv5cKfbF) is available as well.

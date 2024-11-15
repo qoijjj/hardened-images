@@ -1,14 +1,14 @@
 # Welcome to secureblue
 
 Thanks for taking the time to look into helping out!
-All contributions are appreciated! 
-Please refer to our [Code of Conduct](/CODE_OF_CONDUCT.md) while you're at it!
+All contributions are appreciated!
+Please refer to our [Code of Conduct](CODE_OF_CONDUCT.md) while you're at it!
 
 Feel free to report issues as you find them!
 
 # Contributing
 
-All types of contributions are encouraged and valued. See the [Table of Contents](#table-of-contents) for different ways to help and details about how this project handles them. Please make sure to read the relevant section before making your contribution. It will make it a lot easier for us maintainers and smooth out the experience for all involved. The community looks forward to your contributions. 
+All types of contributions are encouraged and valued. See the [Table of Contents](#table-of-contents) for different ways to help and details about how this project handles them. Please make sure to read the relevant section before making your contribution. It will make it a lot easier for us maintainers and smooth out the experience for all involved. The community looks forward to your contributions.
 
 > And if you like the project, but just don't have time to contribute, that's fine. There are other easy ways to support the project and show your appreciation, which we would also be very happy about:
 > - Star the project
@@ -32,7 +32,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 ## Code of Conduct
 
 This project and everyone participating in it is governed by the
-[CONTRIBUTING.md Code of Conduct](/CODE_OF_CONDUCT.md).
+[CONTRIBUTING.md Code of Conduct](CODE_OF_CONDUCT.md).
 By participating, you are expected to uphold this code. Please report unacceptable behavior
 to secureblueadmin@proton.me
 
@@ -42,7 +42,7 @@ to secureblueadmin@proton.me
 
 ## I Want To Contribute
 
-> ### Legal Notice 
+> ### Legal Notice
 > When contributing to this project, you must agree that you have authored 100% of the content, that you have the necessary rights to the content and that the content you contribute may be provided under the project license.
 
 ### Reporting Bugs
@@ -55,7 +55,7 @@ A good bug report should describe the issue in detail. Generally speaking:
 - Remember that these are unofficial builds, it's usually prudent to investigate an issue before reporting it here or in Fedora!
 - Collect information about the bug:
   - `rpm-ostree status -v` usually helps
-- Image and Version 
+- Image and Version
 - Possibly your input and the output
 - Can you reliably reproduce the issue? And can you also reproduce it with older versions?
 
@@ -72,13 +72,13 @@ A good pull request should be ready for review before it is even created. For al
 
 ### How to test incoming changes
 
-One of the nice things about the image model is that we can generate an entire OS image for every change we want to commit, so this makes testing way easier than in the past. You can rebase to it, see if it works, and then move back. This also means we can increase the amount of testers! 
+One of the nice things about the image model is that we can generate an entire OS image for every change we want to commit, so this makes testing way easier than in the past. You can rebase to it, see if it works, and then move back. This also means we can increase the amount of testers!
 
 We strive towards a model where proposed changes are more thoroughly reviewed and tested by the community. So here's how to do it. If you see a pull request that is opened up on an image you're following you can leave a review on how it's working for you.
 
 ## Building Locally
 
-The minimum tools required are git and a working machine with podman enabled and configured. 
+The minimum tools required are git and a working machine with podman enabled and configured.
 Building locally is much faster than building in GitHub and is a good way to move fast before pushing to a remote.
 
 ### Clone the repo
@@ -86,22 +86,22 @@ Building locally is much faster than building in GitHub and is a good way to mov
     git clone https://github.com/secureblue/secureblue.git
 
 ### Build the image
-    
-First make sure you can build an existing image: 
-    
+
+First make sure you can build an existing image:
+
     podman build . -t something
-    
+
 Then confirm your image built:
-    
-    podman image ls 
+
+    podman image ls
 
 TODO: Set up and push to your own local registry
-    
+
 ### Make your changes
 
-This usually involved editing the `Containerfile`. Most techniques for building containers apply here, if you're new to containers using the term "Dockerfile" in your searches usually shows more results when you're searching for information. 
+This usually involved editing the `Containerfile`. Most techniques for building containers apply here, if you're new to containers using the term "Dockerfile" in your searches usually shows more results when you're searching for information.
 
-Check out CoreOS's [layering examples](https://github.com/coreos/layering-examples) for more information on customizing. 
+Check out CoreOS's [layering examples](https://github.com/coreos/layering-examples) for more information on customizing.
 
 ## Styleguides
 ### Commit Messages

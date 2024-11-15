@@ -39,19 +39,23 @@ ujust enroll-secure-boot-key
 ## Set hardened kargs
 
 > [!NOTE]
-> Learn about the hardening applied by the kargs set by the command below [here](files/system/usr/share/ublue-os/just/70-secureblue.just.readme.md).
+> Learn about the hardening applied by the kargs set by the command below [here](KARGS.md).
 
 ```
 ujust set-kargs-hardening
 ```
-When you run the command, it will ask a couple questions for if you want to apply additional boot parameters, after that a set of hardened boot parameters will be applied, as well as the ones applied by your choices. (These kargs are *also* documented in the [link above](files/system/usr/share/ublue-os/just/70-secureblue.just.readme.md#additional-unstable-kargs))
+This command applies a fixed set of hardened boot parameters, and asks you whether or not the following kargs should *also* be set along with those (all of which are documented in the link above):
 
 ### 32-bit support
 If you answer `N`, or press enter without any input, support for 32-bit programs will be disabled on the next boot. If you run exclusively modern software, chances are likely you don't need this, so it's safe to disable for additional attack surface reduction.
 
 However, there are certain exceptions. A couple common usecases are if you need Steam, or run an ocassional application in Wine you'll likely want to keep support for 32-bit programs. If this is the case, answer `Y`.
+
+### Force disable simultaneous multithreading
+If you answer `Y` when prompted, simultaneous multithreading (SMT, often called Hyperthreading) will be disabled on all hardware, regardless of known vulnerabilities. This can cause a reduction in the performance of certain tasks in favor of security.
+
 ### Unstable hardening kargs
-If you answer `Y` when prompted, additional (unstable) hardening kargs will be applied, which can cause issues on some hardware, but stable on other hardware. 
+If you answer `Y` when prompted, unstable hardening kargs will be additionally applied, which can cause issues on some hardware, but are stable on other hardware.
 
 ## Setup USBGuard
 
@@ -104,6 +108,15 @@ When using a non-wheel user, you can add the user to other groups if you want. F
 - use `adb` and `fastboot`: `plugdev`
 - use systemwide flatpaks: `flatpak`
 
+## Setup system DNS
+
+Interactively setup system DNS resolution for systemd-resolved (optionally also set the resolver for hardened-chromium via management policy):
+
+```
+ujust dns-selector
+```
+
+NOTE: If you intend to use a VPN, use the system default state (network provided resolver). This will ensure your system uses the VPN provided DNS resolver to prevent DNS leaks. ESPECIALLY avoid setting the browser DNS policy in this case.
 
 ## Bash environment lockdown
 
@@ -122,7 +135,7 @@ To enable TPM2 LUKS unlocking, run:
 
 ```
 ujust setup-luks-tpm-unlock
-``` 
+```
 Type `Y` when asked if you want to set a PIN.
 
 ## Validation
