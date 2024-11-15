@@ -82,7 +82,8 @@ remove-kargs-hardening:
 # Harden flatpaks by preloading hardened_malloc (highest supported hwcap)
 harden-flatpak:
     #!/usr/bin/bash
-    flatpak="${1:-}"
+    var1={{ ACTION }}
+    flatpak="${var1:-}"
     flatpak override --user --filesystem=host-os:ro $flatpak
     uarches="$(/usr/lib64/ld-linux-x86-64.so.2 --help | grep '(supported, searched)' | cut -d'v' -f2)"
     bestuarch="${uarches:0:1}"
