@@ -32,5 +32,5 @@ else
     TIP='**For secureblue release notifications,** [subscribe:](https://github.com/secureblue/secureblue/blob/live/FAQ.md#release-notifications)'
 fi
 
-sed -e "s/%IMAGE_REF_NAME%/$IMAGE_REF_NAME/g" -e "s/%IMAGE_TAG%/$IMAGE_TAG/g" -e "s|%TIP%|$TIP|g" /usr/share/ublue-os/motd/secureblue.md | tr '~' '\n' | glow -s auto -w 80 -
+sed -e "s/%IMAGE_REF_NAME%/$IMAGE_REF_NAME/g" -e "s/%IMAGE_TAG%/$IMAGE_TAG/g" -e "s|%TIP%|$TIP|g" /usr/share/ublue-os/motd/secureblue.md | tr '~' '\n' | glow -s auto -w 78 -
 
