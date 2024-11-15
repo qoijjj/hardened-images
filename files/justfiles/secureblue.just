@@ -645,22 +645,32 @@ audit-secureblue:
             if hasPermission "$permissions" "shared" "network"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
                 warnings+=("> $f has network access!")
+                warnings+=("> To remove it use Flatseal or run:")
+                warnings+=("> 'flatpak override -u --unshare=network $f'")
             fi
             if hasPermission "$permissions" "sockets" "x11" && ! hasPermission "$permissions" "sockets" "fallback-x11"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f has x11 access!")
+                warnings+=("> To remove it use Flatseal or run:")
+                warnings+=("> 'flatpak override -u --nosocket=x11 $f'")
             fi
             if hasPermission "$permissions" "sockets" "session-bus"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
                 warnings+=("> $f has access to the D-Bus session bus!")
+                warnings+=("> To remove it use Flatseal or run:")
+                warnings+=("> 'flatpak override -u --nosocket=session-bus $f'")
             fi
             if hasPermission "$permissions" "sockets" "system-bus"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
                 warnings+=("> $f has access to the D-Bus system bus!")
+                warnings+=("> To remove it use Flatseal or run:")
+                warnings+=("> 'flatpak override -u --nosocket=system-bus $f'")
             fi
             if ! hasPermission "$permissions" "LD_PRELOAD" .*"/libhardened_malloc.so"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f is not requesting hardened_malloc!")
+                warnings+=("> To enable it run:")
+                warnings+=("> 'flatpak override -u --env=LD_PRELOAD=/var/run/host/usr/lib64/libhardened_malloc.so $f'")
             fi
             if ! hasPermission "$permissions" "filesystems" "host-os:ro"; then
                 status="$STATUS_FAILURE"
@@ -670,14 +680,20 @@ audit-secureblue:
             if [[ "$bluetooth_loaded" == "true" ]] && hasPermission "$permissions" "features" "bluetooth"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f has bluetooth access!")
+                warnings+=("> To remove it use Flatseal or run:")
+                warnings+=("> 'flatpak override -u --disallow=bluetooth $f'")
             fi
             if [[ "$ptrace_allowed" == "true" ]] && hasPermission "$permissions" "features" "devel"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f has ptrace access!")
+                warnings+=("> To remove it use Flatseal or run:")
+                warnings+=("> 'flatpak override -u --disallow=devel $f'")
             fi
             if hasPermission "$permissions" "shared" "ipc"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f has inter-process communications access!")
+                warnings+=("> To remove it use Flatseal or run:")
+                warnings+=("> 'flatpak override -u --unshare=ipc $f'")
             fi
             if hasPermission "$permissions" "devices" "all"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
