@@ -683,7 +683,6 @@ audit-secureblue:
     fi
 
 # Debug dump pastebin for issue reporting
-
 debug-info:
     #!/usr/bin/bash
     rpm_ostree_status=$(echo -e "=== Rpm-Ostree Status ===\n"; rpm-ostree status --verbose)
