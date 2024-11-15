@@ -98,7 +98,7 @@ For more technical detail, see [#268](https://github.com/secureblue/secureblue/i
 
 The DNSSEC setting we set in `/etc/systemd/resolved.conf.d/securedns.conf` causes known issues with network connectivity when secureblue is used in a VM. To fix it, comment out `DNSSEC=allow-downgrade` in that file and manually set a dns provider in network settings.
 
-#### How do I get notified of secureblue changes?
+#### Release notifications
 
 On the secureblue github page, click "Watch", and then "Custom", and select Releases like so:
 
