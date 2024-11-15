@@ -11,7 +11,7 @@ on:
 jobs:
   bluebuild:
     name: Build secureblue
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -89,21 +89,18 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Add yq (for reading recipe.yml)
-        uses: mikefarah/yq@v4.44.3
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Gather image data from recipe
         run: |
-          echo "IMAGE_NAME=$(yq '.name' ./recipes/${{ matrix.recipe }})" >> $GITHUB_ENV
-          echo "IMAGE_MAJOR_VERSION=$(yq '.image-version' ./recipes/${{ matrix.recipe }})" >> $GITHUB_ENV
-          BASE_IMAGE=$(yq '.base-image' ./recipes/${{ matrix.recipe }})
+          echo "IMAGE_NAME=$(grep '^name:' ./recipes/${{ matrix.recipe }} | sed 's/^name: //')" >> $GITHUB_ENV
+          echo "IMAGE_MAJOR_VERSION=$(grep '^image-version:' ./recipes/${{ matrix.recipe }} | sed 's/^image-version: //')" >> $GITHUB_ENV
+          BASE_IMAGE=$(grep '^base-image:' ./recipes/${{ matrix.recipe }} | sed 's/^base-image: //')
           echo "BASE_IMAGE_NAME=$(echo $BASE_IMAGE | sed 's/.*\/.*\///')" >> $GITHUB_ENV
 
       - name: Verify base image
         if: ${{ contains(env.IMAGE_NAME, 'wayblue') }}
-        uses: EyeCantCU/cosign-action/verify@v0.3.0
+        uses: EyeCantCU/cosign-action/verify@58722a084c82190b57863002d494c91eabbe9e79 # v0.3.0
         with:
           containers: ${{ env.BASE_IMAGE_NAME }}:${{ env.IMAGE_MAJOR_VERSION }}
           registry: 'ghcr.io/wayblueorg'
@@ -111,11 +108,7 @@ jobs:
 
       - name: Validate server kernel and kmod versions
         if: ${{ contains(env.IMAGE_NAME, 'securecore') }}
-        uses: Wandalen/wretry.action@v3.5.0
-        with:
-          attempt_limit: 3
-          attempt_delay: 15000
-          command: |
+        run: |
             set -eo pipefail
             linux=$(skopeo inspect docker://ghcr.io/ublue-os/coreos-testing-kernel:41 | jq -r '.Labels["ostree.linux"]')
             AKMODS_KERNEL_VERSION=$(skopeo inspect docker://ghcr.io/ublue-os/akmods:coreos-testing-41 | jq -r '.Labels["ostree.linux"]')
@@ -127,11 +120,7 @@ jobs:
 
       - name: Validate desktop kernel and kmod versions
         if: ${{ !contains(env.IMAGE_NAME, 'securecore') }}
-        uses: Wandalen/wretry.action@v3.5.0
-        with:
-          attempt_limit: 3
-          attempt_delay: 15000
-          command: |
+        run: |
             set -eo pipefail
             linux=$(skopeo inspect docker://ghcr.io/ublue-os/main-kernel:41 | jq -r '.Labels["ostree.linux"]')
             AKMODS_KERNEL_VERSION=$(skopeo inspect docker://ghcr.io/ublue-os/akmods:main-41 | jq -r '.Labels["ostree.linux"]')
@@ -143,7 +132,7 @@ jobs:
 
 
       - name: Build secureblue
-        uses: blue-build/github-action@v1.6.1
+        uses: blue-build/github-action@33ee8cc4011b0d47666ea7026d08bb5b941ac90c # v1.7.0
         with:          
           cli_version: v0.8.20
           recipe: ${{ matrix.recipe }}
