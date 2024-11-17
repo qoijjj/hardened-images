@@ -6,7 +6,6 @@ modules:
         - adw-gtk3-theme
         - gnome-epub-thumbnailer
         - gnome-tweaks
-        - sushi
       remove:
         - gnome-tour
         - yelp
