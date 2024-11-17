@@ -1,5 +1,4 @@
 # vim: set ft=make :
-
 # Copyright 2024 secureblue
 #
 # This file includes code from Universal Blue which is licensed under the Apache License, Version 2.0 (the "License");
@@ -120,8 +119,6 @@ debug-info:
     failed_services=$(echo -e "\n=== Failed Services ===\n"; systemctl list-units --state=failed)
     content="$rpm_ostree_status$sysinfo$flatpaks$audit_results$local_overrides$recent_events$failed_services"
     echo "$content" | fpaste --confirm --private=1
-
-
 
 # Rerun Yafti
 rerun-yafti:
