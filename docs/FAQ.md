@@ -28,12 +28,12 @@ Override `LD_PRELOAD` for that app. For flatpaks, this is as simple as removing 
 
 [USERNS](USERNS.md)
 
-#### How do I install `x`?
+#### How do I install software?
 
 1. Check if it's already installed using `rpm -qa | grep x`
-2. Check if there's a flatpak available at https://flathub.org
-3. Consider using distrobox or brew to install it
-4. Layer it using `rpm-ostree install`, as a last option
+2. For GUI packages, you can install the flatpak if available using the Software store or using `flatpak install`. A catalogue of flatpaks is available at https://flathub.org.
+3. For CLI packages, you can install from brew if available using `brew install`. A catalogue of brew packages is available at https://formulae.brew.sh.
+4. If a package isn't available via the other two options, or if a package requires greater system integration, `rpm-ostree install` can be used to layer rpms directly into your subsequent deployments.
 
 #### Another security project has a feature that's missing in secureblue, can you add it?
 
@@ -98,9 +98,9 @@ For more technical detail, see [#268](https://github.com/secureblue/secureblue/i
 
 The DNSSEC setting we set in `/etc/systemd/resolved.conf.d/securedns.conf` causes known issues with network connectivity when secureblue is used in a VM. To fix it, comment out `DNSSEC=allow-downgrade` in that file and manually set a dns provider in network settings.
 
-#### How do I get notified of secureblue changes?
+#### Releases
 
-On the secureblue github page, click "Watch", and then "Custom", and select Releases like so:
+To subscribe to release notifications, on the secureblue github page, click "Watch", and then "Custom", and select Releases like so:
 
 ![image](https://github.com/user-attachments/assets/38146394-f730-4b84-8bfa-4fbbf29350ff)
 
@@ -133,6 +133,9 @@ mkdir -p ~/.config/environment.d && echo "GSK_RENDERER=gl" >> ~/.config/environm
 ```
 
 This should no longer be required as of F41: https://discussion.fedoraproject.org/t/gdk-message-error-71-protocol-error-dispatching-to-wayland-display/127927/42
+
+#### Why won't `hardened-chromium` start?
+Try starting `hardened-chromium` from the commandline by running `chromium-browser`. If you get an error about the current profile already running on another device, this is an issue with upstream chromium which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/Singleton*`
 
 #### Why won't `hardened-chromium` start on Nvidia?
 

@@ -1,0 +1,14 @@
+[Unit]
+Description=Secureblue Cleanup
+After=local-fs.target network-online.target
+Requires=local-fs.target network-online.target
+Before=graphical-session-pre.target
+ConditionPathExists=!/var/lib/secureblue-cleanup.stamp
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/securebluecleanup
+ExecStartPost=/usr/bin/touch /var/lib/secureblue-cleanup.stamp
+
+[Install]
+WantedBy=multi-user.target

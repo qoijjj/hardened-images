@@ -8,8 +8,9 @@
 
 
 [![secureblue](https://github.com/secureblue/secureblue/actions/workflows/build.yml/badge.svg)](https://github.com/secureblue/secureblue/actions/workflows/build.yml)
+[![trivy](https://github.com/secureblue/secureblue/actions/workflows/trivy.yml/badge.svg)](https://github.com/secureblue/secureblue/actions/workflows/trivy.yml)
 [![Discord](https://img.shields.io/discord/1202086019298500629?style=flat&logo=discord&logoColor=white&label=Discord&labelColor=%235F6AE9&color=%2333CB56)](https://discord.com/invite/qMTv5cKfbF)
-[![Donate](https://img.shields.io/badge/Donate-blue.svg)](https://github.com/secureblue/secureblue/blob/live/DONATE.md)
+[![Donate](https://img.shields.io/badge/Donate-blue.svg)](DONATE.md)
 
 This repo uses [BlueBuild](https://blue-build.org/) to generate hardened operating system images, using [Fedora Atomic Desktop](https://fedoraproject.org/atomic-desktops/)'s [base images](https://pagure.io/workstation-ostree-config) as a starting point.
 
@@ -37,7 +38,7 @@ The following are not in scope:
 - Adds per-network MAC randomization
 - Blacklisting numerous unused kernel modules to reduce attack surface <sup>[details](https://github.com/secureblue/secureblue/blob/live/files/system/etc/modprobe.d/blacklist.conf)</sup>
 - Enabling only the [flathub-verified](https://flathub.org/apps/collection/verified/1) remote by default
-- Sets numerous hardening kernel arguments (Inspired by [Madaidan's Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html)) <sup>[details](https://github.com/secureblue/secureblue/blob/live/files/system/usr/share/ublue-os/just/70-secureblue.just.readme.md)</sup>
+- Sets numerous hardening kernel arguments (Inspired by [Madaidan's Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html)) <sup>[details](KARGS.md)</sup>
 - Reduce the sudo timeout to 1 minute
 - Require wheel user authentication via polkit for `rpm-ostree install` <sup>[why?](https://github.com/rohanssrao/silverblue-privesc)
 - Brute force protection by locking user accounts for 24 hours after 50 failed login attempts, hardened password encryption and password quality suggestions

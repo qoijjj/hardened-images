@@ -7,6 +7,5 @@ scripts:
   - createmissingdirectories.sh
   - removesuid.sh
   - disablegeoclue.sh
-  - addjustconfig.sh
-  - addbrewjustimport.sh
   - hardencontainerpolicy.sh
+  - enablesecurebluefirstrun.sh

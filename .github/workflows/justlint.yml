@@ -1,0 +1,28 @@
+name: just-lint
+on:
+  pull_request:
+    branches:
+      - live
+    paths:
+      - "**.just"
+jobs:
+  bluebuild:
+    name: Just lint
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false # stop GH from cancelling all matrix builds if one fails
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Lint justfiles
+        run: |          
+          sudo apt-get install pipx
+          pipx install rust-just
+          find "./files/justfiles" -type f -name "*.just" | while read -r file; do
+            echo "Checking syntax: $file"
+            just --unstable --fmt --check -f $file || { exit 1; }
+          done
