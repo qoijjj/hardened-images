@@ -1,5 +1,4 @@
 # vim: set ft=make :
-
 # Copyright 2024 Universal Blue
 #
 # This file includes code that is licensed under the Apache License, Version 2.0 (the "License");
