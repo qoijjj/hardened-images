@@ -28,4 +28,3 @@ setup-usbguard:
         usbguard add-user $1
     ' -- $ACTIVE_USERNAME
     systemctl enable --user --now usbguard-notifier.service
-
