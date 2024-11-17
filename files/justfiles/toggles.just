@@ -78,7 +78,6 @@ override-reset-module mod_name:
       echo "No override found for $MOD_NAME module."
     fi
 
-
 # Toggle anticheat support by changing ptrace scope (requires restart)
 toggle-anticheat-support:
     #!/usr/bin/pkexec /usr/bin/bash
