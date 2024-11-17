@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Prevent doublesourcing
 if [ -z "$USERMOTDSOURCED" ]; then
   USERMOTDSOURCED="Y"
