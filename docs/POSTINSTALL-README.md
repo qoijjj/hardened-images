@@ -4,7 +4,7 @@ After rebasing to secureblue, follow the following steps in order.
 
 ## Subscribe to secureblue release notifications
 
-[FAQ](FAQ.md#release-notifications)
+[FAQ](FAQ.md#releases)
 
 ## Nvidia
 If you are using an nvidia image, run this after installation:
