@@ -742,7 +742,7 @@ dns-selector:
     resolver_ipv6_address_2=""
     resolver_hostname=""
     resolver_https_address=""
-    set_browser_policy=""
+    set_browser_policy="y"
 
     echo "Below will be some options to set the DNS resolver for systemd-resolved."
     echo "All resolvers support DNS-over-TLS (DoT) or DNS-over-QUIC (DoQ), DNS-over-HTTPS (DoH), and DNSSEC."
