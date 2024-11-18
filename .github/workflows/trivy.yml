@@ -1,4 +1,4 @@
-name: trivy
+name: trivy-scan
 on:
   schedule:
     - cron: "00 8 * * *" # build at 8:00 UTC every day 
@@ -6,6 +6,8 @@ on:
   push:
     branches:
       - live
+    paths-ignore:
+      - "**.md"
 
   workflow_dispatch: # allow manually triggering builds
 jobs:
@@ -22,6 +24,7 @@ jobs:
         with:
           image-ref: 'ghcr.io/secureblue/silverblue-main-userns-hardened:latest'
           format: template
+          scanners: vuln,secret,misconfig
           template: '@/contrib/sarif.tpl'
           output: trivy-results.sarif
           timeout: 30m0s

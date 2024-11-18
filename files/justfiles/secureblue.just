@@ -79,18 +79,20 @@ remove-kargs-hardening:
       --delete-if-present="ia32_emulation=0"
     echo "Hardening kargs removed."
 
-# Harden flatpaks by preloading hardened_malloc (highest supported hwcap)
-harden-flatpak:
+# Harden flatpaks by preloading hardened_malloc (highest supported hwcap). When called with a flatpak application ID as an argument, applies the overrides to that application instead of globally.
+harden-flatpak FLATPAK="":
     #!/usr/bin/bash
-    flatpak override --user --filesystem=host-os:ro
+    var1={{ FLATPAK }}
+    flatpak_id="${var1:-}"
+    flatpak override --user --filesystem=host-os:ro $flatpak_id
     uarches="$(/usr/lib64/ld-linux-x86-64.so.2 --help | grep '(supported, searched)' | cut -d'v' -f2)"
     bestuarch="${uarches:0:1}"
     if [ -z "$bestuarch" ] ; then
-        echo "No microarchitecture support detected. Using default x86-64-v1 architecture."
-        flatpak override --user --env=LD_PRELOAD=/var/run/host/usr/lib64/libhardened_malloc.so
+        echo "No microarchitecture support detected. Using default x86-64-v1 architecture${flatpak_id:+" for $flatpak_id's malloc"}."
+        flatpak override --user --env=LD_PRELOAD=/var/run/host/usr/lib64/libhardened_malloc.so $flatpak_id
     else
-        echo "x86-64-v$bestuarch support detected. Using x86-64-v$bestuarch microarchitecture."
-        flatpak override --user --env=LD_PRELOAD=/var/run/host/usr/lib64/glibc-hwcaps/x86-64-v"$bestuarch"/libhardened_malloc.so
+        echo "x86-64-v$bestuarch support detected. Using x86-64-v$bestuarch microarchitecture${flatpak_id:+" for $flatpak_id's malloc"}."
+        flatpak override --user --env=LD_PRELOAD=/var/run/host/usr/lib64/glibc-hwcaps/x86-64-v"$bestuarch"/libhardened_malloc.so $flatpak_id
     fi
 
 # Toggle the cups service on/off
@@ -670,12 +672,14 @@ audit-secureblue:
                 status="$STATUS_FAILURE"
                 warnings+=("> $f is not requesting hardened_malloc!")
                 warnings+=("> To enable it run:")
-                warnings+=("> 'flatpak override -u --env=LD_PRELOAD=/var/run/host/usr/lib64/libhardened_malloc.so $f'")
+                warnings+=("> 'ujust harden-flatpak $f'")
             fi
             if ! hasPermission "$permissions" "filesystems" "host-os:ro"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f is missing host-os:ro permission,")
                 warnings+=("> which is needed to load hardened_malloc!")
+                warnings+=("> To add it use Flatseal or run:")
+                warnings+=("> 'flatpak override -u --filesystem=host-os:ro $f'")
             fi
             if [[ "$bluetooth_loaded" == "true" ]] && hasPermission "$permissions" "features" "bluetooth"; then
                 status="$STATUS_FAILURE"
@@ -700,6 +704,11 @@ audit-secureblue:
                 warnings+=("> $f has device=all permission,")
                 warnings+=("> granting access to GPU, input devices, raw USB, and virtualization,")
                 warnings+=("> and introducing a vector for sandbox escapes!")
+                warnings+=("> To remove it use Flatseal or run:")
+                warnings+=("> 'flatpak override -u --nodevice=all $f'")
+                warnings+=("> We recommend you enable device=dri to grant GPU access, if needed by the app")
+                warnings+=("> To add GPU access use Flatseal or run:")
+                warnings+=("> 'flatpak override -u --device=dri $f'")
             fi
             flatpak_test_string="Auditing $f"
             print_status "$flatpak_test_string" "$status"
@@ -983,10 +992,12 @@ dns-selector:
             echo "Please provide the technical information."
             read -p "Please enter the resolver's IP address (e.g. '1.1.1.2'): " resolver_ipv4_address
             read -p "Does the resolver provide two distinct IP addresses (e.g. '1.1.1.2' and '1.0.0.2')? [Y/n] " resolver_has_second_ip
+            resolver_has_second_ip=${resolver_has_second_ip:-y}
             if [[ "$resolver_has_second_ip" == [Yy]* ]]; then
                 read -p "Please enter the resolver's second IP address: " resolver_ipv4_address_2
             fi
             read -p "Does the resolver support IPv6 (e.g. '2606:4700:4700::1112')? [Y/n] " resolver_supports_ipv6
+            resolver_supports_ipv6=${resolver_supports_ipv6:-y}
             if [[ "$resolver_supports_ipv6" == [Yy]* ]]; then
                 read -p "Please enter the resolver's IPv6 address: " resolver_ipv6_address
                 if [[ "$resolver_has_second_ip" == [Yy]* ]]; then
