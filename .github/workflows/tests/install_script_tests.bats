@@ -10,5 +10,5 @@
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
   run bash "$INSTALL_SCRIPT"
   [ "$status" -eq 1 ]
-  [[ "$output" == *"Is this for a server?"* ]]
+  [[ "$output" == *"Welcome to the secureblue interactive installer"* ]]
 }
