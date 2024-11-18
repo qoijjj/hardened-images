@@ -985,10 +985,12 @@ dns-selector:
             echo "Please provide the technical information."
             read -p "Please enter the resolver's IP address (e.g. '1.1.1.2'): " resolver_ipv4_address
             read -p "Does the resolver provide two distinct IP addresses (e.g. '1.1.1.2' and '1.0.0.2')? [Y/n] " resolver_has_second_ip
+            resolver_has_second_ip=${resolver_has_second_ip:-y}
             if [[ "$resolver_has_second_ip" == [Yy]* ]]; then
                 read -p "Please enter the resolver's second IP address: " resolver_ipv4_address_2
             fi
             read -p "Does the resolver support IPv6 (e.g. '2606:4700:4700::1112')? [Y/n] " resolver_supports_ipv6
+            resolver_supports_ipv6=${resolver_supports_ipv6:-y}
             if [[ "$resolver_supports_ipv6" == [Yy]* ]]; then
                 read -p "Please enter the resolver's IPv6 address: " resolver_ipv6_address
                 if [[ "$resolver_has_second_ip" == [Yy]* ]]; then
