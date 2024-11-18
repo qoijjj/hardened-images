@@ -21,6 +21,20 @@
   [[ "$output" == *"silverblue-main-userns-hardened"* ]]
 }
 
+@test "Test command for silverblue-nvidia-userns-hardened" {
+  sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
+  run bash -c "echo -e 'no\n1\nyes\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"silverblue-nvidia-userns-hardened"* ]]
+}
+
+@test "Test command for silverblue-nvidia-open-userns-hardened" {
+  sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
+  run bash -c "echo -e 'no\n1\nyes\nyes\nyes\nno' | bash '$INSTALL_SCRIPT'"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"silverblue-nvidia-open-userns-hardened"* ]]
+}
+
 @test "Test command for kinoite-main-userns-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
   run bash -c "echo -e 'no\n2\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
@@ -70,11 +84,17 @@
   [[ "$output" == *"cosmic-main-userns-hardened"* ]]
 }
 
-
 @test "Test command for securecore-zfs-main-userns-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
   run bash -c "echo -e 'yes\nyes\nno\nyes\no' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
   [[ "$output" == *"securecore-zfs-main-userns-hardened"* ]]
+}
+
+@test "Test command for securecore-main-userns-hardened" {
+  sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
+  run bash -c "echo -e 'yes\nno\nno\nyes\no' | bash '$INSTALL_SCRIPT'"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"securecore-main-userns-hardened"* ]]
 }
 
