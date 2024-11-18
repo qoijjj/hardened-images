@@ -17,7 +17,14 @@
 
 @test "Test image name for silverblue-main-userns-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'no\n1\nno\nyes\no' | bash '$INSTALL_SCRIPT'"
+  run bash -c "echo -e 'no\n1\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"silverblue-main-userns-hardened"* ]]
+}
+
+@test "Test image name for secureblue-zfs-main-userns-hardened" {
+  sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
+  run bash -c "echo -e 'no\nyes\nno\nyes\no' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
   [[ "$output" == *"silverblue-main-userns-hardened"* ]]
 }
