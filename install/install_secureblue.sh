@@ -60,7 +60,7 @@ fi
 
 # Ask about Nvidia for all options
 read -p "Do you have Nvidia? (yes/No): " use_nvidia
-if is_yes "$user_nvidia"; then
+if is_yes "$use_nvidia"; then
     additional_params+="-nvidia" 
     read -p "Do you need Nvidia's open drivers? (yes/No): " use_open
     is_yes "$use_open" && additional_params+="-open"
