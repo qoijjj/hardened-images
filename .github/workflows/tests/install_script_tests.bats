@@ -7,7 +7,7 @@
 }
 
 @test "Script passes rpm-ostree check if it is installed" {
-  run alias rpm-ostree="fake_rpm_ostree_command" && bash "$INSTALL_SCRIPT"
+  sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
   [ "$status" -eq 1 ]
   [[ "$output" == *"Is this for a server?"* ]]
 }
