@@ -88,10 +88,10 @@ To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedo
 
 [![Download](https://shields.io/badge/-Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/secureblue/secureblue/releases/latest/download/install_secureblue.sh)
 
-Then, run it with:
+Then, run it from the directory you downloaded it to:
 
 ```
-bash ~/Downloads/install_secureblue.sh
+bash install_secureblue.sh
 ```
 
 
