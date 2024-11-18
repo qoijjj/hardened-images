@@ -6,6 +6,8 @@ on:
   push:
     branches:
       - live
+    paths-ignore:
+      - "**.md"
 
   workflow_dispatch: # allow manually triggering builds
 jobs:
