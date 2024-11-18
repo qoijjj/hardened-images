@@ -90,7 +90,9 @@ To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedo
 
 Then, run it with:
 
-```bash ~/Downloads/install_secureblue.sh```
+```
+bash ~/Downloads/install_secureblue.sh
+```
 
 
 # Post-install
