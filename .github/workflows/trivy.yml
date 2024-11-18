@@ -1,4 +1,4 @@
-name: trivy
+name: trivy-scan
 on:
   schedule:
     - cron: "00 8 * * *" # build at 8:00 UTC every day 
