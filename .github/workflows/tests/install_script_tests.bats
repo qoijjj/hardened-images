@@ -35,6 +35,13 @@
   [[ "$output" == *"silverblue-nvidia-open-userns-hardened"* ]]
 }
 
+@test "Test command for silverblue-nvidia-open-hardened" {
+  sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
+  run bash -c "echo -e 'no\n1\nyes\nyes\no\nno' | bash '$INSTALL_SCRIPT'"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"silverblue-nvidia-open-hardened"* ]]
+}
+
 @test "Test command for kinoite-main-userns-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
   run bash -c "echo -e 'no\n2\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
