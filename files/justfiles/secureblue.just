@@ -79,18 +79,20 @@ remove-kargs-hardening:
       --delete-if-present="ia32_emulation=0"
     echo "Hardening kargs removed."
 
-# Harden flatpaks by preloading hardened_malloc (highest supported hwcap)
-harden-flatpak:
+# Harden flatpaks by preloading hardened_malloc (highest supported hwcap). When called with a flatpak application ID as an argument, applies the overrides to that application instead of globally.
+harden-flatpak FLATPAK="":
     #!/usr/bin/bash
-    flatpak override --user --filesystem=host-os:ro
+    var1={{ FLATPAK }}
+    flatpak_id="${var1:-}"
+    flatpak override --user --filesystem=host-os:ro $flatpak_id
     uarches="$(/usr/lib64/ld-linux-x86-64.so.2 --help | grep '(supported, searched)' | cut -d'v' -f2)"
     bestuarch="${uarches:0:1}"
     if [ -z "$bestuarch" ] ; then
-        echo "No microarchitecture support detected. Using default x86-64-v1 architecture."
-        flatpak override --user --env=LD_PRELOAD=/var/run/host/usr/lib64/libhardened_malloc.so
+        echo "No microarchitecture support detected. Using default x86-64-v1 architecture${flatpak_id:+" for $flatpak_id's malloc"}."
+        flatpak override --user --env=LD_PRELOAD=/var/run/host/usr/lib64/libhardened_malloc.so $flatpak_id
     else
-        echo "x86-64-v$bestuarch support detected. Using x86-64-v$bestuarch microarchitecture."
-        flatpak override --user --env=LD_PRELOAD=/var/run/host/usr/lib64/glibc-hwcaps/x86-64-v"$bestuarch"/libhardened_malloc.so
+        echo "x86-64-v$bestuarch support detected. Using x86-64-v$bestuarch microarchitecture${flatpak_id:+" for $flatpak_id's malloc"}."
+        flatpak override --user --env=LD_PRELOAD=/var/run/host/usr/lib64/glibc-hwcaps/x86-64-v"$bestuarch"/libhardened_malloc.so $flatpak_id
     fi
 
 # Toggle the cups service on/off
@@ -670,7 +672,7 @@ audit-secureblue:
                 status="$STATUS_FAILURE"
                 warnings+=("> $f is not requesting hardened_malloc!")
                 warnings+=("> To enable it run:")
-                warnings+=("> 'flatpak override -u --env=LD_PRELOAD=/var/run/host/usr/lib64/libhardened_malloc.so $f'")
+                warnings+=("> 'ujust harden-flatpak $f'")
             fi
             if ! hasPermission "$permissions" "filesystems" "host-os:ro"; then
                 status="$STATUS_FAILURE"
