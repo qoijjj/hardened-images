@@ -4,7 +4,7 @@ After rebasing to secureblue, follow the following steps in order.
 
 ## Subscribe to secureblue release notifications
 
-[FAQ](FAQ.md#how-do-i-get-notified-of-secureblue-changes)
+[FAQ](FAQ.md#releases)
 
 ## Nvidia
 If you are using an nvidia image, run this after installation:
@@ -108,6 +108,15 @@ When using a non-wheel user, you can add the user to other groups if you want. F
 - use `adb` and `fastboot`: `plugdev`
 - use systemwide flatpaks: `flatpak`
 
+## Setup system DNS
+
+Interactively setup system DNS resolution for systemd-resolved (optionally also set the resolver for hardened-chromium via management policy):
+
+```
+ujust dns-selector
+```
+
+NOTE: If you intend to use a VPN, use the system default state (network provided resolver). This will ensure your system uses the VPN provided DNS resolver to prevent DNS leaks. ESPECIALLY avoid setting the browser DNS policy in this case.
 
 ## Bash environment lockdown
 

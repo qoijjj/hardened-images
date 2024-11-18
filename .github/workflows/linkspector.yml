@@ -1,0 +1,18 @@
+name: Linkspector
+on: 
+  pull_request:
+    branches:
+      - live
+jobs:
+  check-links:
+    name: Linkspector
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Run linkspector
+        uses: umbrelladocs/action-linkspector@fc382e19892aca958e189954912fe379a8df270c # v1.2.4
+        with:
+          filter_mode: nofilter
+          reporter: github-pr-review
+          fail_on_error: true
+          config_file: .github/workflows/config/linkspector.yml
