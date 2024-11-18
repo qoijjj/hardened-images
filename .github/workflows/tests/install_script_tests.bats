@@ -9,6 +9,6 @@
 @test "Script passes rpm-ostree check if it is installed" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
   run bash "$INSTALL_SCRIPT"
-  [ "$status" -eq 1 ]
+  [ "$status" -eq 0 ]
   [[ "$output" == *"Welcome to the secureblue interactive installer"* ]]
 }
