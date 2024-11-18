@@ -86,15 +86,11 @@ Have a look at [PREINSTALL-README](PREINSTALL-README.md) before proceeding.
 
 To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, download the script below:
 
-[![Download](https://shields.io/badge/-Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/secureblue/secureblue/releases/download/4.1.0/install_secureblue.sh)
+[![Download](https://shields.io/badge/-Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/secureblue/secureblue/releases/latest/download/install_secureblue.sh)
 
-Then, mark it as executable (Right click -> Properties):
+Then, run it with:
 
-![image](https://github.com/user-attachments/assets/7c2f203e-0772-417f-b1e0-2f5db5fd1343)
-
-Then, run it: (Right click -> Run as a Program):
-
-![image](https://github.com/user-attachments/assets/608a2ac9-d2a7-40d4-9b5e-8ccc4f2cb3d3)
+```bash ~/Downloads/install_secureblue.sh```
 
 
 # Post-install

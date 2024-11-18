@@ -27,8 +27,6 @@ desktop_image_types=(
 
 image_name=""
 additional_params=""
-variant=""
-
 
 echo "Welcome to the secureblue interactive installer!" 
 echo "After answering the following questions, your system will be rebased to secureblue." 
@@ -61,8 +59,14 @@ else
 fi
 
 # Ask about Nvidia for all options
-read -p "Do you use Nvidia? (yes/No): " use_nvidia
-is_yes "$use_nvidia" && additional_params+="-nvidia" || additional_params+="-main"
+read -p "Do you have Nvidia? (yes/No): " use_nvidia
+if is_yes "$user_nvidia"; then
+    additional_params+="-nvidia" 
+    read -p "Do you need Nvidia's open drivers? (yes/No): " use_open
+    is_yes "$use_open" && additional_params+="-open"
+else
+    additional_params+="-main"
+fi
 
 # Ask about user namespaces for all options
 read -p "Do you need unprivileged user namespaces? (yes/No): " use_userns

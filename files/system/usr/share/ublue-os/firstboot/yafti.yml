@@ -19,15 +19,6 @@ screens:
       actions:
         - run: ujust harden-flatpak
 
-  can-we-switch-to-signed:
-    source: yafti.screen.consent
-    values:
-      title: Signed image
-      description: |
-        This step will switch to the signed equivalent of your current image. 
-      actions:
-        - run: ujust switch-to-signed
-
   can-we-modify-your-flatpaks:
     source: yafti.screen.consent
     values:
