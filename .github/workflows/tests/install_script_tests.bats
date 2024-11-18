@@ -1,6 +1,7 @@
 #!/usr/bin/env bats
 
 @test "Script exits with error if rpm-ostree is not installed" {
+  sudo bash -c 'rm -f /usr/bin/rpm-ostree'
   run bash "$INSTALL_SCRIPT"
   [ "$status" -eq 1 ]
   [[ "$output" == *"This script only runs on Fedora Atomic"* ]]
