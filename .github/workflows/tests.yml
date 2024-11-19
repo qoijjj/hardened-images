@@ -8,7 +8,7 @@ on:
   workflow_dispatch: # allow manually triggering 
 jobs:
   run_tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Install Bats and run tests
     steps:
       - name: Checkout repo
@@ -17,6 +17,11 @@ jobs:
       - name: Setup Bats and bats libs
         id: setup-bats
         uses: bats-core/bats-action@2104b40bb7b6c2d5110b23a26b0bf265ab8027db #v3.0.0
+      
+      - name: Install just
+        run: |          
+          sudo apt-get install pipx
+          pipx install rust-just
 
       - name: Run tests
         shell: bash
