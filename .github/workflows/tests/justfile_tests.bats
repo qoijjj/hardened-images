@@ -9,11 +9,8 @@ setup() {
     sudo cp -f files/system/usr/share/ublue-os/justfile /usr/share/ublue-os/
     sudo cp -f files/justfiles/*.just /usr/share/bluebuild/justfiles/
     for filepath in /usr/share/bluebuild/justfiles/*.just; do
-        sudo echo "import '$filepath'" >> /usr/share/ublue-os/just/60-custom.just
+        sudo sh -c "echo \"import '$filepath'\" >> /usr/share/ublue-os/just/60-custom.just"
     done
-
-    sudo chmod 777 -R /usr/share/bluebuild/
-    sudo chmod 777 -R /usr/share/ublue-os/
 }
 
 @test "Ensure ujust is configured correctly for tests" {
