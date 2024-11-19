@@ -2,8 +2,11 @@
 
 setup() {
     sudo mkdir -p /usr/share/ublue-os/just/
-    sudo mkdir -p /usr/share/bluebuild/justfiles
+    sudo mkdir -p /usr/share/bluebuild/justfiles/
+    sudo mkdir -p /usr/lib/ujust/
 
+
+    sudo cp -f files/system/usr/lib/ujust /usr/lib/ujust
     sudo cp -f files/system/usr/bin/ujust /usr/bin/ujust
     sudo cp -f files/system/usr/share/ublue-os/just/60-custom.just /usr/share/ublue-os/just/
     sudo cp -f files/system/usr/share/ublue-os/justfile /usr/share/ublue-os/
@@ -16,4 +19,13 @@ setup() {
 @test "Ensure ujust is configured correctly for tests" {
     run ujust logs-this-boot
     [ "$status" -eq 0 ]
+}
+
+@test "Ensure motd toggle functions properly" {
+    run ujust toggle-user-motd
+    [ "$status" -eq 0 ]
+    [ -f "${HOME}/.config/no-show-user-motd" ]
+    run ujust toggle-user-motd
+    [ "$status" -eq 0 ]
+    [ ! -f "${HOME}/.config/no-show-user-motd" ]
 }
