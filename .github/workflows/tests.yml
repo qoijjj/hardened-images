@@ -27,4 +27,4 @@ jobs:
         env:
           INSTALL_SCRIPT: install/install_secureblue.sh
         run: |
-          bats -p -t -x --verbose-run .github/workflows/tests
+          bats -x --verbose-run .github/workflows/tests
