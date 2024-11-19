@@ -18,8 +18,8 @@ jobs:
         id: setup-bats
         uses: bats-core/bats-action@2104b40bb7b6c2d5110b23a26b0bf265ab8027db #v3.0.0
         with:
-          support-path: ${{ github.workspace }}/.github/workflows/tests/test-common/bats-support
-          assert-path: ${{ github.workspace }}/.github/workflows/tests/test-common/bats-assert
+          support-path: ${{ github.workspace }}/test-common/bats-support
+          assert-path: ${{ github.workspace }}/test-common/bats-assert
           detik-install: false
       
       - name: Install just
@@ -32,4 +32,4 @@ jobs:
           INSTALL_SCRIPT: ../../../install/install_secureblue.sh
         run: |
           cd .github/workflows/tests
-          export BATS_LIBS_BASEDIR=./test-common && bats --timing --trace --verbose-run -r .
+          export BATS_LIBS_BASEDIR=../../../test-common && bats --timing --trace --verbose-run -r .
