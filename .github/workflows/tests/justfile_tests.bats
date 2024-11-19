@@ -1,5 +1,3 @@
-#!/usr/bin/env bats
-
 setup() {
     sudo mkdir -p /usr/share/ublue-os/just/
     sudo mkdir -p /usr/share/bluebuild/justfiles/
