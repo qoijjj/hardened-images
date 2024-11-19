@@ -18,10 +18,10 @@ jobs:
         id: setup-bats
         uses: bats-core/bats-action@2104b40bb7b6c2d5110b23a26b0bf265ab8027db #v3.0.0
         with:
-           support-path: "${{ github.workspace }}/tests/bats-support"
-           assert-path: "${{ github.workspace }}/tests/bats-assert"
-           detik-path: "${{ github.workspace }}/tests/bats-detik"
-           file-path: "${{ github.workspace }}/tests/bats-file"
+           support-path: "${{ github.workspace }}/.bats/bats-support"
+           assert-path: "${{ github.workspace }}/.bats/bats-assert"
+           detik-path: "${{ github.workspace }}/.bats/bats-detik"
+           file-path: "${{ github.workspace }}/.bats/bats-file"
       
       - name: Install just
         run: |          
@@ -30,7 +30,7 @@ jobs:
       - name: Run tests
         shell: bash
         env:
-          INSTALL_SCRIPT: ../../../install/install_secureblue.sh
+          INSTALL_SCRIPT: install/install_secureblue.sh
+          BATS_LIB_PATH: "${{ github.workspace }}/.bats"
         run: |
-          cd .github/workflows/tests
-          export BATS_LIB_PATH=../../../tests && bats --timing --trace --verbose-run -r .
+          bats --timing --trace --verbose-run -r .github/workflows/tests
