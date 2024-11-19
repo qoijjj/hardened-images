@@ -31,5 +31,5 @@ jobs:
         env:
           INSTALL_SCRIPT: install/install_secureblue.sh
         run: |
-          cd .github/workflows/tests
-          export BATS_LIBS_BASEDIR=../test-common && bats --timing --trace --verbose-run -r .
+          cd 
+          export BATS_LIBS_BASEDIR=./.github/workflows/test-common && bats --timing --trace --verbose-run -r .github/workflows/tests
