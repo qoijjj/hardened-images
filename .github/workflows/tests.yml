@@ -32,4 +32,4 @@ jobs:
           INSTALL_SCRIPT: install/install_secureblue.sh
         run: |
           cd 
-          export BATS_LIBS_BASEDIR=./test-common && bats --timing --trace --verbose-run -r .github/workflows/tests
+          export BATS_LIBS_BASEDIR=./test-common && bats --timing --trace --verbose-run -r ../.github/workflows/tests
