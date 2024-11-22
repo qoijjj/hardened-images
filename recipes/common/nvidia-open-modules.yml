@@ -13,3 +13,4 @@ modules:
         - removeunusedrepos.sh
         - setearlyloading.sh
         - setdrmvariables.sh
+        - removesuid.sh
