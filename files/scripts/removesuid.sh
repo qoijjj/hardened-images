@@ -64,7 +64,4 @@ rm -f /usr/bin/pkexec
 rm -f /usr/bin/sudo
 rm -f /usr/bin/su
 
-rm -f /etc/dnf/protected.d/sudo.conf
-rpm-ostree override remove sudo sudo-python-plugin
-
 systemctl enable setcapsforunsuidbinaries.service
