@@ -6,8 +6,6 @@ set -oue pipefail
 # Reference: https://gist.github.com/ok-ryoko/1ff42a805d496cb1ca22e5cdf6ddefb0#usrbinchage
 
 whitelist=(
-    # https://gitlab.freedesktop.org/polkit/polkit/-/issues/168
-    "/usr/lib/polkit-1/polkit-agent-helper-1"
     # https://github.com/secureblue/secureblue/issues/119
     "/usr/lib64/libhardened_malloc-light.so"
     "/usr/lib64/libhardened_malloc-pkey.so"
@@ -25,8 +23,6 @@ whitelist=(
     "/usr/lib64/glibc-hwcaps/x86-64-v4/libhardened_malloc-light.so"
     "/usr/lib64/glibc-hwcaps/x86-64-v4/libhardened_malloc-pkey.so"
     "/usr/lib64/glibc-hwcaps/x86-64-v4/libhardened_malloc.so"
-    # Requires cap_setgid,cap_setuid if the SUID bit is removed
-    "/usr/sbin/grub2-set-bootflag"
 )
 
 
