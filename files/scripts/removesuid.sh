@@ -59,12 +59,12 @@ find /usr -type f -perm /2000 |
     done
 
 
-rm /usr/bin/chsh
-rm /usr/bin/pkexec
-rm /usr/bin/sudo
-rm /usr/bin/su
+rm -f /usr/bin/chsh
+rm -f /usr/bin/pkexec
+rm -f /usr/bin/sudo
+rm -f /usr/bin/su
 
-rm /etc/dnf/protected.d/sudo.conf
+rm -f /etc/dnf/protected.d/sudo.conf
 rpm-ostree override remove sudo sudo-python-plugin
 
 systemctl enable setcapsforunsuidbinaries.service
