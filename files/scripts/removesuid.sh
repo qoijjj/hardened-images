@@ -12,6 +12,22 @@ whitelist=(
     "/usr/bin/bwrap"
     # Required for chrome suid sandbox on no-userns images
     "/usr/lib64/chromium-browser/chrome-sandbox"
+    # https://github.com/secureblue/secureblue/issues/119
+    "/usr/lib64/libhardened_malloc-light.so"
+    "/usr/lib64/libhardened_malloc-pkey.so"
+    "/usr/lib64/libhardened_malloc.so"
+    "/usr/lib64/glibc-hwcaps/x86-64/libhardened_malloc-light.so"
+    "/usr/lib64/glibc-hwcaps/x86-64/libhardened_malloc-pkey.so"
+    "/usr/lib64/glibc-hwcaps/x86-64/libhardened_malloc.so"
+    "/usr/lib64/glibc-hwcaps/x86-64-v2/libhardened_malloc-light.so"
+    "/usr/lib64/glibc-hwcaps/x86-64-v2/libhardened_malloc-pkey.so"
+    "/usr/lib64/glibc-hwcaps/x86-64-v2/libhardened_malloc.so"
+    "/usr/lib64/glibc-hwcaps/x86-64-v3/libhardened_malloc-light.so"
+    "/usr/lib64/glibc-hwcaps/x86-64-v3/libhardened_malloc-pkey.so"
+    "/usr/lib64/glibc-hwcaps/x86-64-v3/libhardened_malloc.so"
+    "/usr/lib64/glibc-hwcaps/x86-64-v4/libhardened_malloc-light.so"
+    "/usr/lib64/glibc-hwcaps/x86-64-v4/libhardened_malloc-pkey.so"
+    "/usr/lib64/glibc-hwcaps/x86-64-v4/libhardened_malloc.so"
 )
 
 
