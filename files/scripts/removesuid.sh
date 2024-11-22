@@ -13,6 +13,7 @@ whitelist=(
     # Required for chrome suid sandbox on no-userns images
     "/usr/lib64/chromium-browser/chrome-sandbox"
     # https://github.com/secureblue/secureblue/issues/119
+    # Required for hardened_malloc to be used by suid-root processes
     "/usr/lib64/libhardened_malloc-light.so"
     "/usr/lib64/libhardened_malloc-pkey.so"
     "/usr/lib64/libhardened_malloc.so"
