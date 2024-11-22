@@ -8,6 +8,10 @@ set -oue pipefail
 whitelist=(
     # https://gitlab.freedesktop.org/polkit/polkit/-/issues/168
     "/usr/lib/polkit-1/polkit-agent-helper-1"
+    # Needed for flatpak on no-userns images
+    "/usr/bin/bwrap"
+    # Required for chrome suid sandbox on no-userns images
+    "/usr/lib64/chromium-browser/chrome-sandbox"
 )
 
 

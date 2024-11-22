@@ -22,9 +22,9 @@ jobs:
         recipe:
           # # non-userns
           # # general
-          # - general/recipe-silverblue-main.yml
-          # - general/recipe-silverblue-nvidia.yml
-          # - general/recipe-silverblue-nvidia-open.yml
+          - general/recipe-silverblue-main.yml
+          - general/recipe-silverblue-nvidia.yml
+          - general/recipe-silverblue-nvidia-open.yml
           # - general/recipe-kinoite-main.yml
           # - general/recipe-kinoite-nvidia.yml
           # - general/recipe-kinoite-nvidia-open.yml
@@ -56,8 +56,8 @@ jobs:
           # userns
           # general
           - general/recipe-silverblue-main-userns.yml
-          # - general/recipe-silverblue-nvidia-userns.yml
-          # - general/recipe-silverblue-nvidia-open-userns.yml
+          - general/recipe-silverblue-nvidia-userns.yml
+          - general/recipe-silverblue-nvidia-open-userns.yml
           # - general/recipe-kinoite-main-userns.yml
           # - general/recipe-kinoite-nvidia-userns.yml
           # - general/recipe-kinoite-nvidia-open-userns.yml
