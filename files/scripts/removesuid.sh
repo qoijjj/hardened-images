@@ -62,6 +62,7 @@ find /usr -type f -perm /2000 |
 rm /usr/bin/chsh
 rm /usr/bin/pkexec
 rm /usr/bin/sudo
+rm /usr/bin/su
 
 rm /etc/dnf/protected.d/sudo.conf
 rpm-ostree override remove sudo sudo-python-plugin
