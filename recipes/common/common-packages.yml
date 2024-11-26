@@ -10,6 +10,3 @@ install:
   - patch
   - p7zip
   - unrar
-remove:
-  - sudo
-  - sudo-python-plugin
