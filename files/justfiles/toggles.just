@@ -1,6 +1,6 @@
 # Toggle the cups service on/off
 toggle-cups:
-    #!/usr/bin/pkexec /usr/bin/bash
+    #! /bin/run0 /bin/bash
     if systemctl is-enabled --quiet cups; then
       firewall-cmd --permanent --remove-port=631/tcp
       firewall-cmd --permanent --remove-port=631/udp 
@@ -23,21 +23,21 @@ toggle-cups:
 
 # Toggle bluetooth kernel modules on/off (requires reboot)
 toggle-bluetooth-modules:
-    #!/usr/bin/pkexec /usr/bin/bash
+    #! /bin/run0 /bin/bash
     BLUE_MOD_FILE="/etc/modprobe.d/99-bluetooth.conf"
     if test -e $BLUE_MOD_FILE; then
-      sudo rm -f $BLUE_MOD_FILE
+      rm -f $BLUE_MOD_FILE
       echo "Bluetooth kernel modules disabled. Reboot to take effect."
     else
-      sudo sh -c 'echo "install bluetooth /sbin/modprobe --ignore-install bluetooth" >> "$1"' _ "$BLUE_MOD_FILE"
-      sudo sh -c 'echo "install btusb /sbin/modprobe --ignore-install btusb" >> "$1"' _ "$BLUE_MOD_FILE"
-      sudo chmod 644 $BLUE_MOD_FILE
+      sh -c 'echo "install bluetooth /sbin/modprobe --ignore-install bluetooth" >> "$1"' _ "$BLUE_MOD_FILE"
+      sh -c 'echo "install btusb /sbin/modprobe --ignore-install btusb" >> "$1"' _ "$BLUE_MOD_FILE"
+      chmod 644 $BLUE_MOD_FILE
       echo "Bluetooth kernel modules enabled. Reboot to take effect."
     fi
 
 # Toggle GHNS (KDE Get New Stuff)
 toggle-ghns:
-    #!/usr/bin/pkexec /usr/bin/bash
+    #! /bin/run0 /bin/bash
     KDE_GLOBALS_FILE="/etc/xdg/kdeglobals"
     if test -e $KDE_GLOBALS_FILE; then
       if grep -q "ghns=false" "$KDE_GLOBALS_FILE"; then
@@ -55,24 +55,24 @@ toggle-ghns:
 
 # enable a kernel module that is disabled by modprobe.d (requires restart)
 override-enable-module mod_name:
-    #!/usr/bin/pkexec /usr/bin/bash
+    #! /bin/run0 /bin/bash
     MOD_NAME="{{ mod_name }}"
     MOD_FILE="/etc/modprobe.d/99-$MOD_NAME.conf"
     if test -e $MOD_FILE; then
       echo "$MOD_NAME module is already enabled."
     else
-      sudo sh -c 'echo "install $1 /sbin/modprobe --ignore-install $1" >> "$2"' _ "$MOD_NAME" "$MOD_FILE" 
-      sudo chmod 644 $MOD_FILE
+      sh -c 'echo "install $1 /sbin/modprobe --ignore-install $1" >> "$2"' _ "$MOD_NAME" "$MOD_FILE" 
+      chmod 644 $MOD_FILE
       echo "Override created to enable $MOD_NAME module. Reboot to take effect."
     fi
 
 # reset the override by `just override-enable-module`, i.e. disable the module again (requires restart)
 override-reset-module mod_name:
-    #!/usr/bin/pkexec /usr/bin/bash
+    #! /bin/run0 /bin/bash
     MOD_NAME="{{ mod_name }}"
     MOD_FILE="/etc/modprobe.d/99-$MOD_NAME.conf"
     if test -e $MOD_FILE; then
-      sudo rm -f $MOD_FILE
+      rm -f $MOD_FILE
       echo "The override for $MOD_NAME module has been reset. Reboot to take effect."
     else
       echo "No override found for $MOD_NAME module."
@@ -80,7 +80,7 @@ override-reset-module mod_name:
 
 # Toggle anticheat support by changing ptrace scope (requires restart)
 toggle-anticheat-support:
-    #!/usr/bin/pkexec /usr/bin/bash
+    #! /bin/run0 /bin/bash
     SYSCTL_HARDENING_FILE="/etc/sysctl.d/hardening.conf"
     if grep -q "kernel.yama.ptrace_scope = 3" "$SYSCTL_HARDENING_FILE"; then
         sed -i "s/kernel.yama.ptrace_scope = 3/kernel.yama.ptrace_scope = 1/" "$SYSCTL_HARDENING_FILE"
@@ -94,20 +94,20 @@ toggle-anticheat-support:
 
 # Toggle Gnome JIT JavaScript for GJS and WebkitGTK (requires session restart)
 toggle-gnome-jit-js:
-    #!/usr/bin/pkexec /usr/bin/bash
+    #! /bin/run0 /bin/bash
     ENV_FILE="/etc/profile.d/gnome-disable-jit.sh"
     if test -e $ENV_FILE; then
-        sudo rm -f $ENV_FILE
+        rm -f $ENV_FILE
         echo "JIT JavaScript for Gnome and WebkitGTK has been enabled."
     else
-        sudo cp /usr$ENV_FILE $ENV_FILE
-        sudo chmod 644 $ENV_FILE
+        cp /usr$ENV_FILE $ENV_FILE
+        chmod 644 $ENV_FILE
         echo "JIT JavaScript for Gnome and WebkitGTK has been disabled."
     fi
 
 # Toggle support for using GNOME user extensions
 toggle-gnome-extensions:
-    #!/usr/bin/bash
+    #! /bin/run0 /bin/bash
     GSETTING="$(gsettings get org.gnome.shell allow-extension-installation)"
     if [[ "${GSETTING}" == "false" ]]; then
       gsettings set org.gnome.shell allow-extension-installation true
@@ -119,7 +119,7 @@ toggle-gnome-extensions:
 
 # Toggle Xwayland support
 toggle-xwayland ACTION="prompt":
-    #!/usr/bin/pkexec /usr/bin/bash
+    #! /bin/run0 /bin/bash
     source /usr/lib/ujust/ujust.sh
     OPTION={{ ACTION }}
     if [ "$OPTION" == "prompt" ]; then
@@ -137,31 +137,31 @@ toggle-xwayland ACTION="prompt":
     if [ "$OPTION" == "GNOME" ] || [ "${OPTION,,}" == "gnome" ]; then
       GNOME_XWAYLAND_FILE="/etc/systemd/user/org.gnome.Shell@wayland.service.d/override.conf"
       if test -e $GNOME_XWAYLAND_FILE; then
-        sudo rm -f $GNOME_XWAYLAND_FILE
+        rm -f $GNOME_XWAYLAND_FILE
         echo "Xwayland for GNOME has been enabled."
       else
-        sudo cp /usr$GNOME_XWAYLAND_FILE $GNOME_XWAYLAND_FILE
-        sudo chmod 644 $GNOME_XWAYLAND_FILE
+        cp /usr$GNOME_XWAYLAND_FILE $GNOME_XWAYLAND_FILE
+        chmod 644 $GNOME_XWAYLAND_FILE
         echo "Xwayland for GNOME has been disabled."
       fi
     elif [ "$OPTION" == "KDE Plasma" ] || [ "${OPTION,,}" == "plasma" ]; then
       PLASMA_XWAYLAND_FILE="/etc/systemd/user/plasma-kwin_wayland.service.d/override.conf"
       if test -e $PLASMA_XWAYLAND_FILE; then
-        sudo rm -f $PLASMA_XWAYLAND_FILE
+        rm -f $PLASMA_XWAYLAND_FILE
         echo "Xwayland for KDE Plasma has been enabled."
       else
-        sudo cp /usr$PLASMA_XWAYLAND_FILE $PLASMA_XWAYLAND_FILE
-        sudo chmod 644 $PLASMA_XWAYLAND_FILE
+        cp /usr$PLASMA_XWAYLAND_FILE $PLASMA_XWAYLAND_FILE
+        chmod 644 $PLASMA_XWAYLAND_FILE
         echo "Xwayland for KDE Plasma has been disabled."
       fi
     elif [ "$OPTION" == "Sway" ] || [ "${OPTION,,}" == "sway" ]; then
       SWAY_XWAYLAND_FILE="/etc/sway/config.d/99-noxwayland.conf"
       if test -e $SWAY_XWAYLAND_FILE; then
-        sudo rm -f $SWAY_XWAYLAND_FILE
+        rm -f $SWAY_XWAYLAND_FILE
         echo "Xwayland for Sway has been enabled."
       else
-        sudo cp /usr$SWAY_XWAYLAND_FILE $SWAY_XWAYLAND_FILE
-        sudo chmod 644 $SWAY_XWAYLAND_FILE
+        cp /usr$SWAY_XWAYLAND_FILE $SWAY_XWAYLAND_FILE
+        chmod 644 $SWAY_XWAYLAND_FILE
         echo "Xwayland for Sway has been disabled."
       fi
     fi
@@ -179,7 +179,7 @@ toggle-bash-environment-lockdown:
       if lsattr "${BASH_ENV_FILES[0]}" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
         echo "Bash environment '(${BASH_ENV_FILES[@]})' is locked down. Unlocking it."
         for file in "${BASH_ENV_FILES[@]}"; do
-            pkexec chattr -i "$file"
+            run0 chattr -i "$file"
         done
       else
         echo "Bash environment '(${BASH_ENV_FILES[@]})' is unlocked. Locking it."
@@ -215,7 +215,7 @@ toggle-bash-environment-lockdown:
         " > ~/.bash_profile
 
         for file in "${BASH_ENV_FILES[@]}"; do
-            pkexec chattr +i "$file"
+            run0 chattr +i "$file"
         done
       fi
     else
