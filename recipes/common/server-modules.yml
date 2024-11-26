@@ -28,3 +28,4 @@ modules:
       scripts:
         - excludepcsc.sh
         - setserverdefaultzone.sh
+        - removesuid.sh
