@@ -34,6 +34,9 @@ remove:
   - open-vm-tools-desktop
   - virtualbox-guest-additions
   - passim
+  - sudo
+  - sudo-python-plugin
+
 
 
 

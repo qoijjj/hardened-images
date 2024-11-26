@@ -68,9 +68,8 @@ Setting a GRUB password helps protect the device from physical tampering and mit
 
 To set a GRUB password, use the following command. By default, the password will be required when modifying boot entries, but not when booting existing entries.
 
-```
-sudo grub2-setpassword
-```
+1. `run0`
+2. `grub2-setpassword`
 
 GRUB will prompt for a username and password. The default username is root.
 

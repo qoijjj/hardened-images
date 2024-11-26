@@ -19,7 +19,7 @@ setup-usbguard:
     #!/usr/bin/bash
     echo "Notice: This will generate a policy based on your existing connected USB devices."
     ACTIVE_USERNAME=$(whoami)
-    pkexec sh -c '
+    run0 sh -c '
         mkdir -p /var/log/usbguard
         mkdir -p /etc/usbguard
         chmod 755 /etc/usbguard
