@@ -17,8 +17,6 @@ modules:
         - mod_dnssd
         - gnome-remote-desktop
         - libvncserver
-        - malcontent-ui-libs
-        - malcontent-control
         - fedora-chromium-config-gnome
         - gnome-software-rpm-ostree
         - totem-video-thumbnailer
