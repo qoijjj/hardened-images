@@ -11,6 +11,7 @@ The recommended method to install secureblue is to rebase from an upstream silve
 - Select the option to encrypt the drive you're installing to.
 - Use a [strong password](https://security.harvard.edu/use-strong-passwords) when prompted.
 - Leave the root account disabled.
+- Select wheel group membership for your user
 
 ### BIOS Hardening
 - Ensure secureboot is enabled.
