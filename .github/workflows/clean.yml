@@ -1,0 +1,24 @@
+name: Cleanup Old Images
+on:
+  schedule:
+    - cron: "15 0 * * 0" # 0015 UTC on Sundays
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+
+jobs:
+  delete-older-than-90:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Delete Images Older Than 90 Days
+        uses: dataaxiom/ghcr-cleanup-action@v1.0.13
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          packages: silverblue-main-userns-hardened,silverblue-main-hardened,kinoite-main-userns-hardened,kinoite-main-hardened,silverblue-nvidia-hardened,silverblue-nvidia-userns-hardened,kinoite-nvidia-hardened,kinoite-nvidia-userns-hardened,sericea-nvidia-hardened,sericea-main-hardened,sericea-nvidia-userns-hardened,sericea-main-userns-hardened,wayblue-wayfire-nvidia-hardened,wayblue-wayfire-nvidia-userns-hardened,wayblue-wayfire-main-hardened,wayblue-wayfire-main-userns-hardened,wayblue-hyprland-main-userns-hardened,wayblue-hyprland-main-hardened,wayblue-hyprland-nvidia-userns-hardened,wayblue-river-nvidia-hardened,wayblue-hyprland-nvidia-hardened,wayblue-river-main-hardened,wayblue-river-main-userns-hardened,wayblue-river-nvidia-userns-hardened,wayblue-sway-main-hardened,wayblue-sway-main-userns-hardened,wayblue-sway-nvidia-userns-hardened,wayblue-sway-nvidia-hardened,cosmic-main-userns-hardened,cosmic-nvidia-userns-hardened,cosmic-main-hardened,silverblue-nvidia-open-userns-hardened,cosmic-nvidia-hardened,securecore-main-userns-hardened,securecore-main-hardened,silverblue-nvidia-open-hardened,securecore-zfs-main-hardened,securecore-zfs-main-userns-hardened,cosmic-nvidia-open-userns-hardened,securecore-zfs-nvidia-userns-hardened,securecore-nvidia-userns-hardened,securecore-zfs-nvidia-hardened,securecore-nvidia-hardened,wayblue-hyprland-nvidia-open-userns-hardened,kinoite-nvidia-open-userns-hardened,kinoite-nvidia-open-hardened,sericea-nvidia-open-userns-hardened,wayblue-river-nvidia-open-userns-hardened,wayblue-river-nvidia-open-hardened,wayblue-hyprland-nvidia-open-hardened,wayblue-wayfire-nvidia-open-userns-hardened,wayblue-wayfire-nvidia-open-hardened,wayblue-sway-nvidia-open-userns-hardened,wayblue-sway-nvidia-open-hardened,securecore-nvidia-open-userns-hardened,securecore-zfs-nvidia-open-userns-hardened,securecore-zfs-nvidia-open-hardened,securecore-nvidia-open-hardened,cosmic-nvidia-open-hardened,sericea-nvidia-open-hardened
+          older-than: 90 days
+          delete-orphaned-images: true
+          keep-n-tagged: 7
+          keep-n-untagged: 7
