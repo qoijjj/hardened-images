@@ -33,4 +33,4 @@ Rebase to: The equivalent image without `-laptop`. For example, for `kinoite-mai
 
 Rationale: Upstream recommendations have changed and improvements are being made to PPD. Additionally, nvidia optimus configuration has moved to upstream `just` commands.
 
-Rebase to: The equivalent image without `-laptop`. For example, for `kinoite-nvidia-laptop-hardened`, rebase to `kinoite-nvidia-hardened` and reboot. Then, run `ujust configure-nvidia-optimus`.
+Rebase to: The equivalent image without `-laptop`. For example, for `kinoite-nvidia-laptop-hardened`, rebase to `kinoite-nvidia-hardened` and reboot.

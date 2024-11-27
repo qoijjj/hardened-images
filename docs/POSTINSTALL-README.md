@@ -19,13 +19,6 @@ rpm-ostree kargs \
     --append-if-missing=initcall_blacklist=simpledrm_platform_driver_init
 ```
 
-### Nvidia optimus laptop
-If you are using an nvidia image on an optimus laptop, run this after installation:
-
-```
-ujust configure-nvidia-optimus
-```
-
 ## Enroll secureboot key
 
 ```
