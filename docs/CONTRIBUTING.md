@@ -113,20 +113,18 @@ Secureblue already includes `bluebuild` but running locally requires customizing
 
 #### Policy.json configuration
 
-On secureblue only pre-configured signed images are allowed to be pulled. Four repos need to be configured:
+On secureblue only pre-configured signed images are allowed to be pulled. Following repos need to be configured:
 
 - docker.io/mikefarah/yq `Unsigned`
-- gcr.io/projectsigstore/cosign `Signed`
 - ghcr.io/blue-build/cli `Unsigned`
 - ghcr.io/blue-build/modules `Unsigned`
+- quay.io/fedora-ostree-desktops `Unsigned`
 
-Add rules using podman CLI:
+Copy `/etc/containers/policy.json` to `~/.config/containers/policy.json` and then add rules using podman CLI:
 
 - `podman image trust set --type accept docker.io/mikefarah/yq`
-- `podman image trust set --type accept gcr.io/projectsigstore/cosign`
 - `podman image trust set --type accept ghcr.io/blue-build`
-
-TODO: Optionally enable sigstore checks for `gcr.io/projectsigstore/cosign` by adding to your `~/.config/containers/policy.json`
+- `podman image trust set --type accept quay.io/fedora-ostree-desktops`
 
 ### Clone the repo
 
