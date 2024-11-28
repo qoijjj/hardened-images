@@ -6,6 +6,15 @@
   ],
   "transports": {
       "docker": {
+        "gcr.io/projectsigstore": [
+            {
+                "type": "sigstoreSigned",
+                "keyPath": "/etc/pki/containers/cosign-release.pub",
+                "signedIdentity": {
+                    "type": "matchRepository"
+                }
+            }
+        ],
         "ghcr.io/wayblueorg": [
           {
             "type": "sigstoreSigned",
