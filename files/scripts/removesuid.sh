@@ -6,6 +6,8 @@ set -oue pipefail
 # Reference: https://gist.github.com/ok-ryoko/1ff42a805d496cb1ca22e5cdf6ddefb0#usrbinchage
 
 whitelist=(
+    # Required for nvidia closed driver images
+    "/usr/bin/nvidia-modprobe"
     # https://gitlab.freedesktop.org/polkit/polkit/-/issues/168
     "/usr/lib/polkit-1/polkit-agent-helper-1"
     # Needed for flatpak on no-userns images
