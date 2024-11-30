@@ -39,7 +39,6 @@ The following are not in scope:
 - Blacklisting numerous unused kernel modules to reduce attack surface <sup>[details](https://github.com/secureblue/secureblue/blob/live/files/system/etc/modprobe.d/blacklist.conf)</sup>
 - Enabling only the [flathub-verified](https://flathub.org/apps/collection/verified/1) remote by default
 - Sets numerous hardening kernel arguments (Inspired by [Madaidan's Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html)) <sup>[details](KARGS.md)</sup>
-- Reduce the sudo timeout to 1 minute
 - Require wheel user authentication via polkit for `rpm-ostree install` <sup>[why?](https://github.com/rohanssrao/silverblue-privesc)
 - Brute force protection by locking user accounts for 24 hours after 50 failed login attempts, hardened password encryption and password quality suggestions
 - Installing usbguard and providing `ujust` commands to automatically configure it
