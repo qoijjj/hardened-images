@@ -102,6 +102,47 @@ This usually involved editing the `Containerfile`. Most techniques for building 
 
 Check out CoreOS's [layering examples](https://github.com/coreos/layering-examples) for more information on customizing.
 
+## Using Blue-build locally
+### Requirements
+
+- [Blue-build CLI](https://github.com/blue-build/cli)
+- Podman
+- git
+
+Secureblue already includes `bluebuild` but running locally requires customizing policy.json for your user to allow pulling a few unsigned images.
+
+#### Policy.json configuration
+
+On secureblue only pre-configured signed images are allowed to be pulled. Following repos need to be configured:
+
+- docker.io/mikefarah/yq `Unsigned`
+- ghcr.io/blue-build/cli `Unsigned`
+- ghcr.io/blue-build/modules `Unsigned`
+- quay.io/fedora-ostree-desktops `Unsigned`
+
+Copy `/etc/containers/policy.json` to `~/.config/containers/policy.json` and then add rules using podman CLI:
+
+- `podman image trust set --type accept docker.io/mikefarah/yq`
+- `podman image trust set --type accept ghcr.io/blue-build`
+- `podman image trust set --type accept quay.io/fedora-ostree-desktops`
+
+### Clone the repo
+
+    git clone https://github.com/secureblue/secureblue.git
+
+### Making changes
+
+Configuration is stored in `recipes` folder in form of YAML files. Other files to be added to the image are stored in `files`. `common` holds pluggable modules to add to your custom image. `general` and `securecore` hold configs for the desktop and server images, respectively. Documentation for modules can be found [here](https://blue-build.org/learn/getting-started/).
+
+### Building
+
+- Open terminal in root of your cloned repo.
+- Run `bluebuild build recipes/<your custom recipe>.yml`
+
+### Testing
+
+Run the image using `podman run` to get a root shell in your newly built image and verify the changes made prior.
+
 ## Styleguides
 ### Commit Messages
 
