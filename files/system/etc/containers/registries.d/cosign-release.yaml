@@ -1,0 +1,3 @@
+docker:
+  gcr.io/projectsigstore:
+    use-sigstore-attachments: true
