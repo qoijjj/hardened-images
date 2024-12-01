@@ -8,3 +8,7 @@ echo '
 omit_dracutmodules+=" zfs "
 
 ' > /usr/lib/dracut/dracut.conf.d/99-omit-zfs.conf
+
+
+KERNEL_VERSION=$(skopeo inspect docker://ghcr.io/ublue-os/akmods:coreos-testing-41 | jq -r '.Labels["ostree.linux"]')
+depmod -a -v ${KERNEL_VERSION}

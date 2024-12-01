@@ -6,4 +6,4 @@ modules:
       - RUN rpm-ostree install pv /tmp/rpms/kmods/zfs/*.rpm /tmp/rpms/kmods/zfs/other/zfs-dracut-*.rpm
     - type: script
       scripts:
-        - excludezfs.sh
+        - zfspostinstall.sh
