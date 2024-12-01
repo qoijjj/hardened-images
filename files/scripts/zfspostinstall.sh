@@ -11,4 +11,4 @@ omit_dracutmodules+=" zfs "
 
 
 KERNEL_VERSION=$(skopeo inspect docker://ghcr.io/ublue-os/akmods:coreos-testing-41 | jq -r '.Labels["ostree.linux"]')
-depmod -a -v ${KERNEL_VERSION}
+depmod -a -v "${KERNEL_VERSION}"
