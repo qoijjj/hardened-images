@@ -221,3 +221,19 @@ toggle-bash-environment-lockdown:
     else
       echo "Capitalization matters when you type \"YES I UNDERSTAND\""
     fi
+
+# Toggle unconfined domain userns creation
+toggle-unconfined-domain-userns-creation:
+    #!/bin/bash
+    USERNS_SE_BOOL="unconfined_domain_can_create_user_namespace"
+    CURRENT_STATE=$(getsebool "$USERNS_SE_BOOL" | awk '{print $3}')
+    if [ "$CURRENT_STATE" == "on" ]; then
+        run0 setsebool -P "$USERNS_SE_BOOL" off
+        echo "Unconfined userns creation disabled."
+    elif [ "$CURRENT_STATE" == "off" ]; then
+        run0 setsebool -P "$USERNS_SE_BOOL" on
+        echo "Unconfined userns creation enabled."
+    else
+        echo "Invalid state for $USERNS_SE_BOOL: $CURRENT_STATE"
+        exit 2
+    fi
