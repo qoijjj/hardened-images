@@ -134,7 +134,7 @@ jobs:
       - name: Build secureblue
         uses: blue-build/github-action@33ee8cc4011b0d47666ea7026d08bb5b941ac90c # v1.7.0
         with:          
-          cli_version: v0.8.20
+          cli_version: v0.8.25
           recipe: ${{ matrix.recipe }}
           cosign_private_key: ${{ secrets.SIGNING_SECRET }}
           registry_token: ${{ github.token }}
