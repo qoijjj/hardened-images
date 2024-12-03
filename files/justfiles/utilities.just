@@ -144,4 +144,5 @@ toolbox-assemble CONTAINER="prompt" ACTION="create" FILE="/etc/toolbox/toolbox.i
 
 # Run a non-flatpak application with standard memory allocator (needs an argument!)
 with-standard-malloc APP:
+    #!/usr/bin/bash
     bwrap --dev-bind / / --ro-bind /dev/null /etc/ld.so.preload {{ APP }}
