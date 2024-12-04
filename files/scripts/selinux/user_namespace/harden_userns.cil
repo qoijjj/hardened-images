@@ -1,0 +1,1 @@
+(deny unconfined_domain_type self (user_namespace (create)))

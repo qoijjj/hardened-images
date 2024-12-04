@@ -3,8 +3,13 @@
 # Tell build process to exit if there are any errors.
 set -oue pipefail
 
-curl -Lo /etc/yum.repos.d/secureblue-selinux-policy-fedora-41.repo https://copr.fedorainfracloud.org/coprs/secureblue/selinux-policy/repo/fedora-41/secureblue-selinux-policy-fedora-41.repo
-sed -i '0,/enabled=1/{s/enabled=1/enabled=1\npriority=90/}' /etc/yum.repos.d/secureblue-selinux-policy-fedora-41.repo
+cd ./selinux/chromium
+bash chromium.sh
+cd ../..
 
-rpm-ostree refresh-md
-rpm-ostree upgrade
+cd ./selinux/flatpakfull
+bash flatpakfull.sh
+cd ../..
+
+semodule -i ./user_namespace/grant_userns.cil
+semodule -i ./user_namespace/harden_userns.cil

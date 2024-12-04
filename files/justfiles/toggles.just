@@ -225,15 +225,14 @@ toggle-bash-environment-lockdown:
 # Toggle unconfined domain userns creation
 toggle-unconfined-domain-userns-creation:
     #!/bin/bash
-    USERNS_SE_BOOL="unconfined_domain_can_create_user_namespace"
-    CURRENT_STATE=$(getsebool "$USERNS_SE_BOOL" | awk '{print $3}')
-    if [ "$CURRENT_STATE" == "on" ]; then
-        run0 setsebool -P "$USERNS_SE_BOOL" off
-        echo "Unconfined userns creation disabled."
-    elif [ "$CURRENT_STATE" == "off" ]; then
-        run0 setsebool -P "$USERNS_SE_BOOL" on
-        echo "Unconfined userns creation enabled."
+    MODULE_NAME="harden_userns"
+
+    if semodule -l | grep -q "$MODULE_NAME"; then
+        echo "Module $MODULE_NAME is currently enabled. Disabling it..."
+        run0 semodule --disable="$MODULE_NAME"
+        echo "Module $MODULE_NAME disabled."
     else
-        echo "Invalid state for $USERNS_SE_BOOL: $CURRENT_STATE"
-        exit 2
+        echo "Module $MODULE_NAME is not enabled. Enabling it..."
+        run0 semodule --enable="$MODULE_NAME"
+        echo "Module $MODULE_NAME enabled."
     fi
