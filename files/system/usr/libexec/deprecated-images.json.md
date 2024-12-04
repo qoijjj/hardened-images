@@ -2,6 +2,12 @@
 
 The following image types have been deprecated:
 
+## userns
+
+Rationale: See https://github.com/secureblue/secureblue/releases/tag/v4.3.0
+
+Rebase to: The equivalent image removing `userns`. For example, for `kinoite-nvidia-userns-hardened`, rebase to `kinoite-nvidia-hardened`. Then, run `ujust toggle-unconfined-domain-userns-creation` to re-enable unconfined user namespaces, if needed.
+
 ## bluefin/aurora
 
 Rationale: See https://github.com/secureblue/secureblue/releases/tag/v3.2.2
