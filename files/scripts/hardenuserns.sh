@@ -3,6 +3,8 @@
 # Tell build process to exit if there are any errors.
 set -oue pipefail
 
+rpm-ostree install selinux-policy-devel
+
 cd ./selinux/chromium
 bash chromium.sh
 cd ../..
