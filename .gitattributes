@@ -20,10 +20,10 @@
 *.cil linguist-language=CIL
 
 *.te linguist-detectable=true
-*.te linguist-language=SELinux Policy
+*.te linguist-language="SELinux Policy"
 
 *.fc linguist-detectable=true
-*.fc linguist-language=SELinux Policy
+*.fc linguist-language="SELinux Policy"
 
 *.if linguist-detectable=true
-*.if linguist-language=SELinux Policy
+*.if linguist-language="SELinux Policy"
