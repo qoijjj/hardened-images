@@ -13,5 +13,5 @@ cd ./selinux/flatpakfull
 bash flatpakfull.sh
 cd ../..
 
-semodule -i ./user_namespace/grant_userns.cil
-semodule -i ./user_namespace/harden_userns.cil
+semodule -i ./selinux/user_namespace/grant_userns.cil
+semodule -i ./selinux/user_namespace/harden_userns.cil
