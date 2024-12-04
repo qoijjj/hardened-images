@@ -12,3 +12,5 @@ rpm-ostree override replace \
     selinux-policy \
     selinux-policy-targeted \
     selinux-policy-devel
+
+semodule -B
