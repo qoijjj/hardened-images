@@ -203,7 +203,7 @@ audit-secureblue:
         print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
     fi
 
-    FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-user-update.timer is enabled"
+    FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-system-update.timer is enabled"
     if systemctl is-enabled --quiet flatpak-system-update.timer; then
         print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
