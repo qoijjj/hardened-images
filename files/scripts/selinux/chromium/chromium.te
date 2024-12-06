@@ -21,7 +21,8 @@ unconfined_domain_noaudit(chromium_t)
 
 optional_policy(`
 	gen_require(`
-		type unconfined_t, unconfined_r;
+		type unconfined_t;
+    role unconfined_r;
 	')
 
 	chromium_run(unconfined_t, unconfined_r)
