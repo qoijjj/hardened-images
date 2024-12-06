@@ -45,7 +45,7 @@ to secureblueadmin@proton.me
 > When contributing to this project, you must agree that you have authored 100% of the content, that you have the necessary rights to the content and that the content you contribute may be provided under the project license. 
 
 > ### AI Content Policy
-> In the interest of accuracy and quality of the project, as well as being in conflict with the legal notice above, contributing using AI generated content  is forbidden. 
+> In the interest of accuracy and quality of the project, as well as being in conflict with the legal notice above, contributing using AI generated code and content of any kind is forbidden. 
 
 ### Reporting Bugs
 
