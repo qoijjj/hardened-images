@@ -18,3 +18,7 @@ role chromium_roles types chromium_t;
 
 allow chromium_t self:user_namespace create;
 unconfined_domain_noaudit(chromium_t)
+
+optional_policy(`
+	chromium_run(unconfined_t, unconfined_r)
+')
