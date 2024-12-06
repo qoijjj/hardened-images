@@ -18,7 +18,8 @@ During rpm-ostree operations, it's normal. Outside of that, make sure you follow
 
 #### An app I use won't start due to a malloc issue. How do I fix it?
 
-Override `LD_PRELOAD` for that app. For flatpaks, this is as simple as removing the environment variable via Flatseal.
+1. For flatpaks, remove the `LD_PRELOAD` environment variable via Flatseal. To re-enable hardened_malloc for the respective flatpak, replace the removed variable. 
+2. For layered packages and packages installed via brew, run the application with `ujust with-standard-malloc app`. This just runs the app without hardened_malloc, it does not permanently disable it.
 
 #### On secureblue half of my CPU cores are gone. Why is this?
 
