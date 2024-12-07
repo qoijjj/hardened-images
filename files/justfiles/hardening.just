@@ -15,7 +15,7 @@ harden-flatpak FLATPAK="":
     fi
 
 # Harden Flatpaks further by disabling all permissions by default and rejecting known arbitrary DBus names
-flatpak-lockdown-permissions:
+flatpak-permissions-lockdown:
     #!/usr/bin/bash
     kCommand="flatpak override --user"
     kSharePermissions=("network" "ipc")
