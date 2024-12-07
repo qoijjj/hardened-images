@@ -141,3 +141,8 @@ toolbox-assemble CONTAINER="prompt" ACTION="create" FILE="/etc/toolbox/toolbox.i
     # Toolboxes are gathered from toolbox.ini, please add them there
     source /usr/lib/ujust/ujust.sh
     ToolboxAssembleList {{ FILE }} {{ ACTION }} {{ CONTAINER }}
+
+# Run a non-flatpak application with standard memory allocator (needs an argument!)
+with-standard-malloc APP:
+    #!/usr/bin/bash
+    bwrap --dev-bind / / --ro-bind /dev/null /etc/ld.so.preload {{ APP }}
