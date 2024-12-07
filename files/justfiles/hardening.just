@@ -24,7 +24,7 @@ flatpak-permissions-lockdown:
     kFeaturePermissions=("per-app-dev-shm" "canbus" "bluetooth" "multiarch" "devel")
     kFilesystemPermissions=("home" "host-etc" "host")
     kXDGFilesystemPermissions=("xdg-desktop" "xdg-public-share" "xdg-cache" "xdg-config" "xdg-data" "xdg-templates")
-    kDangerousFilesystemPermissions=("~/.bashrc" "~/.bash_profile" "/media" "/run/media" "/mnt")
+    kDangerousFilesystemPermissions=("~/.bashrc" "~/.bash_profile" "/home" "/var/home" "/media" "/run/media" "/run" "/mnt")
     kKnownSessionBusNames=("org.gnome.SettingsDaemon.MediaKeys" "org.gnome.SessionManager" "org.kde.kiod5" "org.kde.JobViewServer" "org.gtk.vfs.*" "org.freedesktop.secrets" "org.kde.kconfig.notify" "org.kde.kpasswdserver" "org.kde.*" "org.kde.StatusNotifierWatcher" "org.kde.kded6" "org.kde.kpasswdserver6" "org.kde.kiod6" "com.canonical.Unity" "org.freedesktop.Notifications" "org.freedesktop.FileManager1" "org.freedesktop.impl.portal.PermissionStore" "org.freedesktop.Flatpak" "com.canonical.AppMenu.Registrar" "org.kde.KGlobalSettings" "org.kde.kded5" "com.canonical.Unity.LauncherEntry" "org.kde.kwalletd5" "org.gnome.SettingsDaemon" "org.a11y.Bus" "com.canonical.indicator.application" "org.freedesktop.ScreenSaver" "ca.desrt.dconf" "org.freedesktop.PowerManagement" "org.gnome.Software")
     kKnownSystemBusNames=("org.freedesktop.Avahi.*" "org.freedesktop.login1" "org.freedesktop.NetworkManager" "org.freedesktop.UPower" "org.freedesktop.UDisks2" "org.freedesktop.fwupd")
     kFlatsealNameAccess=("org.gnome.Software" "org.freedesktop.impl.portal.PermissionStore")
@@ -84,13 +84,17 @@ flatpak-permissions-lockdown:
     for i in ${kKnownSessionBusNames[@]}; do
         echo "	Rejecting $i..."
         $kCommand --no-talk-name=$i
-    done
-    echo ""
+
     echo "-- System Bus Name Access --"
     for i in ${kKnownSystemBusNames[@]}; do
         echo "	Rejecting $i..."
         $kCommand --system-no-talk-name=$i
     done
+    echo ""
+    echo "-- Peristent Filesystem Grant --"
+    echo "Note: This is to unbreak many Flatpaks by allowing the app to store persistent data in their own, isolated home directory without accessing the user's"
+    echo "	Granting access to peristent home..."
+    $kCommand --perist=.
     echo ""
     echo "-- Granting Flatseal Access to Bus Names --"
     for i in ${kFlatsealNameAccess[@]}; do
