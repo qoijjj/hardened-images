@@ -13,6 +13,10 @@ cd ./selinux/flatpakfull
 bash flatpakfull.sh
 cd ../..
 
+cd ./selinux/nautilus
+bash nautilus.sh
+cd ../..
+
 semodule -i ./selinux/user_namespace/grant_userns.cil
 semodule -i ./selinux/user_namespace/harden_userns.cil
 semodule -i ./selinux/user_namespace/harden_container_userns.cil
