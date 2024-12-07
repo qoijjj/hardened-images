@@ -175,6 +175,41 @@ audit-secureblue:
         print_status "$SECUREDNS_TEST_STRING" "$STATUS_FAILURE"
     fi
 
+    RPM_OSTREED_AUTOMATIC_TIMER_TEST_STRING="Ensuring rpm-ostreed-automatic.timer is enabled"
+    if systemctl is-enabled --quiet rpm-ostreed-automatic.timer; then
+        print_status "$RPM_OSTREED_AUTOMATIC_TIMER_TEST_STRING" "$STATUS_SUCCESS"
+    else
+        print_status "$RPM_OSTREED_AUTOMATIC_TIMER_TEST_STRING" "$STATUS_FAILURE"
+    fi
+
+    PODMAN_AUTO_UPDATE_TIMER_TEST_STRING="Ensuring podman-auto-update.timer is enabled"
+    if systemctl is-enabled --quiet podman-auto-update.timer; then
+        print_status "$PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
+    else
+        print_status "$PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
+    fi
+
+    GLOBAL_PODMAN_AUTO_UPDATE_TIMER_TEST_STRING="Ensuring podman-auto-update.timer is enabled globally"
+    if systemctl --global is-enabled --quiet podman-auto-update.timer; then
+        print_status "$GLOBAL_PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
+    else
+        print_status "$GLOBAL_PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
+    fi
+
+    FLATPAK_USER_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-user-update.timer is enabled globally"
+    if systemctl --global is-enabled --quiet flatpak-user-update.timer; then
+        print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
+    else
+        print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
+    fi
+
+    FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-system-update.timer is enabled"
+    if systemctl is-enabled --quiet flatpak-system-update.timer; then
+        print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
+    else
+        print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
+    fi
+
     BASH_TEST_STRING="Ensuring bash environment lockdown"
     BASH_ENV_FILES=(~/.bashrc ~/.bash_profile)
     all_locked=1
