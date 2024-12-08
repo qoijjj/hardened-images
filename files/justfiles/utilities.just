@@ -146,3 +146,20 @@ toolbox-assemble CONTAINER="prompt" ACTION="create" FILE="/etc/toolbox/toolbox.i
 with-standard-malloc APP:
     #!/usr/bin/bash
     bwrap --dev-bind / / --ro-bind /dev/null /etc/ld.so.preload {{ APP }}
+
+# Install widevine
+install-widevine:
+    #! /bin/run0 /bin/bash
+    WIDEVINE_VERSION=$(curl -L https://dl.google.com/widevine-cdm/versions.txt | tail -n1)
+    WIDEVINE_DIR="/opt/widevine"
+    mkdir -p ${WIDEVINE_DIR}
+    mkdir widevine_extract_dir
+    cd widevine_extract_dir
+    wget "https://dl.google.com/widevine-cdm/${WIDEVINE_VERSION}-linux-x64.zip"
+    unzip ${WIDEVINE_VERSION}-linux-x64.zip 
+    cp libwidevinecdm.so ${WIDEVINE_DIR}
+    cd ..
+    rm widevine_extract_dir/*
+    rmdir widevine_extract_dir
+    find "$WIDEVINE_DIR" -type d -exec chmod 0755 '{}' \;
+    find "$WIDEVINE_DIR" -type f -exec chmod 0644 '{}' \;
