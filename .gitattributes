@@ -14,3 +14,16 @@
 
 *.patch linguist-detectable=true
 *.patch linguist-language=diff
+
+
+*.cil linguist-detectable=true
+*.cil linguist-language=CIL
+
+*.te linguist-detectable=true
+*.te linguist-language=sepolicy
+
+*.fc linguist-detectable=true
+*.fc linguist-language=sepolicy
+
+*.if linguist-detectable=true
+*.if linguist-language=sepolicy
