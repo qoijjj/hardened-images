@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 echo "Building and Loading Policy"
 
 set -x
