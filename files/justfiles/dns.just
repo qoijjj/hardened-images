@@ -23,7 +23,7 @@ dns-selector:
     echo "Below will be some options to set the DNS resolver for systemd-resolved."
     echo "All resolvers support DNS-over-TLS (DoT) or DNS-over-QUIC (DoQ), DNS-over-HTTPS (DoH), and DNSSEC."
     echo "Please select which DNS resolver you would like to set:"
-    echo "    0) Network Resolver - security may vary (system default state)"
+    echo "    0) Network Resolver - security may vary (system default state) (select if using a VPN, this ensures the VPN provided DNS is used to prevent DNS leaks)"
     echo "    1) Control D - has content filtering, anycast"
     echo "    2) Mullvad - has content filtering, anycast"
     echo "    3) Cloudflare - very fast with some data collection, anycast"
