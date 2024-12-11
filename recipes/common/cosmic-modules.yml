@@ -3,6 +3,7 @@ modules:
       install:
         - NetworkManager-tui
         - NetworkManager-openvpn
+        - gnome-keyring-pam
     - type: systemd
       system:
         enabled:
