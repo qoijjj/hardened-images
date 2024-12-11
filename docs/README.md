@@ -51,8 +51,7 @@ The following are not in scope:
 - Set all default container policies to `reject`, `signedBy`, or `sigstoreSigned`
 - Disable a variety of services by default (including cups, geoclue, passim, and others)
 - Removal of the unmaintained and suid-root fuse2 by default
-- (Non-userns variants) Disabling unprivileged user namespaces
-- (Non-userns variants) Replacing bubblewrap with suid-root bubblewrap so flatpak can be used without unprivileged user namespaces
+- Disabling unprivileged user namespaces by default for the unconfined domain and the container domain
 
 # Rationale
 
