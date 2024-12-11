@@ -78,6 +78,16 @@ One of the nice things about the image model is that we can generate an entire O
 
 We strive towards a model where proposed changes are more thoroughly reviewed and tested by the community. So here's how to do it. If you see a pull request that is opened up on an image you're following you can leave a review on how it's working for you.
 
+## Building your images with Github Actions (recommended)
+
+Start from your own fork with a branch for the pull request/feature you want to develop. Follow the instructions here, https://blue-build.org/how-to/cosign/, to add your own keys to verify your own custom images (required but easy). From there it's recommended you go to .github/workflows/build.yml and comment out all of the image variants except the ones you use/intend to test. This drastically speeds up your workflow runtime. Then just go to actions > build-secureblue and select run workflow, making sure you select the branch you just set up.
+
+Once it's done running, go to your VM running Fedora Atomic (we recommend GNOME Boxes, the recommended Atomic Desktop Silverblue's iso for can be found at here https://fedoraproject.org/atomic-desktops/silverblue/download). Now just we need to build the rpm-ostree rebase command to run in your VM. Getting this is a little tricky, start with 'rpm-ostree rebase ostree-unverified-registry:ghcr.io/'. Then open your branch, on the main page there should be a "packages" in the sidebar below releases and above languages. (This will only appear after you have a successful build-secureblue action run.) Now, look at the pregenerated docker pull command and copy everything from .io/ til sha256 and paste it to a note. Now look below for the tag the action generated, generally it will be br-'branch name'-'fedora version number'. Then paste :'tag name' after the previous paste. It should look like this:
+
+    rpm-ostree rebase ostree-unverified-registry:ghcr.io/YOURUSERNAME/silverblue-main-hardened:br-YOURBRANCHNAME-41
+
+Voilà now your branch is deployed in your VM. You can clone this branch to your development machine, develop your feature, commit, push, rerun the github action, and finally rebase the VM to your branch. (In GNOME boxes, you can create a snapshot just before you rebase to save time.)
+
 ## Building Locally
 
 The minimum tools required are git and a working machine with podman enabled and configured.
