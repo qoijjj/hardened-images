@@ -68,10 +68,6 @@ else
     additional_params+="-main"
 fi
 
-# Ask about user namespaces for all options
-read -p "Do you need unprivileged user namespaces? (yes/No): " use_userns
-is_yes "$use_userns" && additional_params+="-userns"
-
 image_name+="$additional_params-hardened"
 
 rebase_command="rpm-ostree rebase ostree-unverified-registry:ghcr.io/secureblue/$image_name:latest"
