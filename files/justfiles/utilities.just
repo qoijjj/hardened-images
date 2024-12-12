@@ -155,11 +155,11 @@ enable-flathub-unfiltered:
 # Install Steam via choice of 3 methods
 install-steam:
     #!/bin/bash
-    if [ -n "$(rpm-ostree status | grep 'kinoite\|sericea\|silverblue\|sway')" ] ; then
+    if [ -z "$(pgrep Xwayland)" ] ; then
         echo "Steam requires Xwayland, which your variant of secureblue has disabled by default."
-        echo "If you have not already done so, please run 'ujust toggle-xwayland' and reboot to enable it."
+        echo "Please run 'ujust toggle-xwayland' to re-enable it."
         toggle_xwayland_now=""
-        read -p "Would you like to toggle Xwayland now? [y/N] " toggle_xwayland_now
+        read -p "Would you like to run 'ujust toggle-xwayland' now? [y/N] " toggle_xwayland_now
         if [[ "$toggle_xwayland_now" == [Yy]* ]]; then
             echo "Running 'ujust toggle-xwayland'"
             ujust toggle-xwayland
@@ -207,8 +207,6 @@ install-steam:
             ;;
         3)
             echo "Native layer method selected."
-            echo "Enabling negativo17 Steam repo."
-            run0 curl -o /etc/yum.repos.d/negativo17-fedora-steam.repo https://negativo17.org/repos/fedora-steam.repo
             echo "Installing Steam."
             rpm-ostree install steam
             ;;
