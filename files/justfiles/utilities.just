@@ -176,7 +176,7 @@ install-steam:
     echo "Please select a method to install steam:"
     echo "    1) Flatpak - will enable the flathub-unverified repo"
     echo "    2) Distrobox - will configure the bazzite-arch distrobox image"
-    echo "    3) Native layer - will enable the negativo17 Steam repo"
+    echo "    3) Native layer - will install the steam rpm from negativo17"
     while [[ "$valid_input" == "0" ]]; do
         read -p "Selection [1-3]: " method_selection
         if [[ "$method_selection" == [123]* ]]; then

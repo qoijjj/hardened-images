@@ -4,7 +4,7 @@ The following image types have been deprecated:
 
 ## userns
 
-Rationale: See https://github.com/secureblue/secureblue/releases/tag/v4.2.0
+Rationale: See https://github.com/secureblue/secureblue/releases/tag/v4.3.0
 
 Rebase to: The equivalent image removing `userns`. For example, for `kinoite-nvidia-userns-hardened`, rebase to `kinoite-nvidia-hardened`. Then, if needed, run `ujust toggle-unconfined-domain-userns-creation` to re-enable unconfined user namespaces for unconfined processes and/or `ujust toggle-container-domain-userns-creation` for container domain processes.
 
