@@ -23,7 +23,6 @@ flatpak-permissions-lockdown:
     kDevicePermissions=("all" "shm" "kvm" "input" "usb")
     kFeaturePermissions=("per-app-dev-shm" "canbus" "bluetooth" "multiarch" "devel")
     kFilesystemPermissions=("home" "host-etc" "host")
-    kXDGFilesystemPermissions=("xdg-desktop" "xdg-public-share" "xdg-cache" "xdg-config" "xdg-data" "xdg-templates")
     kDangerousFilesystemPermissions=("~/.bashrc" "~/.bash_profile" "/home" "/var/home" "/var" "/media" "/run/media" "/run" "/mnt")
     kKnownSessionBusNames=("org.gnome.SettingsDaemon.MediaKeys" "org.gnome.SessionManager" "org.kde.kiod5" "org.kde.JobViewServer" "org.gtk.vfs.*" "org.freedesktop.secrets" "org.kde.kconfig.notify" "org.kde.kpasswdserver" "org.kde.*" "org.kde.StatusNotifierWatcher" "org.kde.kded6" "org.kde.kpasswdserver6" "org.kde.kiod6" "com.canonical.Unity" "org.freedesktop.Notifications" "org.freedesktop.FileManager1" "org.freedesktop.impl.portal.PermissionStore" "org.freedesktop.Flatpak" "com.canonical.AppMenu.Registrar" "org.kde.KGlobalSettings" "org.kde.kded5" "com.canonical.Unity.LauncherEntry" "org.kde.kwalletd5" "org.gnome.SettingsDaemon" "org.a11y.Bus" "com.canonical.indicator.application" "org.freedesktop.ScreenSaver" "ca.desrt.dconf" "org.freedesktop.PowerManagement" "org.gnome.Software")
     kKnownSystemBusNames=("org.freedesktop.Avahi.*" "org.freedesktop.login1" "org.freedesktop.NetworkManager" "org.freedesktop.UPower" "org.freedesktop.UDisks2" "org.freedesktop.fwupd")
@@ -60,13 +59,6 @@ flatpak-permissions-lockdown:
     echo ""
     echo "-- Filesystem Permissions --"
     for i in ${kFilesystemPermissions[@]}; do
-        echo "	Rejecting $i..."
-        $kCommand --nofilesystem=$i
-    done
-    echo ""
-    echo "-- XDG Filesystem Permissions --"
-    echo "Note: This only covers broad access to a few unsafe or uneeded xdg directories, specific access is not restricted"
-    for i in ${kXDGFilesystemPermissions[@]}; do
         echo "	Rejecting $i..."
         $kCommand --nofilesystem=$i
     done
