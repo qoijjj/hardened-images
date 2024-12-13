@@ -1,0 +1,46 @@
+variant: fcos
+version: 1.5.0
+passwd:
+  users:
+    - name: core
+      groups:
+        - wheel
+      password_hash: $y$j9T$mefBCJbp/a49aSkTT4hpE1$6BXtrIuV8856t4A9r/R1GW4aR9eKXxsmB8FXt56Hx70 # 'secureblue', change after installation
+      ssh_authorized_keys:
+        - ssh-ed25519 <key>
+storage:
+  files:
+    - path: /opt/install_secureblue.sh
+      contents:
+        source: https://raw.githubusercontent.com/secureblue/secureblue/refs/heads/live/install/install_secureblue.sh
+        verification:
+          hash: sha256-e3794ea2c86715728cede472cc5f827520fafedcc0a98ea6d9e58d0aea47e07c # update after any change
+      mode: 0755
+    - path: /var/home/core/.bash_profile
+      overwrite: false
+      append:
+      - inline: |
+          echo "[+] Disabling zincati"
+          sudo systemctl disable --now zincati.service
+          echo "[+] Stopping rpm-ostreed-automatic"
+          sudo systemctl stop rpm-ostreed-automatic.timer rpm-ostreed-automatic.service
+          if [ -f /opt/install_secureblue.sh ]; then
+            echo "[+] Running secureblue installer at /opt/install_secureblue.sh"
+            sudo /opt/install_secureblue.sh
+            sed -i '9,$d' /var/home/core/.bash_profile
+            echo "[+] Rebooting in 5 seconds ..."
+            sleep 5
+            sudo systemctl reboot
+          else
+            echo "install_secureblue.sh not found!"
+          fi
+systemd:
+  units:
+    - name: serial-getty@ttyS0.service
+      dropins:
+        - name: autologin.conf
+          contents: |
+            [Service]
+            TTYVTDisallocate=no
+            ExecStart=
+            ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
