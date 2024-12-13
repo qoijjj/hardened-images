@@ -14,26 +14,20 @@
   [[ "$output" == *"Welcome to the secureblue interactive installer"* ]]
 }
 
-@test "Test command for silverblue-main-userns-hardened" {
+@test "Test command for silverblue-main-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'no\n1\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
+  run bash -c "echo -e 'no\n1\nno\nno' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"silverblue-main-userns-hardened"* ]]
+  [[ "$output" == *"silverblue-main-hardened"* ]]
 }
 
-@test "Test command for silverblue-nvidia-userns-hardened" {
+@test "Test command for silverblue-nvidia-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'no\n1\nyes\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
+  run bash -c "echo -e 'no\n1\nyes\nno\nno' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"silverblue-nvidia-userns-hardened"* ]]
+  [[ "$output" == *"silverblue-nvidia-hardened"* ]]
 }
 
-@test "Test command for silverblue-nvidia-open-userns-hardened" {
-  sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'no\n1\nyes\nyes\nyes\nno' | bash '$INSTALL_SCRIPT'"
-  [ "$status" -eq 0 ]
-  [[ "$output" == *"silverblue-nvidia-open-userns-hardened"* ]]
-}
 
 @test "Test command for silverblue-nvidia-open-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
@@ -42,66 +36,66 @@
   [[ "$output" == *"silverblue-nvidia-open-hardened"* ]]
 }
 
-@test "Test command for kinoite-main-userns-hardened" {
+@test "Test command for kinoite-main-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'no\n2\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
+  run bash -c "echo -e 'no\n2\nno\nno' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"kinoite-main-userns-hardened"* ]]
+  [[ "$output" == *"kinoite-main-hardened"* ]]
 }
 
-@test "Test command for sericea-main-userns-hardened" {
+@test "Test command for sericea-main-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'no\n3\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
+  run bash -c "echo -e 'no\n3\nno\nno' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"sericea-main-userns-hardened"* ]]
+  [[ "$output" == *"sericea-main-hardened"* ]]
 }
 
-@test "Test command for wayblue-wayfire-main-userns-hardened" {
+@test "Test command for wayblue-wayfire-main-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'no\n4\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
+  run bash -c "echo -e 'no\n4\nno\nno' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"wayblue-wayfire-main-userns-hardened"* ]]
+  [[ "$output" == *"wayblue-wayfire-main-hardened"* ]]
 }
 
-@test "Test command for wayblue-sway-main-userns-hardened" {
+@test "Test command for wayblue-sway-main-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'no\n5\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
+  run bash -c "echo -e 'no\n5\nno\nno' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"wayblue-sway-main-userns-hardened"* ]]
+  [[ "$output" == *"wayblue-sway-main-hardened"* ]]
 }
 
-@test "Test command for wayblue-river-main-userns-hardened" {
+@test "Test command for wayblue-river-main-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'no\n6\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
+  run bash -c "echo -e 'no\n6\nno\nno' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"wayblue-river-main-userns-hardened"* ]]
+  [[ "$output" == *"wayblue-river-main-hardened"* ]]
 }
 
-@test "Test command for wayblue-hyprland-main-userns-hardened" {
+@test "Test command for wayblue-hyprland-main-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'no\n7\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
+  run bash -c "echo -e 'no\n7\nno\nno' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"wayblue-hyprland-main-userns-hardened"* ]]
+  [[ "$output" == *"wayblue-hyprland-main-hardened"* ]]
 }
 
-@test "Test command for cosmic-main-userns-hardened" {
+@test "Test command for cosmic-main-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'no\n8\nno\nyes\nno' | bash '$INSTALL_SCRIPT'"
+  run bash -c "echo -e 'no\n8\nno\nno' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"cosmic-main-userns-hardened"* ]]
+  [[ "$output" == *"cosmic-main-hardened"* ]]
 }
 
-@test "Test command for securecore-zfs-main-userns-hardened" {
+@test "Test command for securecore-zfs-main-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'yes\nyes\nno\nyes\no' | bash '$INSTALL_SCRIPT'"
+  run bash -c "echo -e 'yes\nyes\nno\no' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"securecore-zfs-main-userns-hardened"* ]]
+  [[ "$output" == *"securecore-zfs-main-hardened"* ]]
 }
 
-@test "Test command for securecore-main-userns-hardened" {
+@test "Test command for securecore-main-hardened" {
   sudo bash -c 'echo "empty file" > /usr/bin/rpm-ostree'
-  run bash -c "echo -e 'yes\nno\nno\nyes\no' | bash '$INSTALL_SCRIPT'"
+  run bash -c "echo -e 'yes\nno\nno\no' | bash '$INSTALL_SCRIPT'"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"securecore-main-userns-hardened"* ]]
+  [[ "$output" == *"securecore-main-hardened"* ]]
 }
 
