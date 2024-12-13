@@ -24,14 +24,14 @@ flatpak-permissions-lockdown:
     kFeaturePermissions=("per-app-dev-shm" "canbus" "bluetooth" "multiarch" "devel")
     kFilesystemPermissions=("home" "host-etc" "host")
     kDangerousFilesystemPermissions=("~/.bashrc" "~/.bash_profile" "/home" "/var/home" "/var" "/media" "/run/media" "/run" "/mnt")
-    kKnownSessionBusNames=("org.gnome.SettingsDaemon.MediaKeys" "org.gnome.SessionManager" "org.kde.kiod5" "org.kde.JobViewServer" "org.gtk.vfs.*" "org.freedesktop.secrets" "org.kde.kconfig.notify" "org.kde.kpasswdserver" "org.kde.*" "org.kde.StatusNotifierWatcher" "org.kde.kded6" "org.kde.kpasswdserver6" "org.kde.kiod6" "com.canonical.Unity" "org.freedesktop.Notifications" "org.freedesktop.FileManager1" "org.freedesktop.impl.portal.PermissionStore" "org.freedesktop.Flatpak" "com.canonical.AppMenu.Registrar" "org.kde.KGlobalSettings" "org.kde.kded5" "com.canonical.Unity.LauncherEntry" "org.kde.kwalletd5" "org.gnome.SettingsDaemon" "org.a11y.Bus" "com.canonical.indicator.application" "org.freedesktop.ScreenSaver" "ca.desrt.dconf" "org.freedesktop.PowerManagement" "org.gnome.Software")
+    kKnownSessionBusNames=("org.gnome.SettingsDaemon.MediaKeys" "org.gnome.SessionManager" "org.kde.kiod5" "org.kde.JobViewServer" "org.gtk.vfs.*" "org.freedesktop.secrets" "org.kde.kconfig.notify" "org.kde.kpasswdserver" "org.kde.*" "org.kde.StatusNotifierWatcher" "org.kde.kded6" "org.kde.kpasswdserver6" "org.kde.kiod6" "com.canonical.Unity" "org.freedesktop.Notifications" "org.freedesktop.FileManager1" "org.freedesktop.impl.portal.PermissionStore" "org.freedesktop.Flatpak" "com.canonical.AppMenu.Registrar" "org.kde.KGlobalSettings" "org.kde.kded5" "com.canonical.Unity.LauncherEntry" "org.kde.kwalletd5" "org.gnome.SettingsDaemon" "org.a11y.Bus" "com.canonical.indicator.application" "org.freedesktop.ScreenSaver" "ca.desrt.dconf" "org.freedesktop.PowerManagement" "org.gnome.Software" "org.freedesktop.Tracker3.Writeback=none")
     kKnownSystemBusNames=("org.freedesktop.Avahi.*" "org.freedesktop.login1" "org.freedesktop.NetworkManager" "org.freedesktop.UPower" "org.freedesktop.UDisks2" "org.freedesktop.fwupd")
     kFlatsealNameAccess=("org.gnome.Software" "org.freedesktop.impl.portal.PermissionStore")
+
     echo "This will configure flatpak to automatically reject most permissions (with the exception of the Wayland socket and the Dri device, since these are commonly used and ensure at the very least most apps will work without crashing)."
     echo "This will also grant Flatseal access to certain permissions to allow it to operate and make reconfiguring much easier."
     echo "NOTE: This will break just about all Flatpaks by default, it is ON YOU to configure them to work with this configuration."
     echo "NOTE 2: This DOES NOT enable hardened_malloc, use the harden-flatpak ujust command."
-
     echo ""
     echo "-- Share Permissions --"
     for i in ${kSharePermissions[@]}; do
@@ -76,7 +76,8 @@ flatpak-permissions-lockdown:
     for i in ${kKnownSessionBusNames[@]}; do
         echo "	Rejecting $i..."
         $kCommand --no-talk-name=$i
-
+    done
+    echo ""
     echo "-- System Bus Name Access --"
     for i in ${kKnownSystemBusNames[@]}; do
         echo "	Rejecting $i..."
@@ -86,7 +87,12 @@ flatpak-permissions-lockdown:
     echo "-- Peristent Filesystem Grant --"
     echo "Note: This is to unbreak many Flatpaks by allowing the app to store persistent data in their own, isolated home directory without accessing the user's"
     echo "	Granting access to peristent home..."
-    $kCommand --perist=.
+    $kCommand --persist=.
+    echo ""
+    echo "-- Granting Access to Common Permissions --"
+    echo "Note: This will grant all apps access to some permissions to ensure most apps work by default, this also encourages the use of these permissions instead of their alternatives"
+    echo "	Granting access to Wayland and hardware acceleration..."
+    $kCommand --socket=wayland --device=dri
     echo ""
     echo "-- Granting Flatseal Access to Bus Names --"
     for i in ${kFlatsealNameAccess[@]}; do
