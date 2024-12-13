@@ -97,3 +97,7 @@
 **Disables support for 32-bit processes, and syscalls**
 
 `ia32_emulation=0`
+
+**Force enables all available mitigations for the L1TF vulnerability.**
+
+`l1tf=full,force`
