@@ -14,7 +14,7 @@ harden-flatpak FLATPAK="":
         flatpak override --user --env=LD_PRELOAD=/var/run/host/usr/lib64/glibc-hwcaps/x86-64-v"$bestuarch"/libhardened_malloc.so $flatpak_id
     fi
 
-# Harden Flatpaks further by disabling all permissions by default and rejecting known arbitrary DBus names
+# Harden Flatpaks further by disabling all permissions by default and rejecting known arbitrary DBus names, applies only to the current user
 flatpak-permissions-lockdown:
     #!/usr/bin/bash
     kCommand="flatpak override --user"
