@@ -8,13 +8,6 @@ set-kargs-hardening:
         IAEMU_NO="--append-if-missing=ia32_emulation=0"
         echo "Disabling 32-bit support, for the next boot."
     fi
-    read -p "Do you want to force disable Simultaneous Multithreading (SMT) / Hyperthreading? (This can cause a reduction in the performance of certain tasks in favor of security) (Note that in most hardware SMT will be disabled anyways to mitigate a known vulnerability, this turns it off on all hardware regardless) [y/N]: " YES
-    if [[ "$YES" == [Yy]* ]]; then
-        NOSMT_YES="--append-if-missing=nosmt=force"
-        echo "Force disabling SMT/Hyperthreading."
-    else
-        echo "Not force disabling SMT/Hyperthreading."
-    fi
     read -p "Would you like to set additional (unstable) hardening kargs? (Warning: Setting these kargs may lead to boot issues on some hardware.) [y/N]: " YES
     if [[ "$YES" == [Yy]* ]]; then
     UNSTABLE_YES="--append-if-missing=efi=disable_early_pci_dma \
@@ -25,7 +18,7 @@ set-kargs-hardening:
     fi
     echo "Applying boot parameters..."
     rpm-ostree kargs \
-      ${UNSTABLE_YES:+$UNSTABLE_YES} ${IAEMU_NO:+$IAEMU_NO} ${NOSMT_YES:+$NOSMT_YES} \
+      ${UNSTABLE_YES:+$UNSTABLE_YES} ${IAEMU_NO:+$IAEMU_NO} \
       --append-if-missing=init_on_alloc=1 \
       --append-if-missing=init_on_free=1 \
       --append-if-missing=slab_nomerge \
@@ -46,7 +39,8 @@ set-kargs-hardening:
       --append-if-missing=spectre_v2=on \
       --append-if-missing=spec_store_bypass_disable=on \
       --append-if-missing=l1d_flush=on \
-      --append-if-missing=gather_data_sampling=force 
+      --append-if-missing=gather_data_sampling=force \
+      --append-if-missing=l1tf=full,force
     echo "Hardening kargs applied."
 
 # Remove all hardening boot parameters (requires reboot)
@@ -76,7 +70,8 @@ remove-kargs-hardening:
       --delete-if-present="spec_store_bypass_disable=on" \
       --delete-if-present="l1d_flush=on" \
       --delete-if-present="gather_data_sampling=force" \
-      --delete-if-present="ia32_emulation=0"
+      --delete-if-present="ia32_emulation=0" \
+      --delete-if-present="l1tf=full,force"
     echo "Hardening kargs removed."
 
 # Set nvidia kargs
