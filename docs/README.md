@@ -82,7 +82,7 @@ Have a look at [PREINSTALL-README](PREINSTALL-README.md) before proceeding.
 > 
 > For more details on the available images, have a look at [IMAGES](IMAGES.md) before proceeding.
 
-To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, download the script below:
+To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, download the script below. This script does not install secureblue into the existing system. It rebases (fully replaces the existing system) with secureblue.
 
 [![Download](https://shields.io/badge/-Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/secureblue/secureblue/releases/latest/download/install_secureblue.sh)
 
