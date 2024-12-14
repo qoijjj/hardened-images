@@ -101,3 +101,7 @@
 **Force enables all available mitigations for the L1TF vulnerability.**
 
 `l1tf=full,force`
+
+**Enables unconditional flushes, required for complete l1d vuln mitigation.**
+
+`kvm-intel.vmentry_l1d_flush=always`
