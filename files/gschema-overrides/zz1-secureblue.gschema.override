@@ -8,3 +8,5 @@ enabled-extensions = []
 
 [org.gnome.desktop.interface]
 gtk-theme='adw-gtk3'
+font-antialiasing="rgba"
+monospace-font-name="Monospace 12"
