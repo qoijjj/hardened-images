@@ -6,7 +6,6 @@ modules:
       scripts:
         - installrpmfusion.sh
         - unprotectsudo.sh
-        - removetrademarkedlogos.sh
         - addimageinfo.sh
     - from-file: common/common-packages.yml
     - type: files
