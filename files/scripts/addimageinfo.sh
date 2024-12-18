@@ -20,8 +20,6 @@ DOCUMENTATION_URL="https://github.com/secureblue/secureblue/tree/live/docs"
 SUPPORT_URL="https://github.com/secureblue/secureblue/issues"
 BUG_SUPPORT_URL="https://github.com/secureblue/secureblue/issues"
 
-IMAGE_REF="ostree-image-signed:docker://ghcr.io/secureblue/$IMAGE_NAME"
-
 # OS Release File
 sed -i "s/^VARIANT_ID=.*/VARIANT_ID=$IMAGE_NAME/" /usr/lib/os-release
 sed -i "s/^PRETTY_NAME=.*/PRETTY_NAME=\"${IMAGE_PRETTY_NAME} (powered by Fedora Atomic)\"/" /usr/lib/os-release
