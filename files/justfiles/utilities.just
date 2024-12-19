@@ -228,3 +228,7 @@ install-steam:
             systemctl reboot
         fi
     fi
+
+rebase-secureblue:
+    #!/usr/bin/bash
+    sh /usr/share/secureblue/install_secureblue.sh
