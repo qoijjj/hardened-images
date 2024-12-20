@@ -1,9 +1,9 @@
 #!/usr/bin/env bats
 
-setup() {
+setup_file() {
     sudo snap install distrobox --edge --devmode
     distrobox create --image quay.io/fedora-ostree-desktops/base-atomic:41 -Y
-    distrobox enter base-atomic
+    distrobox enter base-atomic-41
 }
 
 @test "Script exits with error if rpm-ostree is not installed" {
