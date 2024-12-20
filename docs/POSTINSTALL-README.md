@@ -89,8 +89,9 @@ Creating a dedicated wheel user and removing wheel from your primary user helps 
 > We log in as admin to do the final step of removing the user account's wheel privileges in order to make the operation of removing those privileges depend on having access to your admin account, and the admin account functioning correctly first.
 
 5. Log in as `admin`
-6. `run0 gpasswd -d {your username here} wheel`
-7. `reboot`
+6. `run0`
+7. `gpasswd -d {your username here} wheel`
+8. `reboot`
 
 When using a non-wheel user, you can add the user to other groups if you want. For example:
 
