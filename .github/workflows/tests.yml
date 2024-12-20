@@ -18,8 +18,8 @@ jobs:
       - name: Install needed packages
         run: |
           apt-get update
-          apt-get upgrade
-          apt-get install just distrobox curl
+          apt-get -y upgrade
+          apt-get -y install just distrobox curl
 
       - name: Setup Bats and bats libs
         id: setup-bats
