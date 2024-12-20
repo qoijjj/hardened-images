@@ -9,6 +9,7 @@ on:
 jobs:
   run_tests:
     runs-on: ubuntu-24.04
+    container: ubuntu:24.10
     name: Install Bats and run tests
     steps:
       - name: Checkout repo
@@ -23,9 +24,9 @@ jobs:
            detik-path: "${{ github.workspace }}/.bats/bats-detik"
            file-path: "${{ github.workspace }}/.bats/bats-file"
       
-      - name: Install just
+      - name: Install just and distrobox
         run: |          
-          sudo apt-get install just
+          sudo apt-get install just distrobox
 
       - name: Run tests
         shell: bash
