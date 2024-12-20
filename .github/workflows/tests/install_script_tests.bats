@@ -30,33 +30,33 @@ fi
 }
 
 @test "Script exits with error if rpm-ostree is very old" {
-  sed -i 's/2024\.9/2023\.5/' /usr/bin/rpm-ostree
+  sudo sed -i 's/2024\.9/2023\.5/' /usr/bin/rpm-ostree
   run bash "$INSTALL_SCRIPT"
   [ "$status" -eq 1 ]
   [[ "$output" == *"rpm-ostree is too old, please upgrade before running this script."* ]]
-  sed -i 's/2023\.5/2024\.9/' /usr/bin/rpm-ostree
+  sudo sed -i 's/2023\.5/2024\.9/' /usr/bin/rpm-ostree
 }
 
 @test "Script exits with error if rpm-ostree is slightly old" {
-  sed -i 's/2024\.9/2024\.8/' /usr/bin/rpm-ostree
+  sudo sed -i 's/2024\.9/2024\.8/' /usr/bin/rpm-ostree
   run bash "$INSTALL_SCRIPT"
   [ "$status" -eq 1 ]
   [[ "$output" == *"rpm-ostree is too old, please upgrade before running this script."* ]]
-  sed -i 's/2023\.8/2024\.9/' /usr/bin/rpm-ostree
+  sudo sed -i 's/2023\.8/2024\.9/' /usr/bin/rpm-ostree
 }
 
 @test "Script works if rpm-ostree is new" {
-  sed -i 's/2024\.9/2024\.11/' /usr/bin/rpm-ostree
+  sudo sed -i 's/2024\.9/2024\.11/' /usr/bin/rpm-ostree
   run bash "$INSTALL_SCRIPT"
   [ "$status" -eq 0 ]
-  sed -i 's/2024\.11/2024\.9/' /usr/bin/rpm-ostree
+  sudo sed -i 's/2024\.11/2024\.9/' /usr/bin/rpm-ostree
 }
 
 @test "Script works if rpm-ostree is very new" {
-  sed -i 's/2024\.9/2025\.3/' /usr/bin/rpm-ostree
+  sudo sed -i 's/2024\.9/2025\.3/' /usr/bin/rpm-ostree
   run bash "$INSTALL_SCRIPT"
   [ "$status" -eq 0 ]
-  sed -i 's/2025\.3/2024\.9/' /usr/bin/rpm-ostree
+  sudo sed -i 's/2025\.3/2024\.9/' /usr/bin/rpm-ostree
 }
 
 @test "Script passes rpm-ostree check if it is installed" {
