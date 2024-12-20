@@ -22,11 +22,11 @@ jobs:
            assert-path: "${{ github.workspace }}/.bats/bats-assert"
            detik-path: "${{ github.workspace }}/.bats/bats-detik"
            file-path: "${{ github.workspace }}/.bats/bats-file"
-
+      
       - name: Install just
         run: |          
           sudo apt-get install just
-          
+
       - name: Run tests
         shell: bash
         env:
