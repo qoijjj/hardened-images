@@ -27,22 +27,30 @@ if ! [ -f "$CONTAINER_DIR/policy.json" ]; then
     cp "$MODULE_DIRECTORY/signing/policy.json" "$CONTAINER_DIR/policy.json"
 fi
 
-mv "/usr/etc/pki/containers/$IMAGE_NAME.pub" "/usr/etc/pki/containers/$IMAGE_REGISTRY_TITLE.pub"
+# covering our bases here since /usr/etc is technically unsupported, reevaluate once bootc is the primary deployment tool
+cp "/usr/etc/pki/containers/$IMAGE_NAME.pub" "/usr/etc/pki/containers/$IMAGE_REGISTRY_TITLE.pub"
+cp "/usr/etc/pki/containers/$IMAGE_NAME.pub" "/etc/pki/containers/$IMAGE_REGISTRY_TITLE.pub"
+rm "/usr/etc/pki/containers/$IMAGE_NAME.pub"
 
 POLICY_FILE="$CONTAINER_DIR/policy.json"
 
-yq -i -o=j '.transports.docker |=
-    {"'"$IMAGE_REGISTRY"'": [
-            {
-                "type": "sigstoreSigned",
-                "keyPath": "/usr/etc/pki/containers/'"$IMAGE_REGISTRY_TITLE"'.pub",
-                "signedIdentity": {
-                    "type": "matchRepository"
-                }
+jq --arg image_registry "${IMAGE_REGISTRY}" \
+   --arg image_registry_title "${IMAGE_REGISTRY_TITLE}" \
+   '.transports.docker |= 
+    { $image_registry: [
+        {
+            "type": "sigstoreSigned",
+            "keyPath": ("/usr/etc/pki/containers/" + $image_registry_title + ".pub"),
+            "signedIdentity": {
+                "type": "matchRepository"
             }
-        ]
-    }
-+ .' "$POLICY_FILE"
+        }
+    ] } + .' "${POLICY_FILE}" > POLICY.tmp
+
+# covering our bases here since /usr/etc is technically unsupported, reevaluate once bootc is the primary deployment tool
+cp POLICY.tmp /usr/etc/containers/policy.json
+cp POLICY.tmp /etc/containers/policy.json
+rm POLICY.tmp
 
 mv "$MODULE_DIRECTORY/signing/registry-config.yaml" "$CONTAINER_DIR/registries.d/$IMAGE_REGISTRY_TITLE.yaml"
 sed -i "s ghcr.io/IMAGENAME $IMAGE_REGISTRY g" "$CONTAINER_DIR/registries.d/$IMAGE_REGISTRY_TITLE.yaml"
