@@ -1,9 +1,24 @@
 #!/usr/bin/env bats
 
 setup() {
-    sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-    distrobox create --image quay.io/fedora-ostree-desktops/base-atomic:41 -Y
-    distrobox-enter -n base-atomic-41 -- '  distrobox-export --app rpm-ostree'
+    echo "
+      #!/bin/bash
+
+      # Define the version string
+      version="2024.9"
+
+      # Check if the --version argument is passed
+      if [[ "$1" == "--version" ]]; then
+          echo "rpm-ostree:"
+          echo " Version: '$version'"
+      else
+          # Default behavior for unknown arguments (if you want to handle them)
+          echo "Invalid option. Usage: rpm-ostree --version"
+      fi
+    " > rpm-ostree
+    chmod +x rpm-ostree
+    sudo cp -f rpm-ostree /usr/bin/rpm-ostree
+
 }
 
 @test "Script exits with error if rpm-ostree is not installed" {
