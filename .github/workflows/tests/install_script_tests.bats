@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 setup() {
-    echo "
+    echo '
 #!/bin/bash
 
 # Define the version string
@@ -15,7 +15,7 @@ else
   # Default behavior for unknown arguments (if you want to handle them)
   echo "Invalid option. Usage: rpm-ostree --version"
 fi
-    " > rpm-ostree
+    ' > rpm-ostree
     chmod +x rpm-ostree
     sudo cp -f rpm-ostree /usr/bin/rpm-ostree
 
