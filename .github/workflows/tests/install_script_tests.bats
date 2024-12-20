@@ -1,6 +1,7 @@
 #!/usr/bin/env bats
 
 setup() {
+    sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
     distrobox create --image quay.io/fedora-ostree-desktops/base-atomic:41 -Y
     distrobox-enter -n base-atomic-41 -- '  distrobox-export --app rpm-ostree'
 }
