@@ -230,6 +230,6 @@ install-steam:
     fi
 
 # Rebase to a different secureblue Desktop Environment/Atomic Desktop
-rebase-secureblue: 
+rebase-secureblue:
     #!/usr/bin/bash
     bash /usr/share/secureblue/install_secureblue.sh
