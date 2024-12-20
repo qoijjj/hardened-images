@@ -10,7 +10,7 @@ version="2024.9"
 # Check if the --version argument is passed
 if [[ "$1" == "--version" ]]; then
   echo "rpm-ostree:"
-  echo " Version: \'$version\'"
+  echo " Version: '\''$version'\''"
 else
   # Default behavior for unknown arguments (if you want to handle them)
   echo "Invalid option. Usage: rpm-ostree --version"
