@@ -42,7 +42,7 @@ fi
   run bash "$INSTALL_SCRIPT"
   [ "$status" -eq 1 ]
   [[ "$output" == *"rpm-ostree is too old, please upgrade before running this script."* ]]
-  sudo sed -i 's/2023\.8/2024\.9/' /usr/bin/rpm-ostree
+  sudo sed -i 's/2024\.8/2024\.9/' /usr/bin/rpm-ostree
 }
 
 @test "Script works if rpm-ostree is new" {
