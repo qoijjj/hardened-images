@@ -12,12 +12,6 @@ modules:
         - installsignedkernel.sh
     - from-file: common/desktop-packages.yml
     - from-file: common/desktop-scripts.yml
-    - type: files
-      files:
-        - source: system/usr/share/pixmaps
-          destination: /usr/share/pixmaps
-        - source: system/usr/share/plymouth
-          destination: /usr/share/plymouth
     - type: fonts
       fonts:
         nerd-fonts:
