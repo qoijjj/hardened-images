@@ -17,7 +17,7 @@ jobs:
       
       - name: Install needed packages
         run: |          
-          sudo apt-get install just distrobox curl
+          apt-get install just distrobox curl
 
       - name: Setup Bats and bats libs
         id: setup-bats
