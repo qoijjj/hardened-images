@@ -2,19 +2,19 @@
 
 setup() {
     echo "
-      #!/bin/bash
+#!/bin/bash
 
-      # Define the version string
-      version="2024.9"
+# Define the version string
+version="2024.9"
 
-      # Check if the --version argument is passed
-      if [[ "$1" == "--version" ]]; then
-          echo "rpm-ostree:"
-          echo " Version: '$version'"
-      else
-          # Default behavior for unknown arguments (if you want to handle them)
-          echo "Invalid option. Usage: rpm-ostree --version"
-      fi
+# Check if the --version argument is passed
+if [[ "$1" == "--version" ]]; then
+  echo "rpm-ostree:"
+  echo " Version: '$version'"
+else
+  # Default behavior for unknown arguments (if you want to handle them)
+  echo "Invalid option. Usage: rpm-ostree --version"
+fi
     " > rpm-ostree
     chmod +x rpm-ostree
     sudo cp -f rpm-ostree /usr/bin/rpm-ostree
