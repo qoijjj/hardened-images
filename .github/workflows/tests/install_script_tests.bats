@@ -2,9 +2,8 @@
 
 setup() {
     sudo snap install distrobox --edge --devmode
-    distrobox create --image quay.io/fedora-ostree-desktops/base-atomic:41
+    distrobox create --image quay.io/fedora-ostree-desktops/base-atomic:41 -Y
     distrobox enter base-atomic
-
 }
 
 @test "Script exits with error if rpm-ostree is not installed" {
