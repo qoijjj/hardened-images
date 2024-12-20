@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 setup() {
-    sudo snap install distrobox --edge
+    sudo snap install distrobox --edge --devmode
     distrobox assemble create quay.io/fedora-ostree-desktops/base-atomic
     distrobox enter base-atomic
 
