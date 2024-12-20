@@ -12,6 +12,13 @@ modules:
         - installsignedkernel.sh
     - from-file: common/desktop-packages.yml
     - from-file: common/desktop-scripts.yml
+    - type: fonts
+      fonts:
+        nerd-fonts:
+          - FiraCode
+          - JetBrainsMono
+          - NerdFontsSymbolsOnly
+          - Ubuntu
     - type: script
       scripts:
         - enableflatpakautoupdate.sh

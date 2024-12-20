@@ -6,6 +6,7 @@ modules:
       scripts:
         - installrpmfusion.sh
         - unprotectsudo.sh
+        - addimageinfo.sh
     - from-file: common/common-packages.yml
     - type: files
       files:
