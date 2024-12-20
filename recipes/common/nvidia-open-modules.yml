@@ -6,7 +6,7 @@ modules:
         - RUN rpm-ostree install /tmp/rpms/ublue-os/ublue-os-nvidia*.rpm
         - RUN sed -i '0,/enabled=0/{s/enabled=0/enabled=1/}' /etc/yum.repos.d/nvidia-container-toolkit.repo
         - RUN sed -i '0,/enabled=0/{s/enabled=0/enabled=1\npriority=90/}' /etc/yum.repos.d/negativo17-fedora-nvidia.repo   
-        - RUN rpm-ostree install /tmp/rpms/kmods/kmod-nvidia*.rpm libnvidia-fbc libva-nvidia-driver nvidia-driver nvidia-driver-cuda nvidia-modprobe nvidia-persistenced nvidia-settings nvidia-container-toolkit 
+        - RUN rpm-ostree install /tmp/rpms/kmods/kmod-nvidia*.rpm libnvidia-fbc libva-nvidia-driver nvidia-driver nvidia-driver-cuda nvidia-modprobe nvidia-persistenced nvidia-settings nvidia-container-toolkit libnvidia-ml.i686 mesa-vulkan-drivers.i686 nvidia-driver-cuda-libs.i686 nvidia-driver-libs.i686
     - type: script
       scripts:
         - installnvidiatoolkitpolicy.sh
