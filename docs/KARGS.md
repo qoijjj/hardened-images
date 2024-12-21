@@ -74,13 +74,27 @@
 
 `l1d_flush=on`
 
+**Force enables all available mitigations for the L1TF vulnerability.**
+
+`l1tf=full,force`
+
+**Enables unconditional flushes, required for complete l1d vuln mitigation.**
+
+`kvm-intel.vmentry_l1d_flush=always`
+
 ### Force disable simultaneous multithreading
 
 **Disables this hardware feature on user request, regardless of whether it is affected by known vulnerabilities**
 
 `nosmt=force`
 
-### Additional (unstable) kargs
+### Disable 32-bit processes and syscalls
+
+**32-bit support is needed by some legacy software, such as Steam**
+
+`ia32_emulation=0`
+
+### Unstable kargs
 
 **Fill IOMMU protection gap by setting the busmaster bit during early boot**
 
@@ -90,18 +104,8 @@
 
 `debugfs=off` 
 
-**Disables support for 32-bit processes, and syscalls**
-
-`ia32_emulation=0`
-
-**Force enables all available mitigations for the L1TF vulnerability.**
-
-`l1tf=full,force`
-
-**Enables unconditional flushes, required for complete l1d vuln mitigation.**
-
-`kvm-intel.vmentry_l1d_flush=always`
-
 **Mitigate unprivileged speculative access to data by using the microcode mitigation when available or by disabling AVX on affected systems where the microcode hasn’t been updated to include the mitigation.**
 
 `gather_data_sampling=force`
+
+
