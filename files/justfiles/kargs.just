@@ -15,7 +15,7 @@ set-kargs-hardening:
     else
         echo "Not force disabling SMT/Hyperthreading."
     fi
-    read -p "Would you like to set additional (unstable) hardening kargs? (Warning: Setting these kargs may lead to boot issues on some hardware.) [y/N]: " YES
+    read -p "Would you like to set additional (unstable) hardening kargs? (Warning: Setting these kargs may lead to boot or stability issues on some hardware.) [y/N]: " YES
     if [[ "$YES" == [Yy]* ]]; then
     UNSTABLE_YES="--append-if-missing=efi=disable_early_pci_dma \
         --append-if-missing=gather_data_sampling=force \
