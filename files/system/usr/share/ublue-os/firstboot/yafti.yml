@@ -10,6 +10,16 @@ screens:
       description: |
         This guided installer will help you get started with your new system.
 
+  can-we-noexec-shm:
+    source: yafti.screen.consent
+    values:
+      title: RAM disk hardening
+      description: |
+        This step will make the RAM disk non-executable.
+      actions:
+        - run: echo 'tmpfs     /dev/shm     tmpfs     defaults,noexec,nosuid     0     0' | run0 tee -a /etc/fstab
+        - run: systemctl daemon-reload
+
   can-we-harden-your-flatpaks:
     source: yafti.screen.consent
     values:
