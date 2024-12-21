@@ -74,10 +74,6 @@
 
 `l1d_flush=on`
 
-**Mitigate unprivileged speculative access to data by using the microcode mitigation when available or by disabling AVX on affected systems where the microcode hasn’t been updated to include the mitigation.**
-
-`gather_data_sampling=force`
-
 ### Force disable simultaneous multithreading
 
 **Disables this hardware feature on user request, regardless of whether it is affected by known vulnerabilities**
@@ -105,3 +101,7 @@
 **Enables unconditional flushes, required for complete l1d vuln mitigation.**
 
 `kvm-intel.vmentry_l1d_flush=always`
+
+**Mitigate unprivileged speculative access to data by using the microcode mitigation when available or by disabling AVX on affected systems where the microcode hasn’t been updated to include the mitigation.**
+
+`gather_data_sampling=force`
