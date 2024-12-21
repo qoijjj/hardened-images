@@ -7,6 +7,7 @@ modules:
         - gnome-epub-thumbnailer
         - gnome-tweaks
       remove:
+        - gnome-shell-extension-background-logo
         - gnome-tour
         - yelp
         - gnome-user-share

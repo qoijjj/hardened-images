@@ -64,6 +64,8 @@ audit-secureblue:
         "efi=disable_early_pci_dma"
         "debugfs=off"
         "ia32_emulation=0"
+        "l1tf=full,force"
+        "kvm-intel.vmentry_l1d_flush=always"
     )
 
     for karg in "${KARGS_LIST[@]}"; do

@@ -38,7 +38,7 @@ This command applies a fixed set of hardened boot parameters, and asks you wheth
 ### 32-bit support
 If you answer `N`, or press enter without any input, support for 32-bit programs will be disabled on the next boot. If you run exclusively modern software, chances are likely you don't need this, so it's safe to disable for additional attack surface reduction.
 
-However, there are certain exceptions. A couple common usecases are if you need Steam, or run an ocassional application in Wine you'll likely want to keep support for 32-bit programs. If this is the case, answer `Y`.
+However, there are certain exceptions. A couple common usecases are if you need Steam, or run an occasional application in Wine you'll likely want to keep support for 32-bit programs. If this is the case, answer `Y`.
 
 ### Force disable simultaneous multithreading
 If you answer `Y` when prompted, simultaneous multithreading (SMT, often called Hyperthreading) will be disabled on all hardware, regardless of known vulnerabilities. This can cause a reduction in the performance of certain tasks in favor of security.
@@ -89,8 +89,9 @@ Creating a dedicated wheel user and removing wheel from your primary user helps 
 > We log in as admin to do the final step of removing the user account's wheel privileges in order to make the operation of removing those privileges depend on having access to your admin account, and the admin account functioning correctly first.
 
 5. Log in as `admin`
-6. `run0 gpasswd -d {your username here} wheel`
-7. `reboot`
+6. `run0`
+7. `gpasswd -d {your username here} wheel`
+8. `reboot`
 
 When using a non-wheel user, you can add the user to other groups if you want. For example:
 

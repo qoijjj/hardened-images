@@ -46,7 +46,9 @@ set-kargs-hardening:
       --append-if-missing=spectre_v2=on \
       --append-if-missing=spec_store_bypass_disable=on \
       --append-if-missing=l1d_flush=on \
-      --append-if-missing=gather_data_sampling=force 
+      --append-if-missing=gather_data_sampling=force \
+      --append-if-missing=l1tf=full,force \
+      --append-if-missing=kvm-intel.vmentry_l1d_flush=always
     echo "Hardening kargs applied."
 
 # Remove all hardening boot parameters (requires reboot)
@@ -76,7 +78,9 @@ remove-kargs-hardening:
       --delete-if-present="spec_store_bypass_disable=on" \
       --delete-if-present="l1d_flush=on" \
       --delete-if-present="gather_data_sampling=force" \
-      --delete-if-present="ia32_emulation=0"
+      --delete-if-present="ia32_emulation=0" \
+      --delete-if-present="l1tf=full,force" \
+      --delete-if-present="kvm-intel.vmentry_l1d_flush=always"
     echo "Hardening kargs removed."
 
 # Set nvidia kargs
