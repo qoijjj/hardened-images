@@ -82,6 +82,8 @@
 
 `kvm-intel.vmentry_l1d_flush=always`
 
+## Optional kargs
+
 ### Force disable simultaneous multithreading
 
 **Disables this hardware feature on user request, regardless of whether it is affected by known vulnerabilities**
