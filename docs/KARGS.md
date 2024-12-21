@@ -94,7 +94,7 @@
 
 `ia32_emulation=0`
 
-### Unstable kargs
+### Unstable kargs: may cause issues on some hardware
 
 **Fill IOMMU protection gap by setting the busmaster bit during early boot**
 
