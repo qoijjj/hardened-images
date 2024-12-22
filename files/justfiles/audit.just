@@ -179,11 +179,11 @@ audit-secureblue:
             print_status "$SECUREDNS_TEST_STRING" "$STATUS_SUCCESS"
         else
             print_status "$SECUREDNS_TEST_STRING" "$STATUS_FAILURE"
-            suggestions+="System DNS resolution is not secure	To selected a secure resolver, run:	$ ujust dns-selector"
+            suggestions+="System DNS resolution is not secure	To select a secure resolver, run:	$ ujust dns-selector"
         fi
     else
         print_status "$SECUREDNS_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="System DNS resolution is not secure	To selected a secure resolver, run:	$ ujust dns-selector"
+        suggestions+="systemd-resolved is inactive	To start and enable it, run:	$ systemctl enable --now systemd-resolved"
     fi
 
     RPM_OSTREED_AUTOMATIC_TIMER_TEST_STRING="Ensuring rpm-ostreed-automatic.timer is enabled"
@@ -191,7 +191,7 @@ audit-secureblue:
         print_status "$RPM_OSTREED_AUTOMATIC_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$RPM_OSTREED_AUTOMATIC_TIMER_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="rpm-ostreed-automatic.timer is disabled	To enable, run:	$ run0 systemctl enable --now rpm-ostreed-automatic.timer"
+        suggestions+="rpm-ostreed-automatic.timer is disabled	To enable, run:	$ systemctl enable --now rpm-ostreed-automatic.timer"
     fi
 
     PODMAN_AUTO_UPDATE_TIMER_TEST_STRING="Ensuring podman-auto-update.timer is enabled"
@@ -199,7 +199,7 @@ audit-secureblue:
         print_status "$PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="podman-auto-update.timer is disabled	To enable, run:	$ run0 systemctl enable --now podman-auto-update.timer"
+        suggestions+="podman-auto-update.timer is disabled	To enable, run:	$ systemctl enable --now podman-auto-update.timer"
     fi
 
     GLOBAL_PODMAN_AUTO_UPDATE_TIMER_TEST_STRING="Ensuring podman-auto-update.timer is enabled globally"
@@ -223,7 +223,7 @@ audit-secureblue:
         print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="flatpak-system-update.timer is not enabled globally	To enable, run:	$ run0 systemctl enable --now flatpak-system-update.timer"
+        suggestions+="flatpak-system-update.timer is not enabled globally	To enable, run:	$ systemctl enable --now flatpak-system-update.timer"
     fi
 
     BASH_TEST_STRING="Ensuring bash environment lockdown"
