@@ -22,6 +22,8 @@ echo "WARNING luks drive encryption must have been enabled an install time for t
 echo "ENSURE you save the backup key this script creates at /var/home/$SUDO_USER/Desktop/luks_backup_key.txt ON ANOTHER COMPUTER"
 echo "This script uses systemd-cryptenroll to enable FIDO2 auto-unlock."
 echo "You can review systemd-cryptenroll's manpage for more information."
+echo "If you are using usbguard, plug into your hardware key, run 'usbguard list-devices'. Identify which number on the left is"
+echo "your device then run 'usbguard allow-device <number> -p'. You must exit this script with ctrl-C and do this now, BEFORE proceeding"
 echo "WARNING this script is designed not to, but could clear stored secrets on your fido2 key. Ensure you have backup options."
 read -p "Are you sure are good with this and want to enable TPM2 auto-unlock? (y/N): " -n 1 -r
 echo
