@@ -71,12 +71,12 @@ fi
 
 ## Run crypt enroll
 echo "Enrolling FIDO2 unlock requires your existing LUKS unlock password"
-systemd-cryptenroll --fido2-device=auto $CRYPT_DISK
+systemd-cryptenroll --fido2-device=auto "$CRYPT_DISK"
 sed -i '$ s/$/ fido2-device=auto/' /etc/crypttab
 
 echo "Creating backup key"
-systemd-cryptenroll --recovery-key $CRYPT_DISK > /var/home/$SUDO_USER/Desktop/luks_backup_key.txt
-chmod 644 /var/home/$SUDO_USER/Desktop/luks_backup_key.txt
+systemd-cryptenroll --recovery-key "$CRYPT_DISK" > "/var/home/$SUDO_USER/Desktop/luks_backup_key.txt"
+chmod 644 "/var/home/$SUDO_USER/Desktop/luks_backup_key.txt"
 
 echo "Congratulations!"
 echo "Your system is now configured to use FIDO2 unlocking via the hardware key you used earlier."
