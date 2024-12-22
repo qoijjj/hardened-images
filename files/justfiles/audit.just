@@ -25,7 +25,7 @@ audit-secureblue:
     }
     print_heading() {
         echo
-        gum style --background=4 --foreground=0 "$1"
+        gum style --background=38 --foreground=254 "$1"
         printf '=%.0s' {1..76}
         echo
     }
