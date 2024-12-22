@@ -10,10 +10,6 @@ whitelist=(
     "/usr/bin/nvidia-modprobe"
     # https://gitlab.freedesktop.org/polkit/polkit/-/issues/168
     "/usr/lib/polkit-1/polkit-agent-helper-1"
-    # Needed for flatpak on no-userns images
-    "/usr/bin/bwrap"
-    # Required for chrome suid sandbox on no-userns images
-    "/usr/lib64/chromium-browser/chrome-sandbox"
     # https://github.com/secureblue/secureblue/issues/119
     # Required for hardened_malloc to be used by suid-root processes
     "/usr/lib64/libhardened_malloc-light.so"
