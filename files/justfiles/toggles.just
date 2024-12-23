@@ -123,9 +123,18 @@ toggle-xwayland ACTION="prompt":
     source /usr/lib/ujust/ujust.sh
     OPTION={{ ACTION }}
     if [ "$OPTION" == "prompt" ]; then
-      echo "${bold}Toggling Xwayland (requires logout)${normal}"
-      echo 'For which DE/WM do you want to toggle Xwayland?'
-      OPTION=$(ugum choose "GNOME" "KDE Plasma" "Sway")
+      IMAGE="$(rpm-ostree status | grep '●')"
+      if [ -n "$(echo $IMAGE | grep 'silverblue')" ] ; then
+          OPTION=gnome
+      elif [ -n "$(echo $IMAGE | grep 'kinoite')" ] ; then
+          OPTION=plasma
+      elif [ -n "$(echo $IMAGE | grep 'sericea')" ] || [ -n "$(echo $IMAGE | grep 'sway')" ] ; then
+          OPTION=sway
+      else
+        echo "${bold}Toggling Xwayland (requires logout)${normal}"
+        echo 'For which DE/WM do you want to toggle Xwayland?'
+        OPTION=$(ugum choose "GNOME" "KDE Plasma" "Sway")
+      fi
     elif [ "$OPTION" == "help" ]; then
       echo "Usage: ujust toggle-xwayland <option>"
       echo "  <option>: Specify the quick option - 'gnome', 'plasma', or 'sway'"
@@ -134,7 +143,7 @@ toggle-xwayland ACTION="prompt":
       echo "  Use 'sway' to Toggle Xwayland for Sway."
       exit 0
     fi
-    if [ "$OPTION" == "GNOME" ] || [ "${OPTION,,}" == "gnome" ]; then
+    if [ "${OPTION,,}" == "gnome" ]; then
       GNOME_XWAYLAND_FILE="/etc/systemd/user/org.gnome.Shell@wayland.service.d/override.conf"
       if test -e $GNOME_XWAYLAND_FILE; then
         rm -f $GNOME_XWAYLAND_FILE
@@ -154,7 +163,7 @@ toggle-xwayland ACTION="prompt":
         chmod 644 $PLASMA_XWAYLAND_FILE
         echo "Xwayland for KDE Plasma has been disabled."
       fi
-    elif [ "$OPTION" == "Sway" ] || [ "${OPTION,,}" == "sway" ]; then
+    elif [ "${OPTION,,}" == "sway" ]; then
       SWAY_XWAYLAND_FILE="/etc/sway/config.d/99-noxwayland.conf"
       if test -e $SWAY_XWAYLAND_FILE; then
         rm -f $SWAY_XWAYLAND_FILE
@@ -220,4 +229,34 @@ toggle-bash-environment-lockdown:
       fi
     else
       echo "Capitalization matters when you type \"YES I UNDERSTAND\""
+    fi
+
+# Toggle unconfined domain userns creation
+toggle-unconfined-domain-userns-creation:
+    #! /bin/run0 /bin/bash
+    MODULE_NAME="harden_userns"
+
+    if semodule -l | grep -q "$MODULE_NAME"; then
+        echo "Module $MODULE_NAME is currently enabled. Disabling it..."
+        semodule --disable="$MODULE_NAME"
+        echo "Module $MODULE_NAME disabled."
+    else
+        echo "Module $MODULE_NAME is not currently enabled. Enabling it..."
+        semodule --enable="$MODULE_NAME"
+        echo "Module $MODULE_NAME enabled."
+    fi
+
+# Toggle container domain userns creation
+toggle-container-domain-userns-creation:
+    #! /bin/run0 /bin/bash
+    MODULE_NAME="harden_container_userns"
+
+    if semodule -l | grep -q "$MODULE_NAME"; then
+        echo "Module $MODULE_NAME is currently enabled. Disabling it..."
+        semodule --disable="$MODULE_NAME"
+        echo "Module $MODULE_NAME disabled."
+    else
+        echo "Module $MODULE_NAME is not currently enabled. Enabling it..."
+        semodule --enable="$MODULE_NAME"
+        echo "Module $MODULE_NAME enabled."
     fi

@@ -1,0 +1,2 @@
+(deny unconfined_t self (user_namespace (create)))
+(deny unconfined_service_t self (user_namespace (create)))

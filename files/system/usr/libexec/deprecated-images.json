@@ -5,6 +5,7 @@
       "nvidia-laptop",
       "server",
       "bluefin",
-      "aurora"
+      "aurora",
+      "userns"
     ]
 }
