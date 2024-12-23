@@ -5,16 +5,16 @@ passwd:
     - name: core
       groups:
         - wheel
-      password_hash: $y$j9T$mefBCJbp/a49aSkTT4hpE1$6BXtrIuV8856t4A9r/R1GW4aR9eKXxsmB8FXt56Hx70 # 'secureblue', change after installation
+      password_hash: $y$j9T$mefBCJbp/a49aSkTT4hpE1$6BXtrIuV8856t4A9r/R1GW4aR9eKXxsmB8FXt56Hx70 # 'secureblue'
       ssh_authorized_keys:
         - ssh-ed25519 <key>
 storage:
   files:
     - path: /opt/install_secureblue.sh
       contents:
-        source: https://raw.githubusercontent.com/secureblue/secureblue/refs/heads/live/install/install_secureblue.sh
+        source: https://raw.githubusercontent.com/secureblue/secureblue/refs/heads/live/files/system/usr/share/secureblue/install_secureblue.sh
         verification:
-          hash: sha256-e3794ea2c86715728cede472cc5f827520fafedcc0a98ea6d9e58d0aea47e07c # update after any change
+          hash: sha256-d4ba5bfb556e9d1e3789a02fab2ab2f871033cc6b1712945cdfb9ce4375eafe5
       mode: 0755
     - path: /var/home/core/.bash_profile
       overwrite: false
@@ -27,20 +27,12 @@ storage:
           if [ -f /opt/install_secureblue.sh ]; then
             echo "[+] Running secureblue installer at /opt/install_secureblue.sh"
             sudo /opt/install_secureblue.sh
+            echo "[+] Cleaning up"
             sed -i '9,$d' /var/home/core/.bash_profile
+            rm -f /opt/install_secureblue.sh
             echo "[+] Rebooting in 5 seconds ..."
             sleep 5
             sudo systemctl reboot
           else
-            echo "install_secureblue.sh not found!"
+            echo "[!] install_secureblue.sh not found!"
           fi
-systemd:
-  units:
-    - name: serial-getty@ttyS0.service
-      dropins:
-        - name: autologin.conf
-          contents: |
-            [Service]
-            TTYVTDisallocate=no
-            ExecStart=
-            ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
