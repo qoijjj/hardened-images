@@ -23,7 +23,12 @@ audit-secureblue:
 
         printf "%-64s [ \033[%dm%s\033[0m ]\n" "$check_name"... "$color_code" "$formatted_status"
     }
-
+    print_heading() {
+        echo
+        gum style --bold --background=63 --foreground=228 "$1"
+        printf '=%.0s' {1..76}
+        echo
+    }
     hasPermission() {
         local permissions=$1
         local prefix=$2
@@ -37,6 +42,9 @@ audit-secureblue:
         done
         return 1
     }
+    suggestions=()
+
+    print_heading Audit
 
     KARGS=$(rpm-ostree kargs)
     KARGS_LIST=(
@@ -92,7 +100,7 @@ audit-secureblue:
         parameter_name="$(sed -E -e "s/\./\\\./g" -e "s/\*/\.\*/" <<<"$sysctl_parameter")"
         readarray -t sysctl_parameter_values < <(grep -E "^$key = " <<<"$sysctl_results")
         for parameter_value in "${sysctl_parameter_values[@]}"; do
-            parameter_value="$(sed -E  -e "s/.* = (.*)/\1/" -e "s/\t/ /g" <<<"$result" | tr -s " " )"
+            parameter_value="$(sed -E  -e "s/.* = (.*)/\1/" -e "s/\/ /g" <<<"$result" | tr -s " " )"
             if [[ "$parameter_value" != "$hardened_parameter_value" && ("$hardened_parameter_value" != 0 && "$parameter_value" != disabled) ]]; then
                 sysctl_errors+=("$sysctl_parameter should be $hardened_parameter_value, found $parameter_value")
             fi
@@ -112,6 +120,7 @@ audit-secureblue:
         print_status "$SIGNED_IMAGE_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$SIGNED_IMAGE_TEST_STRING" "$STATUS_FAILURE"
+        suggestions+="The current image is not signed.	To rebase to a signed image download and run or re-run install_secureblue.sh from the secureblue github"
     fi
 
     MODPROBE_TEST_STRING="Ensuring no modprobe overrides"
@@ -172,9 +181,11 @@ audit-secureblue:
             print_status "$SECUREDNS_TEST_STRING" "$STATUS_SUCCESS"
         else
             print_status "$SECUREDNS_TEST_STRING" "$STATUS_FAILURE"
+            suggestions+="System DNS resolution is not secure	To select a secure resolver, run:	$ ujust dns-selector"
         fi
     else
         print_status "$SECUREDNS_TEST_STRING" "$STATUS_FAILURE"
+        suggestions+="systemd-resolved is inactive	To start and enable it, run:	$ systemctl enable --now systemd-resolved"
     fi
 
     RPM_OSTREED_AUTOMATIC_TIMER_TEST_STRING="Ensuring rpm-ostreed-automatic.timer is enabled"
@@ -182,6 +193,7 @@ audit-secureblue:
         print_status "$RPM_OSTREED_AUTOMATIC_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$RPM_OSTREED_AUTOMATIC_TIMER_TEST_STRING" "$STATUS_FAILURE"
+        suggestions+="rpm-ostreed-automatic.timer is disabled	To enable, run:	$ systemctl enable --now rpm-ostreed-automatic.timer"
     fi
 
     PODMAN_AUTO_UPDATE_TIMER_TEST_STRING="Ensuring podman-auto-update.timer is enabled"
@@ -189,6 +201,7 @@ audit-secureblue:
         print_status "$PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
+        suggestions+="podman-auto-update.timer is disabled	To enable, run:	$ systemctl enable --now podman-auto-update.timer"
     fi
 
     GLOBAL_PODMAN_AUTO_UPDATE_TIMER_TEST_STRING="Ensuring podman-auto-update.timer is enabled globally"
@@ -196,6 +209,7 @@ audit-secureblue:
         print_status "$GLOBAL_PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$GLOBAL_PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
+        suggestions+="podman-auto-update.timer is not enabled globally	To enable, run:	$ run0 systemctl enable --global podman-auto-update.timer"
     fi
 
     FLATPAK_USER_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-user-update.timer is enabled globally"
@@ -203,6 +217,7 @@ audit-secureblue:
         print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
+        suggestions+="flatpak-user-update.timer is not enabled globally	To enable, run:	$ run0 systemctl enable --global flatpak-user-update.timer"
     fi
 
     FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-system-update.timer is enabled"
@@ -210,6 +225,7 @@ audit-secureblue:
         print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
+        suggestions+="flatpak-system-update.timer is not enabled globally	To enable, run:	$ systemctl enable --now flatpak-system-update.timer"
     fi
 
     BASH_TEST_STRING="Ensuring bash environment lockdown"
@@ -234,6 +250,7 @@ audit-secureblue:
         print_status "$BASH_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$BASH_TEST_STRING" "$STATUS_FAILURE"
+        suggestions+="The bash environment is not locked down	Run:	$ ujust toggle-bash-environment-lockdown"
     fi
 
     WHEEL_TEST_STRING="Ensuring user is not a member of wheel"
@@ -344,73 +361,71 @@ audit-secureblue:
             if hasPermission "$permissions" "shared" "network"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
                 warnings+=("> $f has network access!")
-                warnings+=("> To remove it use Flatseal or run:")
-                warnings+=("> 'flatpak override -u --unshare=network $f'")
+                suggestions+=("$f has network access	To remove it use Flatseal or run:	\$ flatpak override -u --unshare=network $f")
             fi
             if hasPermission "$permissions" "sockets" "x11" && ! hasPermission "$permissions" "sockets" "fallback-x11"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f has x11 access!")
-                warnings+=("> To remove it use Flatseal or run:")
-                warnings+=("> 'flatpak override -u --nosocket=x11 $f'")
+                suggestions+=("$f has network access	To remove it use Flatseal or run:	\$ flatpak override -u --nosocket=x11 $f")
             fi
             if hasPermission "$permissions" "sockets" "session-bus"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
                 warnings+=("> $f has access to the D-Bus session bus!")
-                warnings+=("> To remove it use Flatseal or run:")
-                warnings+=("> 'flatpak override -u --nosocket=session-bus $f'")
+                suggestions+=("$f has network access	To remove it use Flatseal or run:	\$ flatpak override -u --nosocket=session-bus $f")
             fi
             if hasPermission "$permissions" "sockets" "system-bus"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
                 warnings+=("> $f has access to the D-Bus system bus!")
-                warnings+=("> To remove it use Flatseal or run:")
-                warnings+=("> 'flatpak override -u --nosocket=system-bus $f'")
+                suggestions+=("$f has network access	To remove it use Flatseal or run:	\$ flatpak override -u --nosocket=system-bus $f")
             fi
             if ! hasPermission "$permissions" "LD_PRELOAD" .*"/libhardened_malloc.so"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f is not requesting hardened_malloc!")
-                warnings+=("> To enable it run:")
-                warnings+=("> 'ujust harden-flatpak $f'")
+                suggestions+=("$f is not requesting hardened_malloc!	To enable it run:	\$ ujust harden-flatpak $f")
             fi
             if ! hasPermission "$permissions" "filesystems" "host-os:ro"; then
                 status="$STATUS_FAILURE"
-                warnings+=("> $f is missing host-os:ro permission,")
-                warnings+=("> which is needed to load hardened_malloc!")
-                warnings+=("> To add it use Flatseal or run:")
-                warnings+=("> 'flatpak override -u --filesystem=host-os:ro $f'")
+                warnings+=("> $f is missing host-os:ro permission!")
+                suggestions+=("$f is missing host-os:ro permission!	This is required to load hardened_malloc.	To add it use Flatseal or run:	\$ flatpak override -u --filesystem=host-os:ro $f")
             fi
             if [[ "$bluetooth_loaded" == "true" ]] && hasPermission "$permissions" "features" "bluetooth"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f has bluetooth access!")
-                warnings+=("> To remove it use Flatseal or run:")
-                warnings+=("> 'flatpak override -u --disallow=bluetooth $f'")
+                suggestions+=("$f has bluetooth access	To remove it use Flatseal or run:	\$ flatpak override -u --disallow=bluetooth $f")
             fi
             if [[ "$ptrace_allowed" == "true" ]] && hasPermission "$permissions" "features" "devel"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f has ptrace access!")
-                warnings+=("> To remove it use Flatseal or run:")
-                warnings+=("> 'flatpak override -u --disallow=devel $f'")
+                suggestions+=("$f has ptrace access	To remove it use Flatseal or run:	\$ flatpak override -u --disallow=devel $f")
             fi
             if hasPermission "$permissions" "shared" "ipc"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f has inter-process communications access!")
-                warnings+=("> To remove it use Flatseal or run:")
-                warnings+=("> 'flatpak override -u --unshare=ipc $f'")
+                suggestions+=("$f has inter-process communications access	To remove it use Flatseal or run:	\$ flatpak override -u --unshare=ipc $f")
             fi
             if hasPermission "$permissions" "devices" "all"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
-                warnings+=("> $f has device=all permission,")
-                warnings+=("> granting access to GPU, input devices, raw USB, and virtualization,")
-                warnings+=("> and introducing a vector for sandbox escapes!")
-                warnings+=("> To remove it use Flatseal or run:")
-                warnings+=("> 'flatpak override -u --nodevice=all $f'")
-                warnings+=("> We recommend you enable device=dri to grant GPU access, if needed by the app")
-                warnings+=("> To add GPU access use Flatseal or run:")
-                warnings+=("> 'flatpak override -u --device=dri $f'")
+                warnings+=("> $f has device=all permission!")
+                suggestions+=("$f has device=all permission	This grants access to input devices, GPUs, raw USB, and virtualization	This may also be used as a sandbox escape vector	To remove it use Flatseal or run:	\$ flatpak override -u --nodevice=all $f	If GPU access is required, use device=dri instead	\$ flatpak override -u --device=dri $f")
             fi
             flatpak_test_string="Auditing $f"
             print_status "$flatpak_test_string" "$status"
             for warning in "${warnings[@]}"; do
                 echo "$warning"
             done
+        done
+
+        print_heading Recommendations
+        for suggestion in "${suggestions[@]}"; do
+            readarray -t -d '	' list < <(printf "$suggestion")
+            echo "${list[0]}"
+            for (( i=1; i < ${#list[@]}; i++ )); do
+                if [[ ${list[i]} =~ ^"$" ]]; then
+                    gum style --bold "  ${list[i]}"
+                else
+                    echo -e "  ${list[i]}"
+                fi
+            done
+            echo
         done
     fi

@@ -136,6 +136,7 @@ This should no longer be required as of F41: https://discussion.fedoraproject.or
 #### Why won't `hardened-chromium` start?
 Try starting `hardened-chromium` from the commandline by running `chromium-browser`. If you get an error about the current profile already running on another device, this is an issue with upstream chromium which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/SingletonLock`.
 \
+\
 `bubblejail` ***SHOULD NOT*** be used on `hardened-chromium`, there are issues reported with the pairing and removing the `bubblejail` config after it is applied can be difficult. It should also be noted that applying additional sandboxing may interfere with chromium's own internal sandbox, so it can end up reducing security.
 
 #### Why won't `hardened-chromium` start on Nvidia?
