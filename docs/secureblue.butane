@@ -21,18 +21,22 @@ storage:
       append:
       - inline: |
           echo "[+] Disabling zincati"
-          sudo systemctl disable --now zincati.service
+          sudo systemctl disable --now zincati.service 2>/dev/null
           echo "[+] Stopping rpm-ostreed-automatic"
-          sudo systemctl stop rpm-ostreed-automatic.timer rpm-ostreed-automatic.service
-          if [ -f /opt/install_secureblue.sh ]; then
+          sudo systemctl stop rpm-ostreed-automatic.timer rpm-ostreed-automatic.service 2>/dev/null
+          if [ ! -f /opt/install_secureblue.sh ]; then
+            echo "[!] install_secureblue.sh not found!"
+          else
             echo "[+] Running secureblue installer at /opt/install_secureblue.sh"
             sudo /opt/install_secureblue.sh
-            echo "[+] Cleaning up"
-            sed -i '9,$d' /var/home/core/.bash_profile
-            rm -f /opt/install_secureblue.sh
-            echo "[+] Rebooting in 5 seconds ..."
-            sleep 5
-            sudo systemctl reboot
-          else
-            echo "[!] install_secureblue.sh not found!"
+            if [ $? != 0 ]; then
+              echo "[!] install_secureblue.sh did not complete successfully"
+            else
+              echo "[+] Cleaning up"
+              sed -i '9,$d' /var/home/core/.bash_profile
+              sudo rm -f /opt/install_secureblue.sh
+              echo "[+] Rebooting in 5 seconds ..."
+              sleep 5
+              sudo systemctl reboot
+            fi
           fi
