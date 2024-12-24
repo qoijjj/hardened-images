@@ -153,4 +153,4 @@ This is an [upstream bug](https://issues.chromium.org/issues/373893056) that pre
 Extensions in `hardened-chromium` are disabled by default, for security reasons it is not advised to use them. If you want content/ad blocking, that is already built into `hardened-chromium` and enabled by default. If you require extensions, you can re-enable them by disabling the `Disable Extensions` toggle under `chrome://settings/security`, then restart your browser (this toggle is per-profile).
 \
 \
-If the extension you installed doesn't work, it is likely because it requires WebAssembly (WASM) for some cryptographic library or some other optimizations (this is the case with the Bitwarden extension). To re-enable JavaScript JIT and WASM for extensions, disable the feature `chrome://flags/#disable-internal-page-jit`.
+If the extension you installed doesn't work, it is likely because it requires WebAssembly (WASM) for some cryptographic library or some other optimizations (this is the case with the Bitwarden extension). To re-enable JavaScript JIT and WASM for extensions, enable the feature `chrome://flags/#internal-page-jit`.
