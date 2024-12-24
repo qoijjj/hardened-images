@@ -92,7 +92,7 @@ Then, run it from the directory you downloaded it to:
 bash install_secureblue.sh
 ```
 
-If you have not yet installed Fedora CoreOS there is a butane file available [here](securecore.butane) to automatically configure an admin user and rebase to Securecore. You will need to download the [testing ISO](https://fedoraproject.org/coreos/download?stream=testing) as stable is not supported.
+If you have not yet installed Fedora CoreOS there is a butane file available [here](securecore.butane) to automatically configure an admin user and rebase to Securecore. You will need to download the [testing ISO](https://fedoraproject.org/coreos/download?stream=testing) as stable is not supported. You can learn more about butane [here](https://coreos.github.io/butane/specs/).
 
 On another machine you will need to edit the butane file to contain your public SSH key and use `butane` to convert it into an ignition file. Or you can pull the butane binary from [github](https://github.com/coreos/butane/releases) while in the live DVD.
 > [!NOTE]
