@@ -82,7 +82,7 @@ Have a look at [PREINSTALL-README](PREINSTALL-README.md) before proceeding.
 > 
 > For more details on the available images, have a look at [IMAGES](IMAGES.md) before proceeding.
 
-To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, download the script below:
+To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or an existing [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, download the script below:
 
 [![Download](https://shields.io/badge/-Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/secureblue/secureblue/releases/latest/download/install_secureblue.sh)
 
@@ -90,6 +90,39 @@ Then, run it from the directory you downloaded it to:
 
 ```
 bash install_secureblue.sh
+```
+
+If you have not yet installed Fedora CoreOS there is a butane file available [here](securecore.butane) to automatically configure an admin user and rebase to Securecore. You will need to download the [testing ISO](https://fedoraproject.org/coreos/download?stream=testing) as stable is not supported.
+
+On another machine you will need to edit the butane file to contain your public SSH key and use `butane` to convert it into an ignition file. Or you can pull the butane binary from [github](https://github.com/coreos/butane/releases) while in the live DVD.
+> [!NOTE]
+> In the butane file the admin user `core` is configured to use the password `secureblue`. You need to change this when you add your SSH key or after rebasing and rebooting.
+To use your own password generate the hash with `mkpasswd -m yescrypt -R 11` on another machine or you can do this while on the live DVD (mkpasswd not bundled):
+```
+echo 'core:<PASSWORD>' | sudo chpasswd -s 11 -c YESCRYPT
+sed -i "s@\$y\$.*@$(sudo grep -e ^core /etc/shadow | cut -d : -f 2)@" securecore.butane
+```
+
+To pull butane from github while in the live DVD:
+```
+curl -LO <link>
+chmod +x butane-*
+```
+
+To convert the butane file to an ignition file:
+
+```
+butane --pretty securecore.butane > securecore.ign
+```
+
+Host this butane configuration on a website or copy it to a USB drive. If you choose to host it on a website, continue installation with:
+```
+sudo coreos-installer install /dev/disk --ignition-url https://somewhere/securecore.ign`
+```
+
+If you chose to copy the ignition file to a USB or you converted the butane file while in the live DVD, continue installation with:
+```
+sudo coreos-installer install /dev/disk --ignition-file /path/to/securecore.ign
 ```
 
 
