@@ -97,6 +97,7 @@ If you have not yet installed Fedora CoreOS there is a butane file available [he
 On another machine you will need to edit the butane file to contain your public SSH key and use `butane` to convert it into an ignition file. Or you can pull the butane binary from [github](https://github.com/coreos/butane/releases) while in the live DVD.
 > [!NOTE]
 > In the butane file the admin user `core` is configured to use the password `secureblue`. You need to change this when you add your SSH key or after rebasing and rebooting.
+
 To use your own password generate the hash with `mkpasswd -m yescrypt -R 11` on another machine or you can do this while on the live DVD (mkpasswd not bundled):
 ```
 echo 'core:<PASSWORD>' | sudo chpasswd -s 11 -c YESCRYPT
