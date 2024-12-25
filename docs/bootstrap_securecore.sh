@@ -36,14 +36,14 @@ fetch_butane_bin() {
 }
 
 edit_butane_cfg() {
-    local USER_PASSWORD CONFIRM_USER_PASSWORD USER_SSH_KEY
+    local USER_PASSWORD CONFIRM_USER_PASSWORD
     while true
     do
         read -s -p 'Enter desired password: ' USER_PASSWORD
         echo
         read -s -p 'Confirm password: ' CONFIRM_USER_PASSWORD
         echo
-        if [ ${USER_PASSWORD} != ${CONFIRM_USER_PASSWORD} ]; then
+        if [ "${USER_PASSWORD}" != "${CONFIRM_USER_PASSWORD}" ]; then
             echo "Passwords do not match"
             USER_PASSWORD=""
             CONFIRM_USER_PASSWORD=""
@@ -55,8 +55,13 @@ edit_butane_cfg() {
     echo "core:${USER_PASSWORD}" | sudo chpasswd -s 11 -c YESCRYPT
     sed -i "s@\$y\$.*@$(sudo grep -e ^core /etc/shadow | cut -d : -f 2)@" ${SC_BUTANE_CONF}
 
-    read -p 'Enter ssh key: ' USER_SSH_KEY
-    echo
+    # you can pass USER_SSH_KEY="" to the script if it is better for you
+    # if not, it will be read interactively here
+    if [[ ${USER_SSH_KEY} != "ssh-"* ]]; then
+        local USER_SSH_KEY
+        read -p 'Enter ssh public key (ssh-<alg> <key>): ' USER_SSH_KEY
+        echo
+    fi
     sed -i "s@ssh-ed25519 <key>@${USER_SSH_KEY}@" ${SC_BUTANE_CONF}
 }
 
