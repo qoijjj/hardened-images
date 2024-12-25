@@ -92,39 +92,23 @@ Then, run it from the directory you downloaded it to:
 bash install_secureblue.sh
 ```
 
-If you have not yet installed Fedora CoreOS there is a butane file available [here](securecore.butane) to automatically configure an admin user and rebase to Securecore. You will need to download the [testing ISO](https://fedoraproject.org/coreos/download?stream=testing) as stable is not supported. You can learn more about butane [here](https://coreos.github.io/butane/specs/).
+For new Fedora CoreOS installations there is a shell [script](bootstrap_securecore.sh) available to help you configure your new system and ease the initial installation process.
 
-On another machine you will need to edit the butane file to contain your public SSH key and use `butane` to convert it into an ignition file. Or you can pull the butane binary from [github](https://github.com/coreos/butane/releases) while in the live DVD.
-> [!NOTE]
-> In the butane file the admin user `core` is configured to use the password `secureblue`. You need to change this when you add your SSH key or after rebasing and rebooting.
-
-To use your own password generate the hash with `mkpasswd -m yescrypt -R 11` on another machine or you can do this while on the live DVD (mkpasswd not bundled):
-```
-echo 'core:<PASSWORD>' | sudo chpasswd -s 11 -c YESCRYPT
-sed -i "s@\$y\$.*@$(sudo grep -e ^core /etc/shadow | cut -d : -f 2)@" securecore.butane
-```
-
-To pull butane from github while in the live DVD:
-```
-curl -LO <link>
-chmod +x butane-*
-```
-
-To convert the butane file to an ignition file:
+To use the script, run this when you get a prompt on the live DVD:
 
 ```
-butane --pretty securecore.butane > securecore.ign
+curl -O https://github.com/secureblue/secureblue/blob/live/docs/bootstrap_securecore.sh
+chmod +x bootstrap_securecore.sh
+./bootstrap_securecore.sh
 ```
 
-Host this butane configuration on a website or copy it to a USB drive. If you choose to host it on a website, continue installation with:
+It will ask you for your desired password and your SSH public key. If you wish to provide the SSH key via an environment variable, run it this way instead:
+
 ```
-sudo coreos-installer install /dev/disk --ignition-url https://somewhere/securecore.ign`
+USER_SSH_KEY="<publickey>" ./bootstrap_securecore.sh
 ```
 
-If you chose to copy the ignition file to a USB or you converted the butane file while in the live DVD, continue installation with:
-```
-sudo coreos-installer install /dev/disk --ignition-file /path/to/securecore.ign
-```
+Upon reboot, log into your administrator account `core` with the password you gave the bootstrap script or log in with your SSH key. The [secureblue installer](https://github.com/secureblue/secureblue/releases/latest/download/install_secureblue.sh) will automatically run. Answer the questions. When the installer is finished, your system will automatically reboot into your new Securecore installation.
 
 
 # Post-install
