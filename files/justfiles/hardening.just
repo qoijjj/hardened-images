@@ -113,7 +113,7 @@ setup-usbguard:
         usbguard generate-policy > /etc/usbguard/rules.conf
         systemctl enable --now usbguard.service
         usbguard add-user $1
-	sed -i "/IPCAllowedGroups=wheel/s/$/ ipc/" /etc/usbguard/usbguard-daemon.conf
+	sed -i "/IPCAllowedGroups=wheel/s/$/ usbguard/" /etc/usbguard/usbguard-daemon.conf
 	systemctl restart usbguard
     ' -- $USER
     systemctl enable --user --now usbguard-notifier.service
