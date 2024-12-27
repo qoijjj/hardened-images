@@ -111,7 +111,7 @@ setup-usbguard:
         mkdir -p /etc/usbguard
         chmod 755 /etc/usbguard
         usbguard generate-policy > /etc/usbguard/rules.conf
-	sed -i "/IPCAllowedGroups=wheel/s/$/ usbguard/" /etc/usbguard/usbguard-daemon.conf
+        sed -i "/IPCAllowedGroups=wheel/s/$/ usbguard/" /etc/usbguard/usbguard-daemon.conf
         restorecon -vR /var/log/usbguard
         systemctl enable --now usbguard.service
         usbguard add-user $1
