@@ -134,7 +134,9 @@ mkdir -p ~/.config/environment.d && echo "GSK_RENDERER=gl" >> ~/.config/environm
 This should no longer be required as of F41: https://discussion.fedoraproject.org/t/gdk-message-error-71-protocol-error-dispatching-to-wayland-display/127927/42
 
 #### Why won't `hardened-chromium` start?
+
 Try starting `hardened-chromium` from the commandline by running `chromium-browser`. If you get an error about the current profile already running on another device, this is an issue with upstream chromium which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/SingletonLock`.
+\
 \
 `bubblejail` ***SHOULD NOT*** be used on `hardened-chromium`, there are issues reported with the pairing and removing the `bubblejail` config after it is applied can be difficult. It should also be noted that applying additional sandboxing may interfere with chromium's own internal sandbox, so it can end up reducing security.
 
@@ -145,3 +147,10 @@ On some Nvidia machines, `hardened-chromium` defaults to the X11 backend. Since 
 #### Why don't some websites that require JIT/WebAssembly work in hardened-chromium even with the V8 Optimizer toggle enabled?
 
 This is an [upstream bug](https://issues.chromium.org/issues/373893056) that prevents V8 optimization settings from being applied to iframes embedded within a parent website. As a result, WebAssembly may not function on services that use a separate URL for their content delivery network or other included domains, such as VSCode Web (https://github.dev). To make VSCode Web work properly, you need to manually allow V8 optimizations for the CDN by adding `https://[*.]vscode-cdn.net` to your list of trusted websites.
+
+#### Why don't extensions work in `hardened-chromium`?
+
+Extensions in `hardened-chromium` are disabled by default, for security reasons it is not advised to use them. If you want content/ad blocking, that is already built into `hardened-chromium` and enabled by default. If you require extensions, you can re-enable them by disabling the `Disable Extensions` toggle under `chrome://settings/security`, then restart your browser (this toggle is per-profile).
+\
+\
+If the extension you installed doesn't work, it is likely because it requires WebAssembly (WASM) for some cryptographic library or some other optimizations (this is the case with the Bitwarden extension). To re-enable JavaScript JIT and WASM for extensions, enable the feature `chrome://flags/#internal-page-jit`.
