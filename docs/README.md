@@ -81,6 +81,8 @@ Have a look at [PREINSTALL-README](PREINSTALL-README.md) before proceeding.
 > If you don't already have a Fedora Atomic installation, use a Fedora Atomic ISO that matches your secureblue target image to install one. If you want to use a secureblue Silverblue image, start with the Fedora Silverblue ISO, Kinoite for Kinoite, Sericea (Sway Atomic) for Sericea and all the Wayblue images, and CoreOS for all the securecore images.
 > 
 > For more details on the available images, have a look at [IMAGES](IMAGES.md) before proceeding.
+>
+> For instructions on installing Fedora CoreOS, please see the documentation [here](https://docs.fedoraproject.org/en-US/fedora-coreos/). There is a sample butane configuration file [here](securecore.butane).
 
 To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, download the script below:
 
@@ -91,8 +93,6 @@ Then, run it from the directory you downloaded it to:
 ```
 bash install_secureblue.sh
 ```
-
-For instructions on installing Fedora CoreOS, please see the documentation [here](https://docs.fedoraproject.org/en-US/fedora-coreos/). Specifically [this](https://coreos.github.io/butane/specs/) and [this](https://docs.fedoraproject.org/en-US/fedora-coreos/producing-ign/). There is a sample butane configuration file [here](securecore.butane).
 
 
 # Post-install
