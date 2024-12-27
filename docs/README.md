@@ -82,7 +82,7 @@ Have a look at [PREINSTALL-README](PREINSTALL-README.md) before proceeding.
 > 
 > For more details on the available images, have a look at [IMAGES](IMAGES.md) before proceeding.
 >
-> For instructions on installing Fedora CoreOS, please see the documentation [here](https://docs.fedoraproject.org/en-US/fedora-coreos/). There is a sample butane configuration file [here](securecore.butane).
+> For instructions on installing Fedora CoreOS, please see the documentation [here](https://docs.fedoraproject.org/en-US/fedora-coreos/). There is a sample butane configuration file [here](example.butane).
 
 To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, download the script below:
 
