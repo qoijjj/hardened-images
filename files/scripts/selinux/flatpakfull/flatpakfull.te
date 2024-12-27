@@ -22,6 +22,10 @@ allow flatpak_t self:user_namespace create;
 unconfined_domain_noaudit(flatpak_t)
 
 optional_policy(`
+	rtkit_scheduled(flatpak_t)
+')
+
+optional_policy(`
 	gen_require(`
 		type unconfined_t;
 		role unconfined_r;
