@@ -82,7 +82,7 @@ Have a look at [PREINSTALL-README](PREINSTALL-README.md) before proceeding.
 > 
 > For more details on the available images, have a look at [IMAGES](IMAGES.md) before proceeding.
 
-To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or an existing [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, download the script below:
+To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, download the script below:
 
 [![Download](https://shields.io/badge/-Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/secureblue/secureblue/releases/latest/download/install_secureblue.sh)
 
@@ -92,23 +92,7 @@ Then, run it from the directory you downloaded it to:
 bash install_secureblue.sh
 ```
 
-For new Fedora CoreOS installations there is a shell [script](bootstrap_securecore.sh) available to help you configure your new system and ease the initial installation process.
-
-To use the script, run this when you get a prompt on the live DVD:
-
-```
-curl -O https://github.com/secureblue/secureblue/blob/live/docs/bootstrap_securecore.sh
-chmod +x bootstrap_securecore.sh
-./bootstrap_securecore.sh
-```
-
-It will ask you for your desired password and your SSH public key. If you wish to provide the SSH key via an environment variable, run it this way instead:
-
-```
-USER_SSH_KEY="<publickey>" ./bootstrap_securecore.sh
-```
-
-Upon reboot, log into your administrator account `core` with the password you gave the bootstrap script or log in with your SSH key. The [secureblue installer](https://github.com/secureblue/secureblue/releases/latest/download/install_secureblue.sh) will automatically run. Answer the questions. When the installer is finished, your system will automatically reboot into your new Securecore installation.
+.
 
 
 # Post-install
