@@ -16,27 +16,28 @@ storage:
         verification:
           hash: sha256-d4ba5bfb556e9d1e3789a02fab2ab2f871033cc6b1712945cdfb9ce4375eafe5
       mode: 0755
-    - path: /var/home/core/.bash_profile
-      overwrite: false
-      append:
-      - inline: |
-          echo "[+] Disabling zincati"
+    - path: /opt/run_install_secureblue.sh
+      contents:
+        inline: |
           sudo systemctl disable --now zincati.service 2>/dev/null
-          echo "[+] Stopping rpm-ostreed-automatic"
           sudo systemctl stop rpm-ostreed-automatic.timer rpm-ostreed-automatic.service 2>/dev/null
           if [ ! -f /opt/install_secureblue.sh ]; then
-            echo "[!] install_secureblue.sh not found!"
+            echo "Error: install_secureblue.sh was not downloaded."
           else
-            echo "[+] Running secureblue installer at /opt/install_secureblue.sh"
             sudo /opt/install_secureblue.sh
             if [ $? != 0 ]; then
-              echo "[!] install_secureblue.sh did not complete successfully"
+              echo "Error: Secureblue installer failed."
             else
-              echo "[+] Cleaning up"
-              sed -i '9,$d' /var/home/core/.bash_profile
-              sudo rm -f /opt/install_secureblue.sh
-              echo "[+] Rebooting in 5 seconds ..."
+              sed -i "/\/opt\/run_install_secureblue.sh/d" /var/home/core/.bash_profile
+              sudo rm -f /opt/*install_secureblue.sh
+              echo "Automatically rebooting in 5 seconds..."
               sleep 5
               sudo systemctl reboot
             fi
           fi
+      mode: 0755
+    - path: /var/home/core/.bash_profile
+      overwrite: false
+      append:
+      - inline: |
+          /opt/run_install_secureblue.sh
