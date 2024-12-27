@@ -92,7 +92,7 @@ Then, run it from the directory you downloaded it to:
 bash install_secureblue.sh
 ```
 
-.
+For instructions on installing Fedora CoreOS, please see the documentation [here](https://docs.fedoraproject.org/en-US/fedora-coreos/). Specifically [this](https://coreos.github.io/butane/specs/) and [this](https://docs.fedoraproject.org/en-US/fedora-coreos/producing-ign/). There is a sample butane configuration file [here](securecore.butane).
 
 
 # Post-install
