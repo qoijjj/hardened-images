@@ -184,16 +184,14 @@ install-steam:
     echo "Please select a method to install steam:"
     echo "    1) Flatpak - will install the steam flatpak from flathub-unverified"
     echo "    2) Distrobox - will set up steam via the bazzite-arch distrobox image"
-    echo "    3) Native layer - will install the steam rpm from negativo17"
     while [[ "$valid_input" == "0" ]]; do
-        read -p "Selection [1-3]: " method_selection
-        if [[ "$method_selection" == [123]* ]]; then
+        read -p "Selection [1-2]: " method_selection
+        if [[ "$method_selection" == [12]* ]]; then
             valid_input="1"
         else
             echo "That is not a valid selection."
         fi
     done
-    valid_input="0"
 
     echo "" # blank space
     case "$method_selection" in
@@ -224,22 +222,6 @@ install-steam:
             echo "Exporting Steam from bazzite-arch distrobox."
             distrobox-enter -n bazzite-arch -- distrobox-export --app steam
             ;;
-        3)
-            echo "Native layer method selected."
-            if [ -n "$(ujust semodule-check harden_userns)" ] ; then
-                echo "Steam rpm requires that secureblue's harden_userns module be disabled"
-                echo "Please run 'ujust toggle-unconfined-domain-userns-creation'"
-                unconfined_userns_now=""
-                read -p "Would you like to run 'ujust toggle-unconfined-domain-userns-creation' now? [Y/n] " unconfined_userns_now
-                unconfined_userns_now=${unconfined_userns_now:-y}
-                if [[ "$unconfined_userns_now" == [Yy]* ]]; then
-                    echo "Running 'ujust toggle-unconfined-domain-userns-creation'"
-                    ujust toggle-unconfined-domain-userns-creation
-                fi
-            fi
-            echo "Installing Steam."
-            rpm-ostree install steam
-            ;;
     esac
 
     echo "Steam requires support for 32-bit processes/syscalls."
@@ -248,15 +230,6 @@ install-steam:
         rpm-ostree kargs --delete-if-present="ia32_emulation=0"
     else
         echo "Do not set the 'ia32_emulation=0' kernel argument."
-    fi
-    if [[ "$method_selection" == 3 ]]; then
-        echo "Steam native layer installed. Please reboot to access the new deployment"
-        reboot_now=""
-        read -p "Would you like to reboot now? [y/N] " reboot_now
-        if [[ "$reboot_now" == [Yy]* ]]; then
-            echo "Rebooting"
-            systemctl reboot
-        fi
     fi
 
 # Rebase to a different secureblue Desktop Environment/Atomic Desktop
