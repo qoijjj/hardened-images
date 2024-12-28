@@ -27,6 +27,6 @@ setup-luks-fido2-unlock:
     run0 /usr/libexec/setup-luks-fido2-unlock
 
 # Disable automatic LUKS unlock via a FIDO2 hardware key
-setup-luks-fido2-unlock:
+remove-luks-fido2-unlock:
     #!/usr/bin/bash
     run0 /usr/libexec/disable-luks-fido2-unlock
