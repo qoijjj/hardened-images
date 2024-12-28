@@ -152,14 +152,22 @@ enable-flathub-unfiltered:
     #!/usr/bin/bash
     flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
 
+# search for an installed SELinux module
+semodule-check MODULE:
+    #! /bin/run0 /bin/bash
+    if [ -n "$( semodule -l | grep {{ MODULE }} )" ] ; then
+        semodule -l | grep {{ MODULE }}
+    fi
+
 # Install Steam via choice of 3 methods
 install-steam:
-    #!/bin/bash
-    if [ -z "$(pgrep Xwayland)" ] ; then
-        echo "Steam requires Xwayland, which your variant of secureblue has disabled by default."
+    #!/usr/bin/bash
+    if [ -z "$(pgrep Xwayland)" ] && [ -z "$(pgrep Xorg)" ] ; then
+        echo "Steam requires X or Xwayland, which your variant of secureblue has disabled by default."
         echo "Please run 'ujust toggle-xwayland' to re-enable it."
         toggle_xwayland_now=""
-        read -p "Would you like to run 'ujust toggle-xwayland' now? [y/N] " toggle_xwayland_now
+        read -p "Would you like to run 'ujust toggle-xwayland' now? [Y/n] " toggle_xwayland_now
+        toggle_xwayland_now=${toggle_xwayland_now:-y}
         if [[ "$toggle_xwayland_now" == [Yy]* ]]; then
             echo "Running 'ujust toggle-xwayland'"
             ujust toggle-xwayland
@@ -174,18 +182,16 @@ install-steam:
     valid_input="0"
     method_selection=""
     echo "Please select a method to install steam:"
-    echo "    1) Flatpak - will enable the flathub-unverified repo"
-    echo "    2) Distrobox - will configure the bazzite-arch distrobox image"
-    echo "    3) Native layer - will install the steam rpm from negativo17"
+    echo "    1) Flatpak - will install the steam flatpak from flathub-unverified"
+    echo "    2) Distrobox - will set up steam via the bazzite-arch distrobox image"
     while [[ "$valid_input" == "0" ]]; do
-        read -p "Selection [1-3]: " method_selection
-        if [[ "$method_selection" == [123]* ]]; then
+        read -p "Selection [1-2]: " method_selection
+        if [[ "$method_selection" == [12]* ]]; then
             valid_input="1"
         else
             echo "That is not a valid selection."
         fi
     done
-    valid_input="0"
 
     echo "" # blank space
     case "$method_selection" in
@@ -200,15 +206,21 @@ install-steam:
             ;;
         2)
             echo "Distrobox method selected."
+            if [ -n "$(ujust semodule-check harden_container_userns)" ] ; then
+                echo "Distrobox requires that secureblue's harden-container-userns module be disabled"
+                echo "Please run 'ujust toggle-container-domain-userns-creation'"
+                container_userns_now=""
+                read -p "Would you like to run 'ujust toggle-container-domain-userns-creation' now? [Y/n] " container_userns_now
+                container_userns_now=${container_userns_now:-y}
+                if [[ "$container_userns_now" == [Yy]* ]]; then
+                    echo "Running 'ujust toggle-container-domain-userns-creation'"
+                    ujust toggle-container-domain-userns-creation
+                fi
+            fi
             echo "Creating bazzite-arch distrobox."
             distrobox-create --unshare-netns --nvidia --image ghcr.io/ublue-os/bazzite-arch --name bazzite-arch -Y
             echo "Exporting Steam from bazzite-arch distrobox."
             distrobox-enter -n bazzite-arch -- distrobox-export --app steam
-            ;;
-        3)
-            echo "Native layer method selected."
-            echo "Installing Steam."
-            rpm-ostree install steam
             ;;
     esac
 
@@ -219,12 +231,8 @@ install-steam:
     else
         echo "Do not set the 'ia32_emulation=0' kernel argument."
     fi
-    if [[ "$method_selection" == 3 ]]; then
-        echo "Steam native layer installed. Please reboot to access the new deployment"
-        reboot_now=""
-        read -p "Would you like to reboot now? [y/N] " reboot_now
-        if [[ "$reboot_now" == [Yy]* ]]; then
-            echo "Rebooting"
-            systemctl reboot
-        fi
-    fi
+
+# Rebase to a different secureblue Desktop Environment/Atomic Desktop
+rebase-secureblue:
+    #!/usr/bin/bash
+    /usr/bin/bash /usr/share/secureblue/install_secureblue.sh
