@@ -71,6 +71,19 @@ if [[ ! -L "$CRYPT_DISK" ]]; then
   exit 1
 fi
 
+if cryptsetup luksDump "$CRYPT_DISK" | grep systemd-fido2 > /dev/null; then
+  KEYSLOT=$(cryptsetup luksDump "$CRYPT_DISK" | sed -n '/systemd-fido2$/,/Keyslot:/p' | grep Keyslot|awk '{print $2}')
+  echo "FIDO2 already present in LUKS keyslot $KEYSLOT of $CRYPT_DISK."
+  read -p "Wipe it and re-enroll? (y/N): " -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Nn]$ ]]; then
+    echo
+    echo "Either clear the existing FIDO2 keyslot before retrying, else choose 'y' next time."
+    echo "Exiting..."
+    [[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
+  fi
+fi
+
 ## Run crypt enroll
 echo "Enrolling FIDO2 unlock requires your existing LUKS unlock password"
 systemd-cryptenroll --fido2-device=auto "$CRYPT_DISK"
