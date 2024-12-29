@@ -1,5 +1,7 @@
 modules:
   - type: rpm-ostree
+    install:
+      - hardened-chromium-qt6-ui
     remove:
       - kde-connect
       - kde-connect-libs
