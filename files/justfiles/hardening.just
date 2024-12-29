@@ -106,13 +106,14 @@ flatpak-permissions-lockdown:
 setup-usbguard:
     #!/usr/bin/bash
     echo "Notice: This will generate a policy based on your existing connected USB devices."
-    ACTIVE_USERNAME=$(whoami)
     run0 sh -c '
         mkdir -p /var/log/usbguard
         mkdir -p /etc/usbguard
         chmod 755 /etc/usbguard
         usbguard generate-policy > /etc/usbguard/rules.conf
+        sed -i "/IPCAllowedGroups=wheel/s/$/ usbguard/" /etc/usbguard/usbguard-daemon.conf
+        restorecon -vR /var/log/usbguard
         systemctl enable --now usbguard.service
         usbguard add-user $1
-    ' -- $ACTIVE_USERNAME
+    ' -- $USER
     systemctl enable --user --now usbguard-notifier.service

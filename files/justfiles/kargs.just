@@ -80,7 +80,8 @@ remove-kargs-hardening:
       --delete-if-present="gather_data_sampling=force" \
       --delete-if-present="ia32_emulation=0" \
       --delete-if-present="l1tf=full,force" \
-      --delete-if-present="kvm-intel.vmentry_l1d_flush=always"
+      --delete-if-present="kvm-intel.vmentry_l1d_flush=always" \
+      --delete-if-present="nosmt=force"
     echo "Hardening kargs removed."
 
 # Set nvidia kargs
