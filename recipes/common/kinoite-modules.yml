@@ -1,5 +1,9 @@
 modules:
   - type: rpm-ostree
+    repos:
+      - https://copr.fedorainfracloud.org/coprs/secureblue/hardened-chromium/repo/fedora-%OS_VERSION%/secureblue-hardened-chromium-fedora-%OS_VERSION%.repo
+    install:
+      - hardened-chromium-qt6-ui
     remove:
       - kde-connect
       - kde-connect-libs
