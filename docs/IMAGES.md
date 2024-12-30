@@ -65,6 +65,15 @@
 | `wayblue-sway-nvidia-hardened`           | Wayblue-Sway          | Yes, closed drivers     |
 | `wayblue-sway-nvidia-open-hardened`      | Wayblue-Sway          | Yes, open drivers       |
 
+### Experimental
+
+#### Cosmic
+| Name                                      | Base                  | Nvidia Support         |
+|-------------------------------------------|-----------------------|-------------------------|
+| `cosmic-main-hardened`          | Cosmic       | No                      |
+| `cosmic-nvidia-hardened`        | Cosmic       | Yes, closed drivers     |
+| `cosmic-nvidia-open-hardened`   | Cosmic       | Yes, open drivers       |
+
 ## Server
 > [!NOTE]
 > After you finish setting up your [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, you will need to disable `zincati.service` before rebasing to securecore.
@@ -77,13 +86,3 @@
 | `securecore-zfs-main-hardened`           | CoreOS    | No                      | Yes         |
 | `securecore-zfs-nvidia-hardened`         | CoreOS    | Yes, closed drivers     | Yes         |
 | `securecore-zfs-nvidia-open-hardened`    | CoreOS    | Yes, open drivers       | Yes         |
-
-
-### Experimental
-
-#### Cosmic
-| Name                                      | Base                  | Nvidia Support         |
-|-------------------------------------------|-----------------------|-------------------------|
-| `cosmic-main-hardened`          | Cosmic       | No                      |
-| `cosmic-nvidia-hardened`        | Cosmic       | Yes, closed drivers     |
-| `cosmic-nvidia-open-hardened`   | Cosmic       | Yes, open drivers       |
