@@ -366,17 +366,17 @@ audit-secureblue:
             if hasPermission "$permissions" "sockets" "x11" && ! hasPermission "$permissions" "sockets" "fallback-x11"; then
                 status="$STATUS_FAILURE"
                 warnings+=("> $f has x11 access!")
-                suggestions+=("$f has network access	To remove it use Flatseal or run:	\$ flatpak override -u --nosocket=x11 $f")
+                suggestions+=("$f has x11 access	To remove it use Flatseal or run:	\$ flatpak override -u --nosocket=x11 $f")
             fi
             if hasPermission "$permissions" "sockets" "session-bus"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
                 warnings+=("> $f has access to the D-Bus session bus!")
-                suggestions+=("$f has network access	To remove it use Flatseal or run:	\$ flatpak override -u --nosocket=session-bus $f")
+                suggestions+=("$f has access to the D-Bus session bus	To remove it use Flatseal or run:	\$ flatpak override -u --nosocket=session-bus $f")
             fi
             if hasPermission "$permissions" "sockets" "system-bus"; then
                 [[ "$status" != "$STATUS_FAILURE" ]] && status="$STATUS_WARNING"
                 warnings+=("> $f has access to the D-Bus system bus!")
-                suggestions+=("$f has network access	To remove it use Flatseal or run:	\$ flatpak override -u --nosocket=system-bus $f")
+                suggestions+=("$f has access to the D-Bus system bus	To remove it use Flatseal or run:	\$ flatpak override -u --nosocket=system-bus $f")
             fi
             if ! hasPermission "$permissions" "LD_PRELOAD" .*"/libhardened_malloc.so"; then
                 status="$STATUS_FAILURE"
