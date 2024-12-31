@@ -98,6 +98,7 @@ When using a non-wheel user, you can add the user to other groups if you want. F
 - use libvirt: `libvirt`
 - use `adb` and `fastboot`: `plugdev`
 - use systemwide flatpaks: `flatpak`
+- use usbguard: `usbguard`
 
 > [!NOTE]
 > You don't need to login using your wheel user to use it for privileged operations. When logged in as your non-wheel user, polkit will prompt you to authenticate as your wheel user as needed, or when requested by calling `run0`.
