@@ -29,3 +29,12 @@ setup() {
     [ "$status" -eq 0 ]
     [ ! -f "${HOME}/.config/no-show-user-motd" ]
 }
+
+@test "Ensure MAC address randomization works properly" {
+    run ujust toggle-mac-randomization
+    [ "$status" -eq 0 ]
+    [ -f "/etc/NetworkManager/conf.d/rand_mac.conf" ]
+    run ujust toggle-mac-randomization
+    [ "$status" -eq 0 ]
+    [ ! -f "/etc/NetworkManager/conf.d/rand_mac.conf" ]
+}
