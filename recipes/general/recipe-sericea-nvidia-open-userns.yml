@@ -2,7 +2,7 @@ name: sericea-nvidia-open-userns-hardened
 
 description: "Sericea with userns and nvidia-open, hardened"
 
-base-image: quay.io/fedora-ostree-desktops/sericea
+base-image: quay.io/fedora-ostree-desktops/sway-atomic
 
 image-version: 41
 
