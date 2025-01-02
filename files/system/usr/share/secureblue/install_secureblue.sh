@@ -82,9 +82,11 @@ rebase_command="rpm-ostree rebase ostree-unverified-registry:ghcr.io/secureblue/
 
 if [ -n "$(rpm-ostree status | grep '● ostree-image-signed:docker://ghcr.io/secureblue/')" ] ; then
     rebase_command="rpm-ostree rebase ostree-image-signed:docker://ghcr.io/secureblue/$image_name:latest"
+else
+    echo "Note: Automatic rebasing to the equivalent signed image will occur on first run."
 fi
 
-printf "Commands to execute:\n%s\n\n" "$rebase_command"
+printf "Command to execute:\n%s\n\n" "$rebase_command"
 
 read -p "Proceed? (yes/No): " rebase_proceed
 if is_yes "$rebase_proceed"; then
