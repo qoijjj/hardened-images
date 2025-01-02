@@ -5,6 +5,7 @@ setup() {
     sudo mkdir -p /usr/share/bluebuild/justfiles/
     sudo mkdir -p /usr/lib/ujust/
 
+    sudo ln -s /bin/run0 /usr/bin/sudo
 
     sudo cp -fr files/system/usr/lib/ujust /usr/lib/ujust
     sudo cp -f files/system/usr/bin/ujust /usr/bin/ujust
