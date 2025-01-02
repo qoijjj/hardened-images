@@ -277,7 +277,7 @@ dns-selector:
                 fi
             fi
             read -p "Please enter the second resolver's hostname (e.g. 'security.cloudflare-dns.com'): " resolver_hostname
-            read -p "Do you want to enable DNSSEC (this can cause networking issues notably in virtual machines)? [Y/n] " resolver_dnssec
+            read -p "Do you want to enable DNSSEC (this can cause networking issues notably in virtual machines, it is recommended if you do not suffer issues)? [Y/n] " resolver_dnssec
             resolver_dnssec=${resolver_dnssec:-y}
             ;;
     esac
