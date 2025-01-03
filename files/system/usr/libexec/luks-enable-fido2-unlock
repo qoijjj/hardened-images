@@ -25,7 +25,7 @@ echo "This script uses systemd-cryptenroll to enable FIDO2 auto-unlock. You can 
 "If you previously used TPM luks unlocking, ensure you run 'ujust remove-luks-tpm-unlock' AFTER running this script." \
 "Otherwise, the system will likely default to TPM auto-unlocking on boot."
 echo ""
-echo "If you are using usbguard, plug into your hardware key, run 'usbguard list-devices'. Identify which number on the left is" \
+echo "If you are using usbguard, plug in your hardware key, run 'usbguard list-devices'. Identify which number on the left is" \
 "your device then run 'usbguard allow-device <number> -p'. You must exit this script with ctrl-C and do this now, BEFORE proceeding"
 echo ""
 echo "WARNING this script is designed not to, but could clear stored secrets on your fido2 key. Ensure you have backup options for" \
