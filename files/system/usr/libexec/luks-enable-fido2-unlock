@@ -102,12 +102,8 @@ if lsinitrd 2>&1 | grep -q fido2 > /dev/null; then
   ## add fido2 to initramfs
   if rpm-ostree initramfs | grep fido2 > /dev/null; then
     echo "FIDO2 already present in rpm-ostree initramfs config."
-    echo ""
-    echo "Congratulations!"
-    echo "Your system is now configured to use FIDO2 unlocking via the hardware key you used earlier. If you previously used TPM luks unlocking, ensure you run 'ujust remove-luks-tpm-unlock'. Otherwise, the system will likely default to TPM auto-unlocking on boot."
-    echo ""
-    echo "REMINDER: Store on another computer, on an encrypted drive, the script created backup key (which is at /var/home/$SUDO_USER/Desktop/luks_backup_key.txt)"
-    exit 0
+    rpm-ostree initramfs
+    echo "Re-running initramfs to pickup changes above."
   fi
   rpm-ostree initramfs --enable --arg=--force-add --arg=fido2
 else
