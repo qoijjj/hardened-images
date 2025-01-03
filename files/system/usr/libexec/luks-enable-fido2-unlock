@@ -115,7 +115,6 @@ echo "Congratulations!"
 echo "Your system is now configured to use FIDO2 unlocking via the hardware key you used earlier. If you previously used TPM luks unlocking, ensure you run 'ujust remove-luks-tpm-unlock'. Otherwise, the system will likely default to TPM auto-unlocking on boot."
 echo ""
 echo "REMINDER: Store on another computer, on an encrypted drive, the script created backup key (which is at /var/home/$SUDO_USER/Desktop/luks_backup_key.txt)"
-exit 0
 
 # References
 # https://0pointer.net/blog/unlocking-luks2-volumes-with-tpm2-fido2-pkcs11-security-hardware-on-systemd-248.html
