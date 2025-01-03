@@ -239,7 +239,6 @@ install-docker:
     rpm-ostree refresh-md
     rpm-ostree install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-
 # Uninstall the official docker packages
 uninstall-docker:
     #! /bin/run0 /bin/bash
