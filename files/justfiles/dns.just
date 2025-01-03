@@ -12,6 +12,7 @@ dns-selector:
     resolver_subselection=""
     resolver_has_second_ip=""
     resolver_supports_ipv6=""
+    resolver_dnssec=""
     resolver_ipv4_address=""
     resolver_ipv4_address_2=""
     resolver_ipv6_address=""
@@ -28,7 +29,7 @@ dns-selector:
     echo "    2) Mullvad - has content filtering, anycast"
     echo "    3) Cloudflare - very fast with some data collection, anycast"
     echo "    4) DNSForge - powerful filtering but can be very slow"
-    echo "    5) Custom Resolver - use a custom resolver (must support DoT/DoQ and DNSSEC, DoH support is also required to set a browser policy should that be desired)"
+    echo "    5) Custom Resolver - use a custom resolver (must support DoT/DoQ, ideally also supports DNSSEC, DoH support is also required to set a browser policy should that be desired)"
     while [[ "$valid_input" == "0" ]]; do
         read -p "Selection [0-5]: " resolver_selection
         if [[ "$resolver_selection" == [012345]* ]]; then
@@ -55,6 +56,7 @@ dns-selector:
         1)
             resolver_has_second_ip="y"
             resolver_supports_ipv6="y"
+            resolver_dnssec="y"
             echo "Setting resolver Control D."
             echo "What content would you like to filter:"
             echo "    0) No filtering"
@@ -117,6 +119,7 @@ dns-selector:
         2)
             resolver_has_second_ip="n"
             resolver_supports_ipv6="y"
+            resolver_dnssec="y"
             echo "Setting resolver Mullvad."
             echo "What content would you like to filter:"
             echo "    0) No filtering"
@@ -171,6 +174,7 @@ dns-selector:
         3)
             resolver_has_second_ip="y"
             resolver_supports_ipv6="y"
+            resolver_dnssec="y"
             echo "Setting resolver Cloudflare. (glory to the cloud)"
             echo "What content would you like to filter:"
             echo "    0) No filtering"
@@ -213,6 +217,7 @@ dns-selector:
         4)
             resolver_has_second_ip="y"
             resolver_supports_ipv6="y"
+            resolver_dnssec="y"
             echo "Setting resolver DNSForge."
             echo "What content would you like to filter:"
             echo "    0) Standard: Ad, tracker, and malware filtering"
@@ -272,6 +277,8 @@ dns-selector:
                 fi
             fi
             read -p "Please enter the second resolver's hostname (e.g. 'security.cloudflare-dns.com'): " resolver_hostname
+            read -p "Do you want to enable DNSSEC (this can cause networking issues notably in virtual machines, it is recommended if you do not suffer issues)? [Y/n] " resolver_dnssec
+            resolver_dnssec=${resolver_dnssec:-y}
             ;;
     esac
 
@@ -280,7 +287,8 @@ dns-selector:
         read -p "Please enter the second resolver's HTTPS address (e.g. 'https://security.cloudflare-dns.com/dns-query'): " resolver_https_address
     fi
 
-    resolved_conf_dns_string="DNS="
+    resolved_conf_dns_string=""
+    resolved_conf_dns_string+="DNS="
     resolved_conf_dns_string+=" $resolver_ipv4_address"
     resolved_conf_dns_string+="#$resolver_hostname"
     if [[ "$resolver_has_second_ip" == [Yy]* ]]; then
@@ -296,11 +304,16 @@ dns-selector:
         fi
     fi
 
+    resolved_conf_dnssec_string=""
+    if [[ "$resolver_dnssec" == [Yy]* ]]; then
+        resolved_conf_dnssec_string+="DNSSEC=true"
+    fi
+
     cat << EOF > "$resolved_conf"
     [Resolve]
-    DNSSEC=true
     DNSOverTLS=true
     $resolved_conf_dns_string
+    $resolved_conf_dnssec_string
     EOF
 
     systemctl restart systemd-resolved
