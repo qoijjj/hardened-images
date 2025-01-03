@@ -107,7 +107,7 @@ if lsinitrd 2>&1 | grep -q fido2 > /dev/null; then
   fi
   rpm-ostree initramfs --enable --arg=--force-add --arg=fido2
 else
-  ## initramfs already containts fido2
+  ## initramfs already contains fido2
   echo "FIDO2 already present in initramfs."
 fi
 
