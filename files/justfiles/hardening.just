@@ -102,6 +102,12 @@ flatpak-permissions-lockdown:
     echo ""
     echo "Done"
 
+# Undo the above command
+undo-flatpak-permissions-lockdown:
+    #!/usr/bin/bash
+    GLOBAL_PERMISSIONS="$HOME/.local/share/flatpak/overrides/global"
+    rm $GLOBAL_PERMISSIONS
+
 # Setup USBGuard
 setup-usbguard:
     #!/usr/bin/bash
