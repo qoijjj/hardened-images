@@ -46,7 +46,7 @@ echo "After answering the following questions, your system will be rebased to se
 echo "-----------------------------------------------------------------------------------"
 
 # Determine if it's a server or desktop
-read -p "Is this for a server? (yes/No): " is_server
+read -p "Is this for a CoreOS server? (yes/No): " is_server
 if is_yes "$is_server"; then
     read -p "Do you need ZFS support? (yes/No): " use_zfs
     image_name=$(is_yes "$use_zfs" && echo "securecore-zfs" || echo "securecore")
@@ -87,9 +87,11 @@ rebase_command="rpm-ostree rebase ostree-unverified-registry:ghcr.io/secureblue/
 
 if [ -n "$(rpm-ostree status | grep '● ostree-image-signed:docker://ghcr.io/secureblue/')" ] ; then
     rebase_command="rpm-ostree rebase ostree-image-signed:docker://ghcr.io/secureblue/$image_name:latest"
+else
+    echo "Note: Automatic rebasing to the equivalent signed image will occur on first run."
 fi
 
-echo "Commands to execute:"
+echo "Command to execute:"
 echo "$rebase_command"
 echo ""
 
