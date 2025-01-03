@@ -234,7 +234,7 @@ install-steam:
 
 # Install the official docker packages
 install-docker:
-    #!/usr/bin/bash
+    #! /bin/run0 /bin/bash
     curl -Lo /etc/yum.repos.d/docker-ce.repo https://download.docker.com/linux/fedora/docker-ce.repo
     rpm-ostree refresh-md
     rpm-ostree install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
