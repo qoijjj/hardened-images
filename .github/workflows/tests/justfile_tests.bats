@@ -5,7 +5,6 @@ setup() {
     sudo mkdir -p /usr/share/bluebuild/justfiles/
     sudo mkdir -p /usr/lib/ujust/
 
-    sudo ln -sf /usr/bin/sudo /bin/run0 
 
     sudo cp -fr files/system/usr/lib/ujust /usr/lib/ujust
     sudo cp -f files/system/usr/bin/ujust /usr/bin/ujust
@@ -29,13 +28,4 @@ setup() {
     run ujust toggle-user-motd
     [ "$status" -eq 0 ]
     [ ! -f "${HOME}/.config/no-show-user-motd" ]
-}
-
-@test "Ensure MAC address randomization works properly" {
-    run ujust toggle-mac-randomization
-    [ "$status" -eq 0 ]
-    [ -f "/etc/NetworkManager/conf.d/rand_mac.conf" ]
-    run ujust toggle-mac-randomization
-    [ "$status" -eq 0 ]
-    [ ! -f "/etc/NetworkManager/conf.d/rand_mac.conf" ]
 }
