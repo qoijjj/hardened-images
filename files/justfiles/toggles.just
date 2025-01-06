@@ -178,7 +178,17 @@ toggle-xwayland ACTION="prompt":
 # Toggle bash environment lockdown (mitigates LD_PRELOAD attacks)
 toggle-bash-environment-lockdown:
     #!/usr/bin/bash
-    BASH_ENV_FILES=("$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.bashrc/profile" "$HOME/.config/bash-completion" "$HOME/.config/environment.d")
+    BASH_ENV_FILES=("$HOME/.bashrc" "$HOME/.bash_profile") #  "$HOME" "$HOME/.config/environment.d"
+    if [ -f "$HOME/.bashrc/profile"]; then
+        BASH_ENV_FILES+=("$HOME/.bashrc/profile")
+    fi
+    if [ -f "$HOME/.bashrc/profile"]; then
+        BASH_ENV_FILES+=("$HOME/.config/bash-completion")
+    fi
+    if [ -f "$HOME/.bashrc/profile"]; then
+        BASH_ENV_FILES+=("$HOME/.config/environment.d")
+    fi
+
     echo "${b}WARNING${n} This will overwrite your .bashrc and .bash_profile."
     echo "This is needed to ensure the mitigation is effective."
     echo "Do you understand?"
