@@ -182,10 +182,10 @@ toggle-bash-environment-lockdown:
     if [ -f "$HOME/.bashrc/profile"]; then
         BASH_ENV_FILES+=("$HOME/.bashrc/profile")
     fi
-    if [ -f "$HOME/.bashrc/profile"]; then
+    if [ -f "$HOME/.config/bash-completion"]; then
         BASH_ENV_FILES+=("$HOME/.config/bash-completion")
     fi
-    if [ -f "$HOME/.bashrc/profile"]; then
+    if [ -f "$HOME/.config/environment.d"]; then
         BASH_ENV_FILES+=("$HOME/.config/environment.d")
     fi
 
