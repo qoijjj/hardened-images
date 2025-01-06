@@ -181,12 +181,18 @@ toggle-bash-environment-lockdown:
     BASH_ENV_FILES=("$HOME/.bashrc" "$HOME/.bash_profile") #  "$HOME" "$HOME/.config/environment.d"
     if [ -f "$HOME/.bashrc/profile"]; then
         BASH_ENV_FILES+=("$HOME/.bashrc/profile")
+    else 
+        echo "No $HOME/.bashrc/profile file found."
     fi
     if [ -f "$HOME/.config/bash-completion"]; then
         BASH_ENV_FILES+=("$HOME/.config/bash-completion")
+    else
+        echo "No $HOME/.config/bash-completion file found"
     fi
     if [ -f "$HOME/.config/environment.d"]; then
         BASH_ENV_FILES+=("$HOME/.config/environment.d")
+    else
+        echo "No $HOME/.config/environment.d file found."
     fi
 
     echo "${b}WARNING${n} This will overwrite your .bashrc and .bash_profile."
