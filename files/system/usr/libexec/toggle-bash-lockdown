@@ -1,19 +1,22 @@
 #!/usr/bin/bash
-    BASH_ENV_FILES=("$HOME/.bashrc" "$HOME/.bash_profile")
-    if [ -f "$HOME/.bashrc/profile"]; then
-        BASH_ENV_FILES+=("$HOME/.bashrc/profile")
+    user=$SUDO_USER
+    user_home=$(bash -c "cd ~$(printf %q "$user") && pwd")
+
+    BASH_ENV_FILES=("$user_home/.bashrc" "$user_home/.bash_profile")
+    if [ -f "$user_home/.bashrc/profile"]; then
+        BASH_ENV_FILES+=("$user_home/.bashrc/profile")
     else 
-        echo "No $HOME/.bashrc/profile file found."
+        echo "No $user_home/.bashrc/profile file found."
     fi
-    if [ -f "$HOME/.config/bash-completion"]; then
-        BASH_ENV_FILES+=("$HOME/.config/bash-completion")
+    if [ -f "$user_home/.config/bash-completion"]; then
+        BASH_ENV_FILES+=("$user_home/.config/bash-completion")
     else
-        echo "No $HOME/.config/bash-completion file found"
+        echo "No $user_home/.config/bash-completion file found"
     fi
-    if [ -f "$HOME/.config/environment.d"]; then
-        BASH_ENV_FILES+=("$HOME/.config/environment.d")
+    if [ -f "$user_home/.config/environment.d"]; then
+        BASH_ENV_FILES+=("$user_home/.config/environment.d")
     else
-        echo "No $HOME/.config/environment.d file found."
+        echo "No $user_home/.config/environment.d file found."
     fi
 
     echo "${b}WARNING${n} This will overwrite your .bashrc and .bash_profile."
@@ -38,8 +41,8 @@
     fi
 
     # User specific environment
-    if ! [[ "\$PATH" =~ "\$HOME/.local/bin:\$HOME/bin:" ]]; then
-        PATH="\$HOME/.local/bin:\$HOME/bin:\$PATH"
+    if ! [[ "\$PATH" =~ "\$user_home/.local/bin:\$user_home/bin:" ]]; then
+        PATH="\$user_home/.local/bin:\$user_home/bin:\$PATH"
     fi
     export PATH
 
