@@ -22,7 +22,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@915b19bbe73b92a6cf82a1bc12b087c9a19a5fe2 # v0.28.0
         with:
-          image-ref: 'ghcr.io/secureblue/silverblue-main-userns-hardened:latest'
+          image-ref: 'ghcr.io/secureblue/silverblue-main-hardened:latest'
           format: template
           scanners: vuln,secret,misconfig
           template: '@/contrib/sarif.tpl'
