@@ -1,19 +1,19 @@
 #!/usr/bin/bash
-    user=$SUDO_USER
-    user_home=$(bash -c "cd ~$(printf %q "$user") && pwd")
+    [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;} #to ensure $SUDO_USER isn't blank
+    user_home=$(bash -c "cd ~$(printf %q "$SUDO_USER") && pwd")
 
     BASH_ENV_FILES=("$user_home/.bashrc" "$user_home/.bash_profile")
-    if [ -f "$user_home/.bashrc/profile"]; then
+    if [ -f "$user_home/.bashrc/profile" ]; then
         BASH_ENV_FILES+=("$user_home/.bashrc/profile")
     else 
         echo "No $user_home/.bashrc/profile file found."
     fi
-    if [ -f "$user_home/.config/bash-completion"]; then
+    if [ -f "$user_home/.config/bash-completion" ]; then
         BASH_ENV_FILES+=("$user_home/.config/bash-completion")
     else
         echo "No $user_home/.config/bash-completion file found"
     fi
-    if [ -f "$user_home/.config/environment.d"]; then
+    if [ -f "$user_home/.config/environment.d" ]; then
         BASH_ENV_FILES+=("$user_home/.config/environment.d")
     else
         echo "No $user_home/.config/environment.d file found."
