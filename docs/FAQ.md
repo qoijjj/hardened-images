@@ -129,24 +129,24 @@ mkdir -p ~/.config/environment.d && echo "GSK_RENDERER=gl" >> ~/.config/environm
 
 This should no longer be required as of F41: https://discussion.fedoraproject.org/t/gdk-message-error-71-protocol-error-dispatching-to-wayland-display/127927/42
 
-#### Why won't `trivalent-browser` start?
+#### Why won't `trivalent` start?
 
-Try starting `trivalent-browser` from the commandline by running `trivalent-browser`. If you get an error about the current profile already running on another device, this is an issue with upstream chromium which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/SingletonLock`.
+Try starting `trivalent` from the commandline by running `trivalent`. If you get an error about the current profile already running on another device, this is an issue with upstream chromium which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/SingletonLock`.
 \
 \
-`bubblejail` ***SHOULD NOT*** be used on `trivalent-browser`, there are issues reported with the pairing and removing the `bubblejail` config after it is applied can be difficult. It should also be noted that applying additional sandboxing may interfere with chromium's own internal sandbox, so it can end up reducing security.
+`bubblejail` ***SHOULD NOT*** be used on `trivalent`, there are issues reported with the pairing and removing the `bubblejail` config after it is applied can be difficult. It should also be noted that applying additional sandboxing may interfere with chromium's own internal sandbox, so it can end up reducing security.
 
-#### Why won't `trivalent-browser` start on Nvidia?
+#### Why won't `trivalent` start on Nvidia?
 
-On some Nvidia machines, `trivalent-browser` defaults to the X11 backend. Since secureblue disables Xwayland by default, this means that you will need to run `ujust toggle-xwayland` and reboot, for `trivalent-browser` to work.
+On some Nvidia machines, `trivalent` defaults to the X11 backend. Since secureblue disables Xwayland by default, this means that you will need to run `ujust toggle-xwayland` and reboot, for `trivalent` to work.
 
-#### Why don't some websites that require JIT/WebAssembly work in trivalent-browser even with the V8 Optimizer toggle enabled?
+#### Why don't some websites that require JIT/WebAssembly work in trivalent even with the V8 Optimizer toggle enabled?
 
 This is an [upstream bug](https://issues.chromium.org/issues/373893056) that prevents V8 optimization settings from being applied to iframes embedded within a parent website. As a result, WebAssembly may not function on services that use a separate URL for their content delivery network or other included domains, such as VSCode Web (https://github.dev). To make VSCode Web work properly, you need to manually allow V8 optimizations for the CDN by adding `https://[*.]vscode-cdn.net` to your list of trusted websites.
 
-#### Why don't extensions work in `trivalent-browser`?
+#### Why don't extensions work in `trivalent`?
 
-Extensions in `trivalent-browser` are disabled by default, for security reasons it is not advised to use them. If you want content/ad blocking, that is already built into `trivalent-browser` and enabled by default. If you require extensions, you can re-enable them by disabling the `Disable Extensions` toggle under `chrome://settings/security`, then restart your browser (this toggle is per-profile).
+Extensions in `trivalent` are disabled by default, for security reasons it is not advised to use them. If you want content/ad blocking, that is already built into `trivalent` and enabled by default. If you require extensions, you can re-enable them by disabling the `Disable Extensions` toggle under `chrome://settings/security`, then restart your browser (this toggle is per-profile).
 \
 \
 If the extension you installed doesn't work, it is likely because it requires WebAssembly (WASM) for some cryptographic library or some other optimizations (this is the case with the Bitwarden extension). To re-enable JavaScript JIT and WASM for extensions, enable the feature `chrome://flags/#internal-page-jit`.
