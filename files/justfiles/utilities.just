@@ -132,6 +132,23 @@ alias assemble := distrobox-assemble
 distrobox-assemble CONTAINER="prompt" ACTION="create" FILE="/etc/distrobox/distrobox.ini":
     #!/usr/bin/bash
     # Distroboxes are gathered from distrobox.ini, please add them there
+    MODULE_NAME="harden_container_userns"
+
+    if semodule -l | grep -q "$MODULE_NAME"; then
+        echo "Module $MODULE_NAME is currently enabled."
+        echo "We will need to allow container usernamespaces to be created."
+        read -p "Would you like to disable the module now? [y/N] " disable_module_now
+        disable_module_now=${disable_module_now:-n}
+        if [[ "$disable_module_now" == [Yy]* ]]; then
+            echo "Disabling module $MODULE_NAME..."
+            semodule --disable="$MODULE_NAME"
+            echo "Module $MODULE_NAME disabled."
+        else
+            echo "Module $MODULE_NAME is still enabled. Exiting."
+            exit 1
+        fi
+    fi
+
     source /usr/lib/ujust/ujust.sh
     AssembleList {{ FILE }} {{ ACTION }} {{ CONTAINER }}
 
@@ -139,6 +156,23 @@ distrobox-assemble CONTAINER="prompt" ACTION="create" FILE="/etc/distrobox/distr
 toolbox-assemble CONTAINER="prompt" ACTION="create" FILE="/etc/toolbox/toolbox.ini":
     #!/usr/bin/bash
     # Toolboxes are gathered from toolbox.ini, please add them there
+    MODULE_NAME="harden_container_userns"
+
+    if semodule -l | grep -q "$MODULE_NAME"; then
+        echo "Module $MODULE_NAME is currently enabled."
+        echo "We will need to allow container usernamespaces to be created."
+        read -p "Would you like to disable the module now? [y/N] " disable_module_now
+        disable_module_now=${disable_module_now:-n}
+        if [[ "$disable_module_now" == [Yy]* ]]; then
+            echo "Disabling module $MODULE_NAME..."
+            semodule --disable="$MODULE_NAME"
+            echo "Module $MODULE_NAME disabled."
+        else
+            echo "Module $MODULE_NAME is still enabled. Exiting."
+            exit 1
+        fi
+    fi
+
     source /usr/lib/ujust/ujust.sh
     ToolboxAssembleList {{ FILE }} {{ ACTION }} {{ CONTAINER }}
 
