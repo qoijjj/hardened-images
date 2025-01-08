@@ -135,17 +135,14 @@ distrobox-assemble CONTAINER="prompt" ACTION="create" FILE="/etc/distrobox/distr
     MODULE_NAME="harden_container_userns"
 
     if semodule -l | grep -q "$MODULE_NAME"; then
-        echo "Module $MODULE_NAME is currently enabled."
-        echo "We will need to allow container usernamespaces to be created."
-        read -p "Would you like to disable the module now? [y/N] " disable_module_now
-        disable_module_now=${disable_module_now:-n}
-        if [[ "$disable_module_now" == [Yy]* ]]; then
-            echo "Disabling module $MODULE_NAME..."
-            semodule --disable="$MODULE_NAME"
-            echo "Module $MODULE_NAME disabled."
+        echo "Module $MODULE_NAME is currently enabled."  
+        echo "This must be disabled to use containers."  
+        read -p "Would you like to proceed? [Y/n] " disable_module_now  
+        disable_module_now=${disable_module_now:-y}  
+        if [[ "$disable_module_now" == [N/n]* ]]; then 
+            exit
         else
-            echo "Module $MODULE_NAME is still enabled. Exiting."
-            exit 1
+            ujust toggle-container-domain-userns-creation
         fi
     fi
 
@@ -159,17 +156,14 @@ toolbox-assemble CONTAINER="prompt" ACTION="create" FILE="/etc/toolbox/toolbox.i
     MODULE_NAME="harden_container_userns"
 
     if semodule -l | grep -q "$MODULE_NAME"; then
-        echo "Module $MODULE_NAME is currently enabled."
-        echo "We will need to allow container usernamespaces to be created."
-        read -p "Would you like to disable the module now? [y/N] " disable_module_now
-        disable_module_now=${disable_module_now:-n}
-        if [[ "$disable_module_now" == [Yy]* ]]; then
-            echo "Disabling module $MODULE_NAME..."
-            semodule --disable="$MODULE_NAME"
-            echo "Module $MODULE_NAME disabled."
+        echo "Module $MODULE_NAME is currently enabled."  
+        echo "This must be disabled to use containers."  
+        read -p "Would you like to proceed? [Y/n] " disable_module_now  
+        disable_module_now=${disable_module_now:-y}  
+        if [[ "$disable_module_now" == [N/n]* ]]; then 
+            exit
         else
-            echo "Module $MODULE_NAME is still enabled. Exiting."
-            exit 1
+            ujust toggle-container-domain-userns-creation
         fi
     fi
 
