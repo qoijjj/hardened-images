@@ -15,7 +15,7 @@ jobs:
       fail-fast: false 
       matrix:
         recipe:
-          - general/recipe-silverblue-main-userns.yml
+          - general/recipe-silverblue-main.yml
 
     steps:
       - name: Checkout repo
