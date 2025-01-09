@@ -129,6 +129,7 @@ setup-usbguard:
 # Allow new device via usbguard
 allow-usbguard-device:
     #! /bin/run0 /bin/bash
+    set -euo pipefail 
     [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;}    
     if [ -f "/etc/usbguard/rules.conf" ]; then
         echo "usbguard appears to be configured and setup."
@@ -191,6 +192,7 @@ allow-usbguard-device:
 # Block device via usbguard
 block-usbguard-device:
     #! /bin/run0 /bin/bash
+    set -euo pipefail 
     [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;}    
     if [ -f "/etc/usbguard/rules.conf" ]; then
         echo "usbguard appears to be configured and setup."
