@@ -243,7 +243,7 @@ toggle-bash-environment-lockdown:
         " > ~/.bash_profile
 
         for file in "${BASH_ENV_FILES[@]}"; do
-            run0 chattr +i "$file"
+            chattr +i "$file"
         done
       fi
     else
