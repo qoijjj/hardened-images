@@ -187,7 +187,7 @@ allow-usbguard-device:
     	usbguard allow-device "$device"
     fi
     echo "USB device now allowed." 
- 
+
 # Block device via usbguard
 block-usbguard-device:
     #! /bin/run0 /bin/bash
