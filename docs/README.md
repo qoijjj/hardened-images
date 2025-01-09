@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/secureblue/secureblue">
-    <img src="https://github.com/secureblue/secureblue/assets/129108030/292e0ecc-50b8-4de5-a11a-bfe292489f6c" href="https://github.com/secureblue/secureblue" width=180 />
+    <img src="https://github.com/secureblue/secureblue/blob/live/docs/secureblue.png" href="https://github.com/secureblue/secureblue" width=180 />
   </a>
 </p>
 
