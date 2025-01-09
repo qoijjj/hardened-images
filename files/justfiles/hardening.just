@@ -102,6 +102,14 @@ flatpak-permissions-lockdown:
     echo ""
     echo "Done"
 
+# Resets Flatpak's global overrides
+flatpak-reset-global-overrides:
+    #!/usr/bin/bash
+    GLOBAL_OVERRIDES="$HOME/.local/share/flatpak/overrides/global"
+    echo "This will undo the flatpak-harden command, the flatpak-permissions-lockdown command, as well as any other global overrides (individual app overrides will not be affected)."
+    echo "It will not delete the file, but simply move it from $GLOBAL_OVERRIDES to $GLOBAL_OVERRIDES.save"
+    mv $GLOBAL_OVERRIDES $GLOBAL_OVERRIDES.save
+
 # Setup USBGuard
 setup-usbguard:
     #!/usr/bin/bash

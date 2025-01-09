@@ -19,10 +19,11 @@ set -eou pipefail
 [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;}
 
 echo "WARNING this script will remove ALL currently configured fido2 luks unlock slots."
-echo "This script utilizes systemd-cryptenroll for removing fido2 auto-unlock."
-echo "You can review systemd-cryptenroll's manpage for more information."
-echo "This will modify your system and disable fido2 auto-unlock of your LUKS partition!"
-echo "This script is designed to work with it's corresponding secureblue fido2 enable script. If you manually enabled fido2 unlock, you may need to manually edit /etc/crypttab or restore a known good backup you may have created." 
+echo ""
+echo "This script utilizes systemd-cryptenroll for removing fido2 auto-unlock. You can review systemd-cryptenroll's manpage for more information." \
+"This will modify your system and disable fido2 auto-unlock of your LUKS partition! This script is designed to work with it's corresponding secureblue" \
+"fido2 enable script. If you manually enabled fido2 unlock, you may need to manually edit /etc/crypttab or restore a known good backup you may have created." 
+echo ""
 echo "INFO if no other nonfido2 slot is currently configured, script will fail. This is a safety precaution systemd-cryptenroll implements."
 echo "WARNING if you have not added an additional method, the recovery key will be the only avaliable unlock method after this script is run"
 read -p "Are you sure are good with this and want to disable fido2 auto-unlock? (y/N): " -n 1 -r
