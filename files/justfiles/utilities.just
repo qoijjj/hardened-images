@@ -129,27 +129,21 @@ rerun-yafti:
 alias assemble := distrobox-assemble
 
 # Create distroboxes from a defined manifest
-[confirm("This will require harden_container_userns to be disabled. Are you sure you would like to make a distrobox container?")]
 distrobox-assemble CONTAINER="prompt" ACTION="create" FILE="/etc/distrobox/distrobox.ini":
     #!/usr/bin/bash
     # Distroboxes are gathered from distrobox.ini, please add them there
     
-    if ujust semodule-check "harden_container_userns"; then 
-        ujust toggle-container-domain-userns-creation
-    fi
+    ujust prompt-for-container-userns
 
     source /usr/lib/ujust/ujust.sh
     AssembleList {{ FILE }} {{ ACTION }} {{ CONTAINER }}
 
 # Create toolbox containers from a defined manifest (this spec will not be expanded)
-[confirm("This will require harden_container_userns to be disabled. Are you sure you would like to make a toolbox container?")]
 toolbox-assemble CONTAINER="prompt" ACTION="create" FILE="/etc/toolbox/toolbox.ini":
     #!/usr/bin/bash
     # Toolboxes are gathered from toolbox.ini, please add them there
 
-    if ujust semodule-check "harden_container_userns"; then 
-        ujust toggle-container-domain-userns-creation
-    fi
+    ujust prompt-for-container-userns
 
     source /usr/lib/ujust/ujust.sh
     ToolboxAssembleList {{ FILE }} {{ ACTION }} {{ CONTAINER }}
@@ -169,6 +163,21 @@ semodule-check MODULE:
     #! /bin/run0 /bin/bash
     if [ -n "$( semodule -l | grep {{ MODULE }} )" ] ; then
         semodule -l | grep {{ MODULE }}
+    fi
+
+prompt-for-container-userns:
+    if semodule -l | grep -q "$MODULE_NAME"; then
+        echo "Module $MODULE_NAME is currently enabled."  
+        echo "This must be disabled to use containers."  
+        read -p "Would you like to proceed? [Y/n] " disable_module_now  
+        disable_module_now=${disable_module_now:-y}  
+        if [[ "$disable_module_now" == [N/n]* ]]; then 
+            exit 0
+        fi
+    fi
+
+    if ujust semodule-check "harden_container_userns"; then 
+        ujust toggle-container-domain-userns-creation   
     fi
 
 # Install Steam via choice of 3 methods
