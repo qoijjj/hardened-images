@@ -125,3 +125,130 @@ setup-usbguard:
         usbguard add-user $1
     ' -- $USER
     systemctl enable --user --now usbguard-notifier.service
+
+# Allow new device via usbguard
+allow-usbguard-device:
+    #! /bin/run0 /bin/bash
+    [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;}    
+    if [ -f "/etc/usbguard/rules.conf" ]; then
+        echo "usbguard appears to be configured and setup."
+    else 
+        echo "usbguard does not appear to be configured or setup."
+        echo "Try 'just setup-usbguard'"
+        exit 1
+    fi    
+    if [ "$(systemctl is-active usbguard.service)" != "active" ]; then
+        systemctl restart usbguard.service
+    	if [ "$(systemctl is-active usbguard.service)" != "active" ]; then
+    		echo "usbguard.service is not active and could not be restarted"
+    		exit 1
+    	fi
+    	echo "Warning: usbguard.service was not active and had to be restarted."
+    else
+    	echo "usbguard.service is running."
+    fi
+    if [ "$(systemctl is-enabled usbguard.service)" != "enabled" ]; then
+    	echo "Warning: usbguard.service is not enabled and will not automatically start after boot"
+    	echo "Would you like this script to set usbguard.service to start automatically after boot across the system? [y/n]"
+    	read -r response
+    	if [[ "$response" == [yY]* ]]; then
+    		echo "Enabling usbguard.service"
+    		systemctl enable --system --now usbguard.service
+    	fi
+    fi    
+    valid_devices=$(usbguard list-devices -b)
+    if [ -z "$valid_devices" ]; then
+    	echo "No blocked devices detected!"
+    	exit
+    fi
+    valid_response=0
+    device=""
+    echo ""
+    echo "Choose your desired device to allow based off the number it's labeled (#: block id ...)."
+    usbguard list-devices -b
+    echo "Please give valid response (only numbers considered, only one device at a time):"
+    while [ "$valid_response" == 0 ]; do
+        read -r device
+        device="${device//[!0-9]/}"
+        valid_num=$(usbguard list-devices -b | sed 's/: block.*//' | tr '\n' ',' | sed 's/,*$//')
+        if [ -n "$device" ] && [[ "$valid_num" == *"$device"* ]]; then
+                valid_response=1
+        else
+                echo ""
+                usbguard list-devices -b
+                echo "Please give valid response ($valid_num):"
+        fi
+    done    
+    read -r -p "Would you like this device to continue to be allowed after a reboot? [y/n]" permanent
+    if [[ "$permanent" == [yY]* ]]; then
+    	usbguard allow-device "$device" -p
+    else
+    	echo "Change will not persist after reboot."
+    	usbguard allow-device "$device"
+    fi
+    echo "USB device now allowed." 
+ 
+# Block device via usbguard
+block-usbguard-device:
+    #! /bin/run0 /bin/bash
+    [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;}    
+    if [ -f "/etc/usbguard/rules.conf" ]; then
+        echo "usbguard appears to be configured and setup."
+    else 
+        echo "usbguard does not appear to be configured or setup."
+        echo "Try 'just setup-usbguard'"
+        exit 1
+    fi    
+    if [ "$(systemctl is-active usbguard.service)" != "active" ]; then
+        systemctl restart usbguard.service
+    	if [ "$(systemctl is-active usbguard.service)" != "active" ]; then
+    		echo "usbguard.service is not active and could not be restarted"
+    		exit 1
+    	fi
+    	echo "Warning: usbguard.service was not active and had to be restarted."
+    else
+    	echo "usbguard.service is running."
+    fi
+    if [ "$(systemctl is-enabled usbguard.service)" != "enabled" ]; then
+    	echo "Warning: usbguard.service is not enabled and will not automatically start after boot"
+    	echo "Would you like this script to set usbguard.service to start automatically after boot across the system? [y/n]"
+    	read -r response
+    	if [[ "$response" == [yY]* ]]; then
+    		echo "Enabling usbguard.service"
+    		systemctl enable --system --now usbguard.service
+    	fi
+    fi    
+    valid_devices=$(usbguard list-devices -a)
+    if [ -z "$valid_devices" ]; then
+    	echo "No allowed devices detected!"
+    	echo "How on earth did we get here? How are you using this TUI? A PS/2 Keyboard?"
+    	echo "Godspeed unknown PS/2 wielding hero!"
+    	exit
+    fi
+    echo "WARNING: if you block your keyboard and/or your mouse, you will be in for a very bad time."
+    valid_response=0
+    device=""
+    echo ""
+    echo "Choose your desired device to block based off the number it's labeled (#: allow id ...)."
+    usbguard list-devices -a
+    echo "Please give valid response (only numbers considered, only one device at a time):"
+    while [ "$valid_response" == 0 ]; do
+        read -r device
+        device="${device//[!0-9]/}"
+        valid_num=$(usbguard list-devices -a | sed 's/: allow.*//' | tr '\n' ',' | sed 's/,*$//')
+        if [ -n "$device" ] && [[ "$valid_num" == *"$device"* ]]; then
+                valid_response=1
+        else
+                echo ""
+                usbguard list-devices -a
+                echo "Please give valid response ($valid_num):"
+        fi
+    done
+    read -r -p "Would you like this device to continue to be blocked after a reboot? [y/n]" permanent
+    if [[ "$permanent" == [yY]* ]]; then
+    	usbguard block-device "$device" -p
+    else
+    	echo "Change will not persist after reboot."
+    	usbguard block-device "$device"
+    fi    
+    echo "USB device now blocked."
