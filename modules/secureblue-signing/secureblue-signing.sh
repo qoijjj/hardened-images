@@ -64,5 +64,7 @@ cp POLICY.tmp /usr/etc/containers/policy.json
 cp POLICY.tmp /etc/containers/policy.json
 rm POLICY.tmp
 
+ls $MODULE_DIRECTORY/secureblue-signing
+
 mv "$MODULE_DIRECTORY/secureblue-signing/registry-config.yaml" "$CONTAINER_DIR/registries.d/$IMAGE_REGISTRY_TITLE.yaml"
 mv "$MODULE_DIRECTORY/secureblue-signing/registry-config.yaml" "$ETC_CONTAINER_DIR/registries.d/$IMAGE_REGISTRY_TITLE.yaml"
