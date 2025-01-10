@@ -6,6 +6,18 @@ then
     exit 1
 fi
 
+version=$(rpm-ostree --version | grep -oP "Version: '\K[^']+" )
+year=$(echo "$version" | cut -d '.' -f 1)
+subversion=$(echo "$version" | cut -d '.' -f 2)
+
+
+if [[ "$year" -lt 2024 || ( "$year" -eq 2024 && "$subversion" -lt 9 ) ]]; then
+  echo "rpm-ostree is too old, please upgrade before running this script. Found version: $version"
+  exit 1
+else
+  echo "rpm-ostree is 2024.9 or later, proceeding..."
+fi
+
 function is_yes {
     case $(echo "$1" | tr '[:upper:]' '[:lower:]') in
         y|yes) return 0;;
@@ -28,34 +40,30 @@ desktop_image_types=(
 image_name=""
 additional_params=""
 
-echo "Welcome to the secureblue interactive installer!" 
-echo "After answering the following questions, your system will be rebased to secureblue." 
-echo "-----------------------------------------------------------------------------------"
+printf "%s\n\n" \
+    "Welcome to the secureblue interactive installer!" \
+    "After answering the following questions, your system will be rebased to secureblue."
 
 # Determine if it's a server or desktop
-read -p "Is this for a server? (yes/No): " is_server
+read -p "Is this for a CoreOS server? (yes/No): " is_server
 if is_yes "$is_server"; then
     read -p "Do you need ZFS support? (yes/No): " use_zfs
     image_name=$(is_yes "$use_zfs" && echo "securecore-zfs" || echo "securecore")
 else
-    echo "Select a desktop. Silverblue is recommended."
+    printf "%s\n" \
+        "Select a desktop." \
+        "Silverblue is recommended." \
+        "Wayblue images are currently in beta." \
+        "Cosmic images are considered experimental."
+    PS3=$'Enter your desktop choice: '
     select image_name in "${desktop_image_types[@]}"; do
         if [[ -n "$image_name" ]]; then        
             echo "Selected desktop: $image_name"
-            if [[ "$image_name" == "cosmic" ]]; then
-                echo "Warning: Cosmic images are experimental."
-            fi
-
-            if [[ "$image_name" == *"wayblue"* ]]; then
-                echo "Warning: Wayblue images are in beta."
-            fi
-
             break
         else
             echo "Invalid option, please select a valid number."
         fi
     done
-    
 fi
 
 # Ask about Nvidia for all options
@@ -74,11 +82,11 @@ rebase_command="rpm-ostree rebase ostree-unverified-registry:ghcr.io/secureblue/
 
 if [ -n "$(rpm-ostree status | grep '● ostree-image-signed:docker://ghcr.io/secureblue/')" ] ; then
     rebase_command="rpm-ostree rebase ostree-image-signed:docker://ghcr.io/secureblue/$image_name:latest"
+else
+    echo "Note: Automatic rebasing to the equivalent signed image will occur on first run."
 fi
 
-echo "Commands to execute:"
-echo "$rebase_command"
-echo ""
+printf "Command to execute:\n%s\n\n" "$rebase_command"
 
 read -p "Proceed? (yes/No): " rebase_proceed
 if is_yes "$rebase_proceed"; then

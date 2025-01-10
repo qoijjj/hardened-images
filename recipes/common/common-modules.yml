@@ -21,3 +21,4 @@ modules:
       scripts:
         - enablecommonautoupdate.sh
     - type: secureblue-signing
+      source: local

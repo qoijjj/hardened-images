@@ -260,3 +260,37 @@ toggle-container-domain-userns-creation:
         semodule --enable="$MODULE_NAME"
         echo "Module $MODULE_NAME enabled."
     fi
+
+# Toggle MAC Randomization
+toggle-mac-randomization:
+    #! /bin/run0 /bin/bash
+    RAND_MAC_FILE="/etc/NetworkManager/conf.d/rand_mac.conf"
+
+    if test -e $RAND_MAC_FILE; then
+        rm -f $RAND_MAC_FILE
+        echo "MAC randomization disabled."
+        systemctl restart NetworkManager
+    else
+        echo "MAC randomization can be stable (persisting the same random MAC per access point across disconnects/reboots),"
+        echo "or it can be randomized per-connection (every time it connects to the same access point it uses a new MAC)."
+        read -p "Do you want to use per-connection Wi-Fi MAC address randomization? [y/N]" randomization_level
+        randomization_level=${randomization_level:-n}
+
+        if [ "$randomization_level" == [Yy]* ]; then
+            randomization_level=random
+        else
+            randomization_level=stable
+        fi
+        cat <<EOL > $RAND_MAC_FILE
+    [device-mac-randomization]
+    # "yes" is already the default for scanning
+    wifi.scan-rand-mac-address=yes
+
+    [connection-mac-randomization]
+    # Generate a random MAC for each Network and associate the two permanently.
+    ethernet.cloned-mac-address=stable
+    wifi.cloned-mac-address=$randomization_level
+    EOL
+        echo "MAC randomization enabled."
+        systemctl restart NetworkManager
+    fi

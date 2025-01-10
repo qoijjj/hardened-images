@@ -102,17 +102,26 @@ flatpak-permissions-lockdown:
     echo ""
     echo "Done"
 
+# Resets Flatpak's global overrides
+flatpak-reset-global-overrides:
+    #!/usr/bin/bash
+    GLOBAL_OVERRIDES="$HOME/.local/share/flatpak/overrides/global"
+    echo "This will undo the flatpak-harden command, the flatpak-permissions-lockdown command, as well as any other global overrides (individual app overrides will not be affected)."
+    echo "It will not delete the file, but simply move it from $GLOBAL_OVERRIDES to $GLOBAL_OVERRIDES.save"
+    mv $GLOBAL_OVERRIDES $GLOBAL_OVERRIDES.save
+
 # Setup USBGuard
 setup-usbguard:
     #!/usr/bin/bash
     echo "Notice: This will generate a policy based on your existing connected USB devices."
-    ACTIVE_USERNAME=$(whoami)
     run0 sh -c '
         mkdir -p /var/log/usbguard
         mkdir -p /etc/usbguard
         chmod 755 /etc/usbguard
         usbguard generate-policy > /etc/usbguard/rules.conf
+        sed -i "/IPCAllowedGroups=wheel/s/$/ usbguard/" /etc/usbguard/usbguard-daemon.conf
+        restorecon -vR /var/log/usbguard
         systemctl enable --now usbguard.service
         usbguard add-user $1
-    ' -- $ACTIVE_USERNAME
+    ' -- $USER
     systemctl enable --user --now usbguard-notifier.service
