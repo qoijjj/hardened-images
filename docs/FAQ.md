@@ -150,3 +150,9 @@ Extensions in `hardened-chromium` are disabled by default, for security reasons 
 \
 \
 If the extension you installed doesn't work, it is likely because it requires WebAssembly (WASM) for some cryptographic library or some other optimizations (this is the case with the Bitwarden extension). To re-enable JavaScript JIT and WASM for extensions, enable the feature `chrome://flags/#internal-page-jit`.
+
+#### Why doesn't SPICE features like automatic window resizing and shared clipboard work?
+
+The SPICE protocol uses an agent called `spice-vdagentd` which handles these various features. However, the implementation of this requires an X server. This is why it works on standard Silverblue and not secureblue. 
+
+To enable this, run `ujust toggle-xwayland` and reboot. This will allow `spice-vdagentd` to use an X server and will enable these features.
