@@ -177,78 +177,114 @@ toggle-xwayland ACTION="prompt":
 
 # Toggle bash environment lockdown (mitigates LD_PRELOAD attacks)
 toggle-bash-environment-lockdown:
-    #! /bin/run0 /bin/bash
-    [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;} #to ensure $SUDO_USER isn't blank
-    user_home=$(bash -c "cd ~$(printf %q "$SUDO_USER") && pwd")
-
-    BASH_ENV_FILES=("$user_home/.bashrc" "$user_home/.bash_profile")
-    if [ -f "$user_home/.bashrc/profile" ]; then
-        BASH_ENV_FILES+=("$user_home/.bashrc/profile")
-    else 
-        echo "No $user_home/.bashrc/profile file found."
-    fi
-    if [ -f "$user_home/.config/bash-completion" ]; then
-        BASH_ENV_FILES+=("$user_home/.config/bash-completion")
-    else
-        echo "No $user_home/.config/bash-completion file found"
-    fi
-    if [ -f "$user_home/.config/environment.d" ]; then
-        BASH_ENV_FILES+=("$user_home/.config/environment.d")
-    else
-        echo "No $user_home/.config/environment.d file found."
-    fi
-
+    #!/bin/run0 /bin/bash
+    set -eou pipefail
+    user_string=$(ls "/var/home" | tr '\n' ',' | sed 's/,*$//')
+    IFS=',' read -ra user_list <<< "$user_string"
+    [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;} #almost certainly not needed, but doesn't hurt
+    declare -a filtered_list
+    for element in "${user_list[@]}"; do
+        if [ ! -d "/var/home/$element/Desktop/" ]; then
+                break
+        fi
+        filtered_list+=("$element")
+    done
+    b=$(tput bold) #This is the more correct way to bold and satisfies -eou pipefail
+    n=$(tput sgr0)
     echo "${b}WARNING${n} This will overwrite your .bashrc and .bash_profile."
     echo "This is needed to ensure the mitigation is effective."
     echo "Do you understand?"
     echo "Please type in \"YES I UNDERSTAND\" and press enter"
-    read ACCEPT
-    if [ "$ACCEPT" == "YES I UNDERSTAND" ]; then
-      if lsattr "${BASH_ENV_FILES[0]}" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
-        echo "Bash environment '(${BASH_ENV_FILES[@]})' is locked down. Unlocking it."
-        for file in "${BASH_ENV_FILES[@]}"; do
-            run0 chattr -i "$file"
+    read -r ACCEPT
+    if [ "$ACCEPT" != "YES I UNDERSTAND" ]; then
+        exit
+    fi
+    echo "Do you want this change to apply to ${b}all${n} users? [y/N]"
+    echo "Otherwise, it will only apply to the currently logged in user."
+    read -r REPLY
+    if [[ ! "$REPLY" == [yY]* ]]; then
+        filtered_list[0]=$SUDO_USER
+        filtered_list[1]=$SUDO_USER
+        if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
+                change="unlocked"
+        else
+                change="locked"
+        fi
+    fi
+    for user in "${filtered_list[@]}"; do
+    	echo "Working user:$user"
+    	user_home=$(bash -c "cd ~$(printf %q "$user") && pwd")
+    	BASH_ENV_FILES=("/etc/profile") #used because we know it exists, not that it needs to be immutable
+    	if [ -d "$user_home/.bashrc.d/" ]; then
+            chmod -R "644" "$user_home/.bashrc.d/"
+    	fi
+    	BASH_FILES=("$user_home/.bashrc" "$user_home/.bash_profile" "$user_home/.config/bash-completion" "$user_home/.profile" "$user_home/.bash_logout" "$user_home/.bash_login" "$user_home/.config/environment.d")
+    	for file in "${BASH_FILES[@]}"; do
+            if [ -f "$file" ]; then
+                BASH_ENV_FILES+=("$file")
+            else
+                echo "No $file file found"
+                echo "Creating empty $file"
+                install -D "/dev/null" "$file" #will create folder if necessary
+                BASH_ENV_FILES+=("$file")
+            fi
         done
-      else
-        echo "Bash environment '(${BASH_ENV_FILES[@]})' is unlocked. Locking it."
-        echo "
+        if [ "$user" == "${user_list[0]}" ]; then
+            change="locked"
+            if lsattr "${BASH_ENV_FILES[0]}" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
+                change="unlocked"
+            else
+                change="locked"
+            fi
+    	fi
+    	if [ "$change" == "unlocked" ]; then
+            echo "Bash environment '(${BASH_ENV_FILES[@]})' is locked down. Unlocking it."
+            for file in "${BASH_ENV_FILES[@]}"; do
+                run0 chattr -i "$file"
+            done
+        else
+            echo "Bash environment '(${BASH_ENV_FILES[@]})' is unlocked. Locking it."
+            echo "
     # .bashrc
-
+ 
     # Source global definitions
     if [ -f /etc/bashrc ]; then
         . /etc/bashrc
     fi
-
+ 
     # User specific environment
-    if ! [[ "\$PATH" =~ "\$user_home/.local/bin:\$user_home/bin:" ]]; then
-        PATH="\$user_home/.local/bin:\$user_home/bin:\$PATH"
+    if ! [[ "\$PATH" =~ "\$HOME/.local/bin:\$HOME/bin:" ]]; then
+        PATH="\$HOME/.local/bin:\$HOME/bin:\$PATH"
     fi
     export PATH
-
+ 
     # Uncomment the following line if you don't like systemctl's auto-paging feature:
     # export SYSTEMD_PAGER=
-
+ 
     unset rc
           " > ~/.bashrc
-
+ 
         echo "
     # .bash_profile
-
+ 
     # Get the aliases and functions
     if [ -f ~/.bashrc ]; then
         . ~/.bashrc
     fi
-
+ 
     # User specific environment and startup programs
         " > ~/.bash_profile
-
+ 
         for file in "${BASH_ENV_FILES[@]}"; do
             chattr +i "$file"
         done
-      fi
-    else
-      echo "Capitalization matters when you type \"YES I UNDERSTAND\""
     fi
+    if [ "${filtered_list[0]}" == "${filtered_list[1]}" ]; then
+        echo "$SUDO_USER $change."
+        exit
+    fi
+    done
+    echo "All users $change."
 
 # Toggle unconfined domain userns creation
 toggle-unconfined-domain-userns-creation:
