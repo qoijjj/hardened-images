@@ -19,5 +19,8 @@ jobs:
           INSTALLER_CHECKSUM=$(sha256sum $INSTALL_SCRIPT)
           BUTANE_CHECKSUM=$(grep -oP 'sha256-\K[a-f0-9]{64}' $EXAMPLE_BUTANE)
           if [ "$INSTALLER_CHECKSUM" != "$BUTANE_CHECKSUM" ]; then
+            echo "Checksum mismatch."
+            echo "Installer checksum: $INSTALLER_CHECKSUM"
+            echo "Butane checksum: $BUTANE_CHECKSUM"
             exit 1
           fi
