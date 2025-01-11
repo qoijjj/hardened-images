@@ -3,7 +3,7 @@
 # Tell build process to exit if there are any errors.
 set -euo pipefail
 
-CONTAINER_DIR="/etc/containers"
+CONTAINER_DIR="/usr/etc/containers"
 MODULE_DIRECTORY="${MODULE_DIRECTORY:-"/tmp/modules"}"
 IMAGE_NAME_FILE="${IMAGE_NAME//\//_}"
 IMAGE_REGISTRY_TITLE=$(echo "$IMAGE_REGISTRY" | cut -d'/' -f2-)
@@ -19,16 +19,18 @@ if ! [ -d $CONTAINER_DIR/registries.d ]; then
    mkdir -p "$CONTAINER_DIR/registries.d"
 fi
 
-if ! [ -d "/etc/pki/containers" ]; then
-    mkdir -p "/etc/pki/containers"
+if ! [ -d "/usr/etc/pki/containers" ]; then
+    mkdir -p "/usr/etc/pki/containers"
 fi
 
 if ! [ -f "$CONTAINER_DIR/policy.json" ]; then
     cp "$MODULE_DIRECTORY/signing/policy.json" "$CONTAINER_DIR/policy.json"
 fi
 
-cp "/etc/pki/containers/$IMAGE_NAME.pub" "/etc/pki/containers/$IMAGE_REGISTRY_TITLE.pub"
-rm "/etc/pki/containers/$IMAGE_NAME.pub"
+# covering our bases here since /usr/etc is technically unsupported, reevaluate once bootc is the primary deployment tool
+cp "/usr/etc/pki/containers/$IMAGE_NAME.pub" "/usr/etc/pki/containers/$IMAGE_REGISTRY_TITLE.pub"
+cp "/usr/etc/pki/containers/$IMAGE_NAME.pub" "/etc/pki/containers/$IMAGE_REGISTRY_TITLE.pub"
+rm "/usr/etc/pki/containers/$IMAGE_NAME.pub"
 
 POLICY_FILE="$CONTAINER_DIR/policy.json"
 
@@ -50,5 +52,5 @@ cp POLICY.tmp /usr/etc/containers/policy.json
 cp POLICY.tmp /etc/containers/policy.json
 rm POLICY.tmp
 
-mv "$MODULE_DIRECTORY/secureblue-signing/registry-config.yml" "$CONTAINER_DIR/registries.d/$IMAGE_REGISTRY_TITLE.yaml"
+mv "$MODULE_DIRECTORY/signing/registry-config.yaml" "$CONTAINER_DIR/registries.d/$IMAGE_REGISTRY_TITLE.yaml"
 sed -i "s ghcr.io/IMAGENAME $IMAGE_REGISTRY g" "$CONTAINER_DIR/registries.d/$IMAGE_REGISTRY_TITLE.yaml"
