@@ -246,32 +246,32 @@ toggle-bash-environment-lockdown:
             echo "Bash environment '(${BASH_ENV_FILES[@]})' is unlocked. Locking it."
             echo "
     # .bashrc
-    
+
     # Source global definitions
     if [ -f /etc/bashrc ]; then
         . /etc/bashrc
     fi
-    
+
     # User specific environment
     if ! [[ "\$PATH" =~ "\$HOME/.local/bin:\$HOME/bin:" ]]; then
         PATH="\$HOME/.local/bin:\$HOME/bin:\$PATH"
     fi
     export PATH
-    
+
     # Uncomment the following line if you don't like systemctl's auto-paging feature:
     # export SYSTEMD_PAGER=
-    
+
     unset rc
           " > ~/.bashrc
-    
+
         echo "
     # .bash_profile
-    
+
     # Get the aliases and functions
     if [ -f ~/.bashrc ]; then
         . ~/.bashrc
     fi
-    
+
     # User specific environment and startup programs
         " > ~/.bash_profile
         for file in "${BASH_ENV_FILES[@]}"; do
