@@ -131,7 +131,7 @@ This should no longer be required as of F41: https://discussion.fedoraproject.or
 
 #### Why won't Trivalent start?
 
-Try starting Trivalent from the commandline by running Trivalent. If you get an error about the current profile already running on another device, this is an issue with upstream chromium which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/SingletonLock`.
+Try starting Trivalent from the commandline by running `trivalent`. If you get an error about the current profile already running on another device, this is an issue with upstream chromium which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/SingletonLock`.
 \
 \
 `bubblejail` ***SHOULD NOT*** be used on Trivalent, there are issues reported with the pairing and removing the `bubblejail` config after it is applied can be difficult. It should also be noted that applying additional sandboxing may interfere with chromium's own internal sandbox, so it can end up reducing security.
