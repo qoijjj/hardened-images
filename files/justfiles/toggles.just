@@ -178,16 +178,10 @@ toggle-xwayland ACTION="prompt":
 # Toggle bash environment lockdown (mitigates LD_PRELOAD attacks)
 toggle-bash-environment-lockdown:
     #!/bin/run0 /bin/bash
-    set -eou pipefail
+    set -eu pipefail # very unfortunately getend passwd is not compatible with -o, it exits status 2 when it doesn't find every possible UID from 1000 to 1100 as valid. :(
     [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;} #almost certainly not needed, but doesn't hurt
-    user_string=$(ls "/var/home/" | tr '\n' ',' | sed 's/,*$//')
+    user_string=$(getent passwd {1000..1100} | awk -F':' '{ print $1}' | tr '\n' ',' | sed 's/,*$//')
     IFS=',' read -ra user_list <<< "$user_string"
-    declare -a filtered_list
-    for element in "${user_list[@]}"; do
-        if [ -f "/var/home/$element/.bashrc" ]; then
-                filtered_list+=("$element")
-        fi
-    done
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	change="unlocked"
     else
@@ -204,30 +198,30 @@ toggle-bash-environment-lockdown:
     if [ "$ACCEPT" != "YES I UNDERSTAND" ]; then
         exit
     fi
-    echo "Do you want this change to apply to ""${b}""all""${n}"" users (""${filtered_list[@]}"")? [y/N]"
+    echo "Do you want this change to apply to ""${b}""all""${n}"" users (""${user_list[@]}"")? [y/N]"
     echo "Otherwise, it will only apply to the currently logged in user ($SUDO_USER)."
     read -r REPLY
     if [[ ! "$REPLY" == [yY]* ]]; then
-    	filtered_list=("$SUDO_USER")
+    	user_list=("$SUDO_USER")
     fi
-    for user in "${filtered_list[@]}"; do
+    for user in "${user_list[@]}"; do
     	echo "Working user:$user"
-    	user_home=$(bash -c "cd ~$(printf %q "$user") && pwd")
+    	user_home=$(getent passwd "$user" | awk -F':' '{ print $6}')
     	BASH_ENV_FILES=("/etc/profile") #used because we know it exists, not that it needs to be immutable
     	if [ "$change" == "unlocked" ]; then
     		if [ -d "$user_home/.bashrc.d/" ]; then	
     			chattr -R +i "$user_home/.bashrc.d/"
         	else
         		install -D "/dev/null" "$user_home/.bashrc.d/empty.bashrc" #will create folder if necessary
-            		chown -R "$user" "$user_home/.bashrc.d/empty.bashrc"
-            		chattr -R +i "$user_home/.bashrc.d/"
+            	chown -R "$user" "$user_home/.bashrc.d/empty.bashrc"
+            	chattr -R +i "$user_home/.bashrc.d/"
         	fi
     		if [ -d "$user_home/.config/environment.d/" ]; then
             		chattr -R +i "$user_home/.config/environment.d/"
         	else
         		install -D "/dev/null" "$user_home/.config/environment.d/empty.env" #will create folder if necessary
-            		chown -R "$user" "$user_home/.config/environment.d/"
-            		chattr -R +i "$user_home/.config/environment.d/"
+            	chown -R "$user" "$user_home/.config/environment.d/"
+            	chattr -R +i "$user_home/.config/environment.d/"
         	fi
      	else
      		if [ -d "$user_home/.bashrc.d/" ]; then	
@@ -245,7 +239,8 @@ toggle-bash-environment-lockdown:
                 echo "No $file file found"
                 echo "Creating empty $file"
                 install -D "/dev/null" "$file" #will create folder if necessary
-    		chown -R "$user" "$file"
+                chmod -R "600" "$file"
+    		    chown -R "$user" "$file"
             fi
     	    BASH_ENV_FILES+=("$file")
         done
@@ -290,12 +285,8 @@ toggle-bash-environment-lockdown:
             chattr +i "$file"
         done
     fi
-    if [ "${#filtered_list[0]}" -eq 1 ]; then
-        echo "$SUDO_USER $change."
-        exit
-    fi
     done
-    echo "${filtered_list[@]}" "$change."
+    echo "${user_list[@]}" "$change."
 
 # Toggle unconfined domain userns creation
 toggle-unconfined-domain-userns-creation:
