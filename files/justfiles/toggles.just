@@ -184,10 +184,9 @@ toggle-bash-environment-lockdown:
     IFS=',' read -ra user_list <<< "$user_string"
     declare -a filtered_list
     for element in "${user_list[@]}"; do
-        if [ ! -d "/var/home/$element/Desktop/" ]; then
-                break
+        if [ -f "/var/home/$element/.bashrc" ]; then
+                filtered_list+=("$element")
         fi
-        filtered_list+=("$element")
     done
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	change="unlocked"
@@ -296,7 +295,7 @@ toggle-bash-environment-lockdown:
         exit
     fi
     done
-    echo "All users $change."
+    echo "${filtered_list[@]}" "$change."
 
 # Toggle unconfined domain userns creation
 toggle-unconfined-domain-userns-creation:
