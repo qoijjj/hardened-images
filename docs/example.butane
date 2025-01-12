@@ -1,0 +1,43 @@
+variant: fcos
+version: 1.5.0
+passwd:
+  users:
+    - name: core
+      groups:
+        - wheel
+      password_hash: $y$j9T$mefBCJbp/a49aSkTT4hpE1$6BXtrIuV8856t4A9r/R1GW4aR9eKXxsmB8FXt56Hx70 # 'secureblue'
+      ssh_authorized_keys:
+        - ssh-ed25519 <key>
+storage:
+  files:
+    - path: /opt/install_secureblue.sh
+      contents:
+        source: https://raw.githubusercontent.com/secureblue/secureblue/refs/heads/live/files/system/usr/share/secureblue/install_secureblue.sh
+        verification:
+          hash: sha256-1f2f8ac822614eb20c82547aabdd18fbded3906115db8ecd4efcf3a80e19bd7d
+      mode: 0755
+    - path: /opt/run_install_secureblue.sh
+      contents:
+        inline: |
+          sudo systemctl disable --now zincati.service 2>/dev/null
+          sudo systemctl stop rpm-ostreed-automatic.timer rpm-ostreed-automatic.service 2>/dev/null
+          if [ ! -f /opt/install_secureblue.sh ]; then
+            echo "Error: install_secureblue.sh was not downloaded."
+          else
+            sudo /opt/install_secureblue.sh
+            if [ $? != 0 ]; then
+              echo "Error: Secureblue installer failed."
+            else
+              sed -i "/\/opt\/run_install_secureblue.sh/d" /var/home/core/.bash_profile
+              sudo rm -f /opt/*install_secureblue.sh
+              echo "Automatically rebooting in 5 seconds..."
+              sleep 5
+              sudo systemctl reboot
+            fi
+          fi
+      mode: 0755
+    - path: /var/home/core/.bash_profile
+      overwrite: false
+      append:
+      - inline: |
+          /opt/run_install_secureblue.sh
