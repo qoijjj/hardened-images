@@ -246,8 +246,7 @@ toggle-bash-environment-lockdown:
                 echo "No $file file found"
                 echo "Creating empty $file"
                 install -D "/dev/null" "$file" #will create folder if necessary
-                chmod -R "460" "$file"
-    		chown -R "$user:wheel" "$file"
+    		chown -R "$user" "$file"
             fi
     	    BASH_ENV_FILES+=("$file")
         done
