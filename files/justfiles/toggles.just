@@ -179,9 +179,9 @@ toggle-xwayland ACTION="prompt":
 toggle-bash-environment-lockdown:
     #!/bin/run0 /bin/bash
     set -eou pipefail
-    user_string=$(ls "/var/home" | tr '\n' ',' | sed 's/,*$//')
-    IFS=',' read -ra user_list <<< "$user_string"
     [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;} #almost certainly not needed, but doesn't hurt
+    user_string=$(ls "/var/home/" | tr '\n' ',' | sed 's/,*$//')
+    IFS=',' read -ra user_list <<< "$user_string"
     declare -a filtered_list
     for element in "${user_list[@]}"; do
         if [ ! -d "/var/home/$element/Desktop/" ]; then
@@ -189,36 +189,56 @@ toggle-bash-environment-lockdown:
         fi
         filtered_list+=("$element")
     done
+    if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
+    	change="unlocked"
+    else
+    	change="locked"
+    fi
     b=$(tput bold) #This is the more correct way to bold and satisfies -eou pipefail
     n=$(tput sgr0)
     echo "${b}WARNING${n} This will overwrite your .bashrc and .bash_profile."
     echo "This is needed to ensure the mitigation is effective."
+    echo ".bashrc, .bash_profile, and more will be ""${b}""$change""${n}""."
     echo "Do you understand?"
     echo "Please type in \"YES I UNDERSTAND\" and press enter"
     read -r ACCEPT
     if [ "$ACCEPT" != "YES I UNDERSTAND" ]; then
         exit
     fi
-    echo "Do you want this change to apply to ${b}all${n} users? [y/N]"
-    echo "Otherwise, it will only apply to the currently logged in user."
+    echo "Do you want this change to apply to ""${b}""all""${n}"" users (""${filtered_list[@]}"")? [y/N]"
+    echo "Otherwise, it will only apply to the currently logged in user ($SUDO_USER)."
     read -r REPLY
     if [[ ! "$REPLY" == [yY]* ]]; then
-        filtered_list[0]=$SUDO_USER
-        filtered_list[1]=$SUDO_USER
-        if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
-                change="unlocked"
-        else
-                change="locked"
-        fi
+    	filtered_list=("$SUDO_USER")
     fi
     for user in "${filtered_list[@]}"; do
     	echo "Working user:$user"
     	user_home=$(bash -c "cd ~$(printf %q "$user") && pwd")
     	BASH_ENV_FILES=("/etc/profile") #used because we know it exists, not that it needs to be immutable
-    	if [ -d "$user_home/.bashrc.d/" ]; then
-            chmod -R "644" "$user_home/.bashrc.d/"
-    	fi
-    	BASH_FILES=("$user_home/.bashrc" "$user_home/.bash_profile" "$user_home/.config/bash-completion" "$user_home/.profile" "$user_home/.bash_logout" "$user_home/.bash_login" "$user_home/.config/environment.d")
+    	if [ "$change" == "unlocked" ]; then
+    		if [ -d "$user_home/.bashrc.d/" ]; then	
+    			chattr -R +i "$user_home/.bashrc.d/"
+        	else
+        		install -D "/dev/null" "$user_home/.bashrc.d/empty.bashrc" #will create folder if necessary
+            		chown -R "$user" "$user_home/.bashrc.d/empty.bashrc"
+            		chattr -R +i "$user_home/.bashrc.d/"
+        	fi
+    		if [ -d "$user_home/.config/environment.d/" ]; then
+            		chattr -R +i "$user_home/.config/environment.d/"
+        	else
+        		install -D "/dev/null" "$user_home/.config/environment.d/empty.env" #will create folder if necessary
+            		chown -R "$user" "$user_home/.config/environment.d/"
+            		chattr -R +i "$user_home/.config/environment.d/"
+        	fi
+     	else
+     		if [ -d "$user_home/.bashrc.d/" ]; then	
+    			chattr -R -i "$user_home/.bashrc.d/"
+     		fi
+    		if [ -d "$user_home/.config/environment.d/" ]; then
+            		chattr -R -i "$user_home/.config/environment.d/"
+     		fi
+        fi
+    	BASH_FILES=("$user_home/.bashrc" "$user_home/.bash_profile" "$user_home/.config/bash-completion" "$user_home/.profile" "$user_home/.bash_logout" "$user_home/.bash_login")
     	for file in "${BASH_FILES[@]}"; do
             if [ -f "$file" ]; then
                 BASH_ENV_FILES+=("$file")
@@ -226,59 +246,53 @@ toggle-bash-environment-lockdown:
                 echo "No $file file found"
                 echo "Creating empty $file"
                 install -D "/dev/null" "$file" #will create folder if necessary
-                BASH_ENV_FILES+=("$file")
+                chmod -R "460" "$file"
+    		chown -R "$user:wheel" "$file"
             fi
+    	    BASH_ENV_FILES+=("$file")
         done
-        if [ "$user" == "${user_list[0]}" ]; then
-            change="locked"
-            if lsattr "${BASH_ENV_FILES[0]}" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
-                change="unlocked"
-            else
-                change="locked"
-            fi
-    	fi
     	if [ "$change" == "unlocked" ]; then
-            echo "Bash environment '(${BASH_ENV_FILES[@]})' is locked down. Unlocking it."
+            echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is locked down. Unlocking it."
             for file in "${BASH_ENV_FILES[@]}"; do
-                run0 chattr -i "$file"
+                chattr -i "$file"
             done
         else
-            echo "Bash environment '(${BASH_ENV_FILES[@]})' is unlocked. Locking it."
+            echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is unlocked. Locking it."
             echo "
     # .bashrc
-
+ 
     # Source global definitions
     if [ -f /etc/bashrc ]; then
         . /etc/bashrc
     fi
-
+ 
     # User specific environment
     if ! [[ "\$PATH" =~ "\$HOME/.local/bin:\$HOME/bin:" ]]; then
         PATH="\$HOME/.local/bin:\$HOME/bin:\$PATH"
     fi
     export PATH
-
+ 
     # Uncomment the following line if you don't like systemctl's auto-paging feature:
     # export SYSTEMD_PAGER=
-
+ 
     unset rc
           " > ~/.bashrc
-
+ 
         echo "
     # .bash_profile
-
+ 
     # Get the aliases and functions
     if [ -f ~/.bashrc ]; then
         . ~/.bashrc
     fi
-
+ 
     # User specific environment and startup programs
         " > ~/.bash_profile
         for file in "${BASH_ENV_FILES[@]}"; do
             chattr +i "$file"
         done
     fi
-    if [ "${filtered_list[0]}" == "${filtered_list[1]}" ]; then
+    if [ "${#filtered_list[0]}" -eq 1 ]; then
         echo "$SUDO_USER $change."
         exit
     fi
