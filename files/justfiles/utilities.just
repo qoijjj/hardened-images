@@ -275,6 +275,7 @@ setup-virtualization ACTION="":
     elif [ "$OPTION" == "" ]; then
       echo "${bold}Virtualization Setup${normal}"
       echo "NOTE: Enabling Virtualization will install virt-manager and set kernel args"
+      echo "WARNING: This recipe will ask for your password multiple times"
       OPTION=$(Choose \
         "Enable Virtualization" \
         "Disable Virtualization" \
