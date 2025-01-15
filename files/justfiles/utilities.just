@@ -311,8 +311,8 @@ setup-virtualization ACTION="":
             run0 sh -c 'wget "https://raw.githubusercontent.com/PassthroughPOST/VFIO-Tools/master/libvirt_hooks/qemu" -O /etc/libvirt/hooks/qemu'
             run0 sh -c 'chmod +x /etc/libvirt/hooks/qemu'
             run0 sh -c 'grep -A1 -B1 "# Add" /etc/libvirt/hooks/qemu | sed "s/^# //g"'
-            if run0 test ! -d "/etc/libvirt/hooks/qemu/qemu.d"; then
-              run0 sh -c 'mkdir /etc/libvirt/hooks/qemu/qemu.d'
+            if run0 test ! -d "/etc/libvirt/hooks/qemu.d"; then
+              run0 sh -c 'mkdir /etc/libvirt/hooks/qemu.d'
             fi
           fi
           systemctl enable libvirtd-setup.service \
