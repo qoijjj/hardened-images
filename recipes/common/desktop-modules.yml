@@ -11,6 +11,7 @@ modules:
       scripts:
         - installsignedkernel.sh
     - from-file: common/desktop-packages.yml
+    - from-file: common/subresource-filter-packages.yml
     - from-file: common/desktop-scripts.yml
     - type: fonts
       fonts:
