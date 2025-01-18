@@ -178,17 +178,17 @@ toggle-xwayland ACTION="prompt":
 # Toggle bash environment lockdown (mitigates LD_PRELOAD attacks)
 toggle-bash-environment-lockdown:
     #!/bin/run0 /bin/bash
-    set -eu pipefail # very unfortunately getend passwd is not compatible with -o, it exits status 2 when it doesn't find every possible UID from 1000 to 1100 as valid. :(
+    set -eou pipefail 
     [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;} #almost certainly not needed, but doesn't hurt
-    user_string=$(getent passwd {1000..1100} | awk -F':' '{ print $1}' | tr '\n' ',' | sed 's/,*$//')
+    uid_min=$(grep -Po '^\s*UID_MIN\s+\K\d+' /etc/login.defs)
+    uid_max=$(grep -Po '^\s*UID_MAX\s+\K\d+' /etc/login.defs)
+    user_string=$(getent passwd | awk -F':' -v max="$uid_max" -v min="$uid_min" 'max >= $3 && $3 >= min {print $1}' | tr '\n' ',' | sed 's/,*$//')
     IFS=',' read -ra user_list <<< "$user_string"
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	change="unlocked"
     else
     	change="locked"
     fi
-    b=$(tput bold) #This is the more correct way to bold and satisfies -eou pipefail
-    n=$(tput sgr0)
     echo "${b}WARNING${n} This will overwrite your .bashrc and .bash_profile."
     echo "This is needed to ensure the mitigation is effective."
     echo ".bashrc, .bash_profile, and more will be ""${b}""$change""${n}""."
@@ -210,19 +210,19 @@ toggle-bash-environment-lockdown:
     	BASH_ENV_FILES=("/etc/profile") #used because we know it exists, not that it needs to be immutable
     	if [ "$change" == "unlocked" ]; then
     		if [ -d "$user_home/.bashrc.d/" ]; then	
-    			chattr -R +i "$user_home/.bashrc.d/"
+    			echo "$user_home/.bashrc.d/ found" # performative, not needed
         	else
-        		install -D "/dev/null" "$user_home/.bashrc.d/empty.bashrc" #will create folder if necessary
-            	chown -R "$user" "$user_home/.bashrc.d/empty.bashrc"
-            	chattr -R +i "$user_home/.bashrc.d/"
+        		mkdir -p "$user_home/.bashrc.d/empty.bashrc" #will create folder if necessary
+            	chown -R "$user:" "$user_home/.bashrc.d/"
         	fi
+            chattr -R +i "$user_home/.bashrc.d/"
     		if [ -d "$user_home/.config/environment.d/" ]; then
-            		chattr -R +i "$user_home/.config/environment.d/"
+                echo "$user_home/.config/environment.d/ found" # performative, not needed
         	else
         		install -D "/dev/null" "$user_home/.config/environment.d/empty.env" #will create folder if necessary
-            	chown -R "$user" "$user_home/.config/environment.d/"
-            	chattr -R +i "$user_home/.config/environment.d/"
+            	chown -R "$user:" "$user_home/.config/environment.d/"
         	fi
+            chattr -R +i "$user_home/.config/environment.d/"
      	else
      		if [ -d "$user_home/.bashrc.d/" ]; then	
     			chattr -R -i "$user_home/.bashrc.d/"
@@ -237,10 +237,12 @@ toggle-bash-environment-lockdown:
                 BASH_ENV_FILES+=("$file")
             else
                 echo "No $file file found"
-                echo "Creating empty $file"
-                install -D "/dev/null" "$file" #will create folder if necessary
-                chmod -R "600" "$file"
-    		    chown -R "$user" "$file"
+                if [ "$change" == "locked" ]; then
+                    echo "Creating empty $file"
+                    install -D "/dev/null" "$file" #will create folder if necessary
+                    chmod -R "600" "$file"
+    		        chown -R "$user:" "$file"
+                fi
             fi
     	    BASH_ENV_FILES+=("$file")
         done
