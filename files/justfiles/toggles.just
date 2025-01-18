@@ -289,7 +289,7 @@ toggle-bash-environment-lockdown:
     fi
     done
     echo "${user_list[@]}" "$change."
-    echo "WARNING: until a reboot, any process with an open file descriptor will continue to have the access they did before this script was ran."
+    echo "WARNING: until a reboot, any process with an open file descriptor will continue to have the access they had before this script was run."
 
 # Toggle unconfined domain userns creation
 toggle-unconfined-domain-userns-creation:
