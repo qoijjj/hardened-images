@@ -208,18 +208,18 @@ toggle-bash-environment-lockdown:
     	echo "Working user:$user"
     	user_home=$(getent passwd "$user" | awk -F':' '{ print $6}')
     	BASH_ENV_FILES=("/etc/profile") #used because we know it exists, not that it needs to be immutable
-    	if [ "$change" == "unlocked" ]; then
+    	if [ "$change" == "locked" ]; then
     		if [ -d "$user_home/.bashrc.d/" ]; then	
     			echo "$user_home/.bashrc.d/ found" # performative, not needed
         	else
         		mkdir -p "$user_home/.bashrc.d/empty.bashrc" #will create folder if necessary
             	chown -R "$user:" "$user_home/.bashrc.d/"
         	fi
-            chattr -R +i "$user_home/.bashrc.d/"
+    		chattr -R +i "$user_home/.bashrc.d/"
     		if [ -d "$user_home/.config/environment.d/" ]; then
                 echo "$user_home/.config/environment.d/ found" # performative, not needed
         	else
-        		install -D "/dev/null" "$user_home/.config/environment.d/empty.env" #will create folder if necessary
+        		mkdir -p "$user_home/.config/environment.d/" #will create folder if necessary
             	chown -R "$user:" "$user_home/.config/environment.d/"
         	fi
             chattr -R +i "$user_home/.config/environment.d/"
