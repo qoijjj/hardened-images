@@ -212,8 +212,8 @@ toggle-bash-environment-lockdown:
     		if [ -d "$user_home/.bashrc.d/" ]; then	
     			echo "$user_home/.bashrc.d/ found" # performative, not needed
         	else
-        		mkdir -p "$user_home/.bashrc.d/empty.bashrc" #will create folder if necessary
-            	chown -R "$user:" "$user_home/.bashrc.d/"
+                mkdir -p "$user_home/.bashrc.d/" #will create folder if necessary
+                chown -R "$user:" "$user_home/.bashrc.d/"
         	fi
     		chattr -R +i "$user_home/.bashrc.d/"
     		if [ -d "$user_home/.config/environment.d/" ]; then
@@ -234,14 +234,12 @@ toggle-bash-environment-lockdown:
     	BASH_FILES=("$user_home/.bashrc" "$user_home/.bash_profile" "$user_home/.config/bash-completion" "$user_home/.profile" "$user_home/.bash_logout" "$user_home/.bash_login")
     	for file in "${BASH_FILES[@]}"; do
             if [ -f "$file" ]; then
-                BASH_ENV_FILES+=("$file")
+                echo "$file found"
             else
                 echo "No $file file found"
                 if [ "$change" == "locked" ]; then
                     echo "Creating empty $file"
-                    install -D "/dev/null" "$file" #will create folder if necessary
-                    chmod -R "600" "$file"
-    		        chown -R "$user:" "$file"
+                    install -D -o "$user" -g "$user" -m 600 "/dev/null" "$file" #will create folder if necessary
                 fi
             fi
     	    BASH_ENV_FILES+=("$file")
@@ -253,6 +251,9 @@ toggle-bash-environment-lockdown:
             done
         else
             echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is unlocked. Locking it."
+            for file in "${BASH_ENV_FILES[@]}"; do
+                chattr -i "$file"
+            done
             echo "
     # .bashrc
 
