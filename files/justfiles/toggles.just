@@ -185,13 +185,13 @@ toggle-bash-environment-lockdown:
     user_string=$(getent passwd | awk -F':' -v max="$uid_max" -v min="$uid_min" 'max >= $3 && $3 >= min {print $1}' | tr '\n' ',' | sed 's/,*$//')
     IFS=',' read -ra user_list <<< "$user_string"
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
-    	change="unlocked"
+    	change_to_make="unlocked" #This means that the bash files are currently LOCKED, and this script will unlock them
     else
-    	change="locked"
+    	change_to_make="locked"  #This means the bash files are currently UNLOCKED, and the script will lock them
     fi
     echo "${b}WARNING${n} This will overwrite your ~/.bashrc, ~/.bash_profile, ~/.config/bash-completion, ~/.profile, ~/.bash_logout, ~/.bash_login, ~/.bashrc.d/, and ~/.config/environment.d/"
     echo "This is needed to ensure the mitigation is effective."
-    echo ".bashrc, .bash_profile, and more will be ""${b}""$change""${n}""."
+    echo ".bashrc, .bash_profile, and more will be ""${b}""$change_to_make""${n}""."
     echo "Do you understand?"
     echo "Please type in \"YES I UNDERSTAND\" and press enter"
     read -r ACCEPT
@@ -209,7 +209,7 @@ toggle-bash-environment-lockdown:
     	user_home=$(getent passwd "$user" | awk -F':' '{ print $6}')
     	BASH_ENV_FILES=("/etc/profile") #used because we know it exists, not that it needs to be immutable
         [ -z "$user_home" ] || { echo "$user_home is somehow empty, safely exiting"; exit 1;}
-    	if [ "$change" == "locked" ]; then
+    	if [ "$change_to_make" == "locked" ]; then
     		if [ -d "$user_home/.bashrc.d/" ]; then	
                 chattr -R -i "$user_home/.bashrc.d/"
     			rm "$user_home/.bashrc.d/"* # scary, hopefully this never rm's a persons root directory
@@ -239,13 +239,13 @@ toggle-bash-environment-lockdown:
                 chattr -i "$file"
                 rm "$file"
             fi
-            if [ "$change" == "locked" ]; then
+            if [ "$change_to_make" == "locked" ]; then
                 echo "Creating empty $file"
                 install -D -o "$user" -g "$user" -m 600 "/dev/null" "$file" #will create folder if necessary
             fi
     	    BASH_ENV_FILES+=("$file")
         done
-    	if [ "$change" == "unlocked" ]; then
+    	if [ "$change_to_make" == "unlocked" ]; then
             echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is locked down. Unlocking it."
             for file in "${BASH_ENV_FILES[@]}"; do
                 chattr -i "$file"  
@@ -287,7 +287,7 @@ toggle-bash-environment-lockdown:
         done
     fi #inside for loop over all $user_list (don't want to mess with the indentation for the default .bashrc and .bash_profiles)
     done
-    echo "${user_list[@]}" "$change." #outside for loop over all $user_list
+    echo "${user_list[@]}" "$change_to_make." #outside for loop over all $user_list
     echo "WARNING: until a reboot, any process with an open file descriptor will continue to have the access they had before this script was run."
 
 # Toggle unconfined domain userns creation
