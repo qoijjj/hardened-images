@@ -211,12 +211,12 @@ toggle-bash-environment-lockdown:
         [ -z "$user_home" ] || { echo "$user_home is somehow empty, safely exiting"; exit 1;}
     	if [ "$change_to_make" == "locked" ]; then
     		if [ -d "$user_home/.bashrc.d/" ]; then	
-                chattr -R -i "$user_home/.bashrc.d/"
+                chattr -R -i "$user_home/.bashrc.d/" #This is done to allow this process to reset the locked files
     			rm "$user_home/.bashrc.d/"* # scary, hopefully this never rm's a persons root directory
         	fi
             mkdir -p "$user_home/.bashrc.d/" #will create folder if necessary
-            chown -R "$user:" "$user_home/.bashrc.d/"
-    		chattr -R +i "$user_home/.bashrc.d/"
+            chown -R "$user:" "$user_home/.bashrc.d/" 
+    		chattr -R +i "$user_home/.bashrc.d/" #This is done to allow this process to reset the locked files
     		if [ -d "$user_home/.config/environment.d/" ]; then
                 chattr -R -i "$user_home/.config/environment.d/"
                 rm "$user_home/.config/environment.d/"*
@@ -237,19 +237,16 @@ toggle-bash-environment-lockdown:
     	for file in "${BASH_FILES[@]}"; do
             if [ -f "$file" ]; then
                 chattr -i "$file"
-                rm "$file"
             fi
             if [ "$change_to_make" == "locked" ]; then
+                [ -f "$file" ] || {rm "$file";}
                 echo "Creating empty $file"
                 install -D -o "$user" -g "$user" -m 600 "/dev/null" "$file" #will create folder if necessary
             fi
-    	    BASH_ENV_FILES+=("$file")
+            BASH_ENV_FILES+=("$file")
         done
     	if [ "$change_to_make" == "unlocked" ]; then
-            echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is locked down. Unlocking it."
-            for file in "${BASH_ENV_FILES[@]}"; do
-                chattr -i "$file"  
-            done
+            echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is locked down. Unlocking it." #In truth it's already unlocked, but *shrug*
         else
             echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is unlocked. Locking it."
             echo "
