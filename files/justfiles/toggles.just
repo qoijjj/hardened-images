@@ -247,12 +247,12 @@ toggle-bash-environment-lockdown:
     	if [ "$change" == "unlocked" ]; then
             echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is locked down. Unlocking it."
             for file in "${BASH_ENV_FILES[@]}"; do
-                chattr -i "$file"
+                chattr -i "$file"  
             done
         else
             echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is unlocked. Locking it."
             for file in "${BASH_ENV_FILES[@]}"; do
-                chattr -i "$file"
+                chattr -i "$file" #When locking this script unlocks first to ensure the script can reset .bashrc and .bash_profile
             done
             echo "
     # .bashrc
@@ -287,9 +287,9 @@ toggle-bash-environment-lockdown:
         for file in "${BASH_ENV_FILES[@]}"; do
             chattr +i "$file"
         done
-    fi
+    fi #inside for loop over all $user_list (don't want to mess with the indentation for the default .bashrc and .bash_profiles)
     done
-    echo "${user_list[@]}" "$change."
+    echo "${user_list[@]}" "$change." #outside for loop over all $user_list
     echo "WARNING: until a reboot, any process with an open file descriptor will continue to have the access they had before this script was run."
 
 # Toggle unconfined domain userns creation
