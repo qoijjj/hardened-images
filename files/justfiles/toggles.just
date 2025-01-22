@@ -189,7 +189,7 @@ toggle-bash-environment-lockdown:
     else
     	change="locked"
     fi
-    echo "${b}WARNING${n} This will overwrite your .bashrc and .bash_profile."
+    echo "${b}WARNING${n} This will overwrite your ~/.bashrc, ~/.bash_profile, ~/.config/bash-completion, ~/.profile, ~/.bash_logout, ~/.bash_login, ~/.bashrc.d/, and ~/.config/environment.d/"
     echo "This is needed to ensure the mitigation is effective."
     echo ".bashrc, .bash_profile, and more will be ""${b}""$change""${n}""."
     echo "Do you understand?"
@@ -208,39 +208,40 @@ toggle-bash-environment-lockdown:
     	echo "Working user:$user"
     	user_home=$(getent passwd "$user" | awk -F':' '{ print $6}')
     	BASH_ENV_FILES=("/etc/profile") #used because we know it exists, not that it needs to be immutable
+        [ -z "$user_home" ] || { echo "$user_home is somehow empty, safely exiting"; exit 1;}
     	if [ "$change" == "locked" ]; then
     		if [ -d "$user_home/.bashrc.d/" ]; then	
-    			echo "$user_home/.bashrc.d/ found" # performative, not needed
-        	else
-                mkdir -p "$user_home/.bashrc.d/" #will create folder if necessary
-                chown -R "$user:" "$user_home/.bashrc.d/"
+                chattr -R -i "$user_home/.bashrc.d/"
+    			rm "$user_home/.bashrc.d/"* # scary, hopefully this never rm's a persons root directory
         	fi
+            mkdir -p "$user_home/.bashrc.d/" #will create folder if necessary
+            chown -R "$user:" "$user_home/.bashrc.d/"
     		chattr -R +i "$user_home/.bashrc.d/"
     		if [ -d "$user_home/.config/environment.d/" ]; then
-                echo "$user_home/.config/environment.d/ found" # performative, not needed
-        	else
-        		mkdir -p "$user_home/.config/environment.d/" #will create folder if necessary
-            	chown -R "$user:" "$user_home/.config/environment.d/"
+                chattr -R -i "$user_home/.config/environment.d/"
+                rm "$user_home/.config/environment.d/"*
         	fi
+            mkdir -p "$user_home/.config/environment.d/" #will create folder if necessary
+            chown -R "$user:" "$user_home/.config/environment.d/"
             chattr -R +i "$user_home/.config/environment.d/"
+        fi
      	else
      		if [ -d "$user_home/.bashrc.d/" ]; then	
     			chattr -R -i "$user_home/.bashrc.d/"
      		fi
     		if [ -d "$user_home/.config/environment.d/" ]; then
-            		chattr -R -i "$user_home/.config/environment.d/"
+            	chattr -R -i "$user_home/.config/environment.d/"
      		fi
         fi
     	BASH_FILES=("$user_home/.bashrc" "$user_home/.bash_profile" "$user_home/.config/bash-completion" "$user_home/.profile" "$user_home/.bash_logout" "$user_home/.bash_login")
     	for file in "${BASH_FILES[@]}"; do
             if [ -f "$file" ]; then
-                echo "$file found"
-            else
-                echo "No $file file found"
-                if [ "$change" == "locked" ]; then
-                    echo "Creating empty $file"
-                    install -D -o "$user" -g "$user" -m 600 "/dev/null" "$file" #will create folder if necessary
-                fi
+                chattr -i "$file"
+                rm "$file"
+            fi
+            if [ "$change" == "locked" ]; then
+                echo "Creating empty $file"
+                install -D -o "$user" -g "$user" -m 600 "/dev/null" "$file" #will create folder if necessary
             fi
     	    BASH_ENV_FILES+=("$file")
         done
@@ -251,9 +252,6 @@ toggle-bash-environment-lockdown:
             done
         else
             echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is unlocked. Locking it."
-            for file in "${BASH_ENV_FILES[@]}"; do
-                chattr -i "$file" #When locking this script unlocks first to ensure the script can reset .bashrc and .bash_profile
-            done
             echo "
     # .bashrc
 
@@ -272,7 +270,7 @@ toggle-bash-environment-lockdown:
     # export SYSTEMD_PAGER=
 
     unset rc
-          " > ~/.bashrc
+          " > "$user_home/.bashrc"
 
         echo "
     # .bash_profile
@@ -283,7 +281,7 @@ toggle-bash-environment-lockdown:
     fi
 
     # User specific environment and startup programs
-        " > ~/.bash_profile
+        " > "$user_home/.bash_profile"
         for file in "${BASH_ENV_FILES[@]}"; do
             chattr +i "$file"
         done
