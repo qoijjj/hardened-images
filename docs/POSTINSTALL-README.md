@@ -105,7 +105,7 @@ When using a non-wheel user, you can add the user to other groups if you want. F
 
 ## Setup system DNS
 
-Interactively setup system DNS resolution for systemd-resolved (optionally also set the resolver for hardened-chromium via management policy):
+Interactively setup system DNS resolution for systemd-resolved (optionally also set the resolver for Trivalent via management policy):
 
 ```
 ujust dns-selector
@@ -141,9 +141,9 @@ To validate your secureblue setup, run:
 ujust audit-secureblue
 ```
 
-## Optional: `hardened-chromium` Flags
-The included [hardened-chromium](https://github.com/secureblue/hardened-chromium) browser has some additional settings in `chrome://flags` you *may* want to set for additional hardening and convenience (can cause functionality issues in some cases).
-You can read about these settings [here](https://github.com/secureblue/hardened-chromium?tab=readme-ov-file#post-install).
+## Optional: Trivalent Flags
+The included [Trivalent](https://github.com/secureblue/Trivalent) browser has some additional settings in `chrome://flags` you *may* want to set for additional hardening and convenience (can cause functionality issues in some cases).
+You can read about these settings [here](https://github.com/secureblue/Trivalent?tab=readme-ov-file#post-install).
 
 ## Read the FAQ
 

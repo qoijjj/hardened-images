@@ -282,7 +282,7 @@ dns-selector:
             ;;
     esac
 
-    read -p "Would you like the resolver to be set in the default browser (hardened-chromium) via management policy? [y/N] " set_browser_policy
+    read -p "Would you like the resolver to be set in the default browser (Trivalent) via management policy? [y/N] " set_browser_policy
     if [[ "$set_browser_policy" == [Yy]* && "$resolver_selection" == 5 ]]; then
         read -p "Please enter the second resolver's HTTPS address (e.g. 'https://security.cloudflare-dns.com/dns-query'): " resolver_https_address
     fi
