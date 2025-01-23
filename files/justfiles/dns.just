@@ -3,9 +3,9 @@ dns-selector:
     #! /bin/run0 /bin/bash
     # constants
     readonly resolved_conf="/etc/systemd/resolved.conf.d/10-securedns.conf"
-    readonly policy_file="/etc/chromium/policies/managed/10-securedns-browser.json"
+    readonly policy_file="/etc/trivalent/policies/managed/10-securedns-browser.json"
     mkdir -p /etc/systemd/resolved.conf.d/
-    mkdir -p /etc/chromium/policies/managed/
+    mkdir -p /etc/trivalent/policies/managed/
     # variables
     valid_input="0"
     resolver_selection=""
