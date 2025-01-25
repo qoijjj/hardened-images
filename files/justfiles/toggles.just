@@ -20,7 +20,7 @@ toggle-cups:
       systemctl daemon-reload
       echo "Cups enabled."
     fi
-
+ 
 # Toggle bluetooth kernel modules on/off (requires reboot)
 toggle-bluetooth-modules:
     #! /bin/run0 /bin/bash
@@ -34,7 +34,7 @@ toggle-bluetooth-modules:
       chmod 644 $BLUE_MOD_FILE
       echo "Bluetooth kernel modules enabled. Reboot to take effect."
     fi
-
+ 
 # Toggle GHNS (KDE Get New Stuff)
 toggle-ghns:
     #! /bin/run0 /bin/bash
@@ -52,7 +52,7 @@ toggle-ghns:
     else
       echo "No kdeglobals file found. Are you on kinoite?"
     fi
-
+ 
 # enable a kernel module that is disabled by modprobe.d (requires restart)
 override-enable-module mod_name:
     #! /bin/run0 /bin/bash
@@ -65,7 +65,7 @@ override-enable-module mod_name:
       chmod 644 $MOD_FILE
       echo "Override created to enable $MOD_NAME module. Reboot to take effect."
     fi
-
+ 
 # reset the override by `just override-enable-module`, i.e. disable the module again (requires restart)
 override-reset-module mod_name:
     #! /bin/run0 /bin/bash
@@ -77,7 +77,7 @@ override-reset-module mod_name:
     else
       echo "No override found for $MOD_NAME module."
     fi
-
+ 
 # Toggle anticheat support by changing ptrace scope (requires restart)
 toggle-anticheat-support:
     #! /bin/run0 /bin/bash
@@ -91,7 +91,7 @@ toggle-anticheat-support:
     else 
         echo "The sysctl hardening file is missing the ptrace_scope setting."
     fi
-
+ 
 # Toggle Gnome JIT JavaScript for GJS and WebkitGTK (requires session restart)
 toggle-gnome-jit-js:
     #! /bin/run0 /bin/bash
@@ -104,7 +104,7 @@ toggle-gnome-jit-js:
         chmod 644 $ENV_FILE
         echo "JIT JavaScript for Gnome and WebkitGTK has been disabled."
     fi
-
+ 
 # Toggle support for using GNOME user extensions
 toggle-gnome-extensions:
     #!/usr/bin/bash
@@ -116,7 +116,7 @@ toggle-gnome-extensions:
       gsettings reset org.gnome.shell allow-extension-installation
       echo "Support for GNOME user extensions have been disabled"
     fi
-
+ 
 # Toggle Xwayland support
 toggle-xwayland ACTION="prompt":
     #! /bin/run0 /bin/bash
@@ -174,7 +174,7 @@ toggle-xwayland ACTION="prompt":
         echo "Xwayland for Sway has been disabled."
       fi
     fi
-
+ 
 # Toggle bash environment lockdown (mitigates LD_PRELOAD attacks)
 toggle-bash-environment-lockdown:
     #!/bin/run0 /bin/bash
@@ -186,9 +186,13 @@ toggle-bash-environment-lockdown:
     IFS=',' read -ra user_list <<< "$user_string"
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	change_to_make="unlocked" #This means that the bash files are currently LOCKED, and this script will unlock them
+    	chattr -i "/etc/profile"
     else
     	change_to_make="locked"  #This means the bash files are currently UNLOCKED, and the script will lock them
+    	chattr +i "/etc/profile"
     fi
+    b=$(tput bold) #I understand this is defined elsewhere, but this makes the script portabl, and makes testing easier
+    n=$(tput sgr0)
     echo "${b}WARNING${n} This will overwrite your ~/.bashrc, ~/.bash_profile, ~/.config/bash-completion, ~/.profile, ~/.bash_logout, ~/.bash_login, ~/.bashrc.d/, and ~/.config/environment.d/"
     echo "This is needed to ensure the mitigation is effective."
     echo ".bashrc, .bash_profile, and more will be ""${b}""$change_to_make""${n}""."
@@ -208,29 +212,30 @@ toggle-bash-environment-lockdown:
     	echo "Working user:$user"
     	user_home=$(getent passwd "$user" | awk -F':' '{ print $6}')
     	BASH_ENV_FILES=("/etc/profile") #used because we know it exists, not that it needs to be immutable
-        [ -z "$user_home" ] || { echo "$user_home is somehow empty, safely exiting"; exit 1;}
+        [[ -d "$user_home" ]] || { echo "$user_home is somehow empty, safely exiting"; exit 1;}
     	if [ "$change_to_make" == "locked" ]; then
     		if [ -d "$user_home/.bashrc.d/" ]; then	
-                chattr -R -i "$user_home/.bashrc.d/" #This is done to allow this process to reset the locked files
-    			rm "$user_home/.bashrc.d/"* # scary, hopefully this never rm's a persons root directory
+                	chattr -R -i "$user_home/.bashrc.d/" #This is done to allow this process to reset the locked files
+    			rm -r "$user_home/.bashrc.d/" # scary
         	fi
-            mkdir -p "$user_home/.bashrc.d/" #will create folder if necessary
-            chown -R "$user:" "$user_home/.bashrc.d/" 
-    		chattr -R +i "$user_home/.bashrc.d/" #This is done to allow this process to reset the locked files
+    		echo "Creating empty $user_home/.bashrc.d/"
+            	mkdir -p "$user_home/.bashrc.d/" #will create folder if necessary
+            	chown -R "$user:" "$user_home/.bashrc.d/" 
+    		chattr -R +i "$user_home/.bashrc.d/"
     		if [ -d "$user_home/.config/environment.d/" ]; then
-                chattr -R -i "$user_home/.config/environment.d/"
-                rm "$user_home/.config/environment.d/"*
+                	chattr -R -i "$user_home/.config/environment.d/" #This is done to allow this process to reset the locked files
+                	rm -r "$user_home/.config/environment.d/"
         	fi
-            mkdir -p "$user_home/.config/environment.d/" #will create folder if necessary
-            chown -R "$user:" "$user_home/.config/environment.d/"
-            chattr -R +i "$user_home/.config/environment.d/"
-        fi
+    		echo "Creating empty $user_home/.config/environment.d/"
+         	mkdir -p "$user_home/.config/environment.d/" #will create folder if necessary
+        	chown -R "$user:" "$user_home/.config/environment.d/"
+        	chattr -R +i "$user_home/.config/environment.d/"
      	else
      		if [ -d "$user_home/.bashrc.d/" ]; then	
     			chattr -R -i "$user_home/.bashrc.d/"
      		fi
     		if [ -d "$user_home/.config/environment.d/" ]; then
-            	chattr -R -i "$user_home/.config/environment.d/"
+            		chattr -R -i "$user_home/.config/environment.d/"
      		fi
         fi
     	BASH_FILES=("$user_home/.bashrc" "$user_home/.bash_profile" "$user_home/.config/bash-completion" "$user_home/.profile" "$user_home/.bash_logout" "$user_home/.bash_login")
@@ -239,7 +244,7 @@ toggle-bash-environment-lockdown:
                 chattr -i "$file"
             fi
             if [ "$change_to_make" == "locked" ]; then
-                [ -f "$file" ] || {rm "$file";}
+                [ -f "$file" ] && rm "$file"
                 echo "Creating empty $file"
                 install -D -o "$user" -g "$user" -m 600 "/dev/null" "$file" #will create folder if necessary
             fi
@@ -251,32 +256,32 @@ toggle-bash-environment-lockdown:
             echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is unlocked. Locking it."
             echo "
     # .bashrc
-
+ 
     # Source global definitions
     if [ -f /etc/bashrc ]; then
         . /etc/bashrc
     fi
-
+ 
     # User specific environment
     if ! [[ "\$PATH" =~ "\$HOME/.local/bin:\$HOME/bin:" ]]; then
         PATH="\$HOME/.local/bin:\$HOME/bin:\$PATH"
     fi
     export PATH
-
+ 
     # Uncomment the following line if you don't like systemctl's auto-paging feature:
     # export SYSTEMD_PAGER=
-
+ 
     unset rc
           " > "$user_home/.bashrc"
-
+ 
         echo "
     # .bash_profile
-
+ 
     # Get the aliases and functions
     if [ -f ~/.bashrc ]; then
         . ~/.bashrc
     fi
-
+ 
     # User specific environment and startup programs
         " > "$user_home/.bash_profile"
         for file in "${BASH_ENV_FILES[@]}"; do
@@ -286,12 +291,12 @@ toggle-bash-environment-lockdown:
     done
     echo "${user_list[@]}" "$change_to_make." #outside for loop over all $user_list
     echo "WARNING: until a reboot, any process with an open file descriptor will continue to have the access they had before this script was run."
-
+ 
 # Toggle unconfined domain userns creation
 toggle-unconfined-domain-userns-creation:
     #! /bin/run0 /bin/bash
     MODULE_NAME="harden_userns"
-
+ 
     if semodule -l | grep -q "$MODULE_NAME"; then
         echo "Module $MODULE_NAME is currently enabled. Disabling it..."
         semodule --disable="$MODULE_NAME"
@@ -301,12 +306,12 @@ toggle-unconfined-domain-userns-creation:
         semodule --enable="$MODULE_NAME"
         echo "Module $MODULE_NAME enabled."
     fi
-
+ 
 # Toggle container domain userns creation
 toggle-container-domain-userns-creation:
     #! /bin/run0 /bin/bash
     MODULE_NAME="harden_container_userns"
-
+ 
     if semodule -l | grep -q "$MODULE_NAME"; then
         echo "Module $MODULE_NAME is currently enabled. Disabling it..."
         semodule --disable="$MODULE_NAME"
@@ -316,12 +321,12 @@ toggle-container-domain-userns-creation:
         semodule --enable="$MODULE_NAME"
         echo "Module $MODULE_NAME enabled."
     fi
-
+ 
 # Toggle MAC Randomization
 toggle-mac-randomization:
     #! /bin/run0 /bin/bash
     RAND_MAC_FILE="/etc/NetworkManager/conf.d/rand_mac.conf"
-
+ 
     if test -e $RAND_MAC_FILE; then
         rm -f $RAND_MAC_FILE
         echo "MAC randomization disabled."
@@ -331,7 +336,7 @@ toggle-mac-randomization:
         echo "or it can be randomized per-connection (every time it connects to the same access point it uses a new MAC)."
         read -p "Do you want to use per-connection Wi-Fi MAC address randomization? [y/N]" randomization_level
         randomization_level=${randomization_level:-n}
-
+ 
         if [ "$randomization_level" == [Yy]* ]; then
             randomization_level=random
         else
@@ -341,7 +346,7 @@ toggle-mac-randomization:
     [device-mac-randomization]
     # "yes" is already the default for scanning
     wifi.scan-rand-mac-address=yes
-
+ 
     [connection-mac-randomization]
     # Generate a random MAC for each Network and associate the two permanently.
     ethernet.cloned-mac-address=stable
