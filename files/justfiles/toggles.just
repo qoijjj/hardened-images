@@ -179,7 +179,6 @@ toggle-xwayland ACTION="prompt":
 toggle-bash-environment-lockdown:
     #!/usr/bin/run0 /usr/bin/bash
     set -eou pipefail 
-    [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;} #almost certainly not needed, but doesn't hurt
     uid_min=$(grep -Po '^\s*UID_MIN\s+\K\d+' /etc/login.defs)
     uid_max=$(grep -Po '^\s*UID_MAX\s+\K\d+' /etc/login.defs)
     user_string=$(getent passwd | awk -F':' -v max="$uid_max" -v min="$uid_min" 'max >= $3 && $3 >= min {print $1}' | tr '\n' ',' | sed 's/,*$//')
@@ -191,7 +190,7 @@ toggle-bash-environment-lockdown:
     	change_to_make="locked"  #This means the bash files are currently UNLOCKED, and the script will lock them
     	chattr +i "/etc/profile"
     fi
-    b=$(tput bold) #I understand this is defined elsewhere, but this makes the script portabl, and makes testing easier
+    b=$(tput bold) #I understand this is defined elsewhere, but this makes the script portable, and makes testing easier
     n=$(tput sgr0)
     echo "${b}WARNING${n} This will overwrite your ~/.bashrc, ~/.bash_profile, ~/.config/bash-completion, ~/.profile, ~/.bash_logout, ~/.bash_login, ~/.bashrc.d/, and ~/.config/environment.d/"
     echo "This is needed to ensure the mitigation is effective."
@@ -211,7 +210,7 @@ toggle-bash-environment-lockdown:
     for user in "${user_list[@]}"; do
     	echo "Working user:$user"
     	user_home=$(getent passwd "$user" | awk -F':' '{ print $6}')
-    	BASH_ENV_FILES=("/etc/profile") #used because we know it exists, not that it needs to be immutable
+    	BASH_ENV_FILES=("/etc/profile") #used because we know it exists, not that it needs to be immutable (it already requires root/wheel to modify, but it doesn't hurt.) 
         [[ -d "$user_home" ]] || { echo "$user_home is somehow empty, safely exiting"; exit 1;}
     	if [ "$change_to_make" == "locked" ]; then
     		if [ -d "$user_home/.bashrc.d/" ]; then	
