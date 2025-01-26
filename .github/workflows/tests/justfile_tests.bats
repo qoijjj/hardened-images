@@ -37,7 +37,7 @@ setup() {
     else
     	change_to_make="locked"
     fi
-    run sudo ujust --shell "sudo /usr/bin/bash" "toggle-bash-environment-lockdown"  <<< $'YES I UNDERSTAND\ny'
+    run sudo ujust --set shell "sudo /usr/bin/bash" "toggle-bash-environment-lockdown"  <<< echo "YES I UNDERSTAND\ny"
     [ "$status" -eq 0 ]
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	[ "$change_to_make" == "unlocked" ] || exit 1
@@ -54,7 +54,7 @@ setup() {
         else
     	    change_to_make="locked"
         fi
-        run sudo ujust --shell "sudo /usr/bin/bash" "toggle-bash-environment-lockdown"  <<< $'YES I UNDERSTAND\nn'
+        run sudo ujust --set shell "sudo /usr/bin/bash" "toggle-bash-environment-lockdown"  <<< echo "YES I UNDERSTAND\nn"
         [ "$status" -eq 0 ]
         if lsattr "$user_home/.bash_profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	    [ "$change_to_make" == "unlocked" ] || exit 1
@@ -63,12 +63,12 @@ setup() {
         fi
     done
     sudo chattr +i "/etc/profile"
-    run sudo ujust --shell "sudo /usr/bin/bash" "toggle-bash-environment-lockdown"  <<< $'YES I UNDERSTAND\ny'
+    run sudo ujust --set shell "sudo /usr/bin/bash" "toggle-bash-environment-lockdown"  <<< echo "YES I UNDERSTAND\ny"
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     exit 1
     fi
     sudo chattr -i "/etc/profile/"
-    run sudo ujust --shell "sudo /usr/bin/bash" "toggle-bash-environment-lockdown"  <<< $'YES I UNDERSTAND\ny'
+    run sudo ujust --set shell "sudo /usr/bin/bash" "toggle-bash-environment-lockdown"  <<< echo "YES I UNDERSTAND\ny"
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
         echo "good"
     else
