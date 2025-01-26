@@ -31,8 +31,7 @@ setup() {
 }
 
 @test "Ensure bash lockdown works" {
-    x=0
-    while [ $x -le 5 ]
+    for (( i = 0; i < 5; ++i )); do
     do
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	change_to_make="unlocked"
@@ -64,6 +63,17 @@ setup() {
     	    [ "$change_to_make" == "locked" ] || exit 1
         fi
     done
-    x=$(( $x + 1 ))
+    chattr +i "/etc/profile"
+    run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust --set shell "sudo /usr/bin/bash" toggle-bash-environment-lockdown"
+    if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
+    exit 1
+    fi
+    chattr -i "/etc/profile/"
+    run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust --set shell "sudo /usr/bin/bash" toggle-bash-environment-lockdown"
+    if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
+        echo "good"
+    else
+        exit 1
+    fi
     done
 }
