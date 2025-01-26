@@ -32,7 +32,6 @@ setup() {
 
 @test "Ensure bash lockdown works" {
     for (( i = 0; i < 5; ++i )); do
-    do
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	change_to_make="unlocked"
     else
