@@ -16,6 +16,7 @@ modules:
         - usbguard
         - firewalld
         - policycoreutils-python-utils
+        - fail2ban
       remove:
         - sudo
         
