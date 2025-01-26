@@ -14,9 +14,9 @@ setup() {
     for filepath in /usr/share/bluebuild/justfiles/*.just; do
         sudo sh -c "echo \"import '$filepath'\" >> /usr/share/ublue-os/just/60-custom.just"
     done
-    sudo_path=$(whereis sudo | awk -F' ' '{print $2}')
-    echo "$sudo_path"
-    sudo ln -sf "$sudo_path" "/usr/bin/run0"
+    # sudo_path=$(whereis sudo | awk -F' ' '{print $2}')
+    # echo "$sudo_path"
+    # sudo ln -sf "$sudo_path" "/usr/bin/run0"
 }
 
 @test "Ensure ujust is configured correctly for tests" {
@@ -39,7 +39,7 @@ setup() {
     else
     	change_to_make="locked"
     fi
-    run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust toggle-bash-environment-lockdown"
+    run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust --set=shell "sudo /usr/bin/bash" toggle-bash-environment-lockdown"
     [ "$status" -eq 0 ]
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	[ "$change_to_make" == "unlocked" ] || exit 1
@@ -51,7 +51,7 @@ setup() {
     else
     	change_to_make="locked"
     fi
-    run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust toggle-bash-environment-lockdown"
+    run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust --set=shell "sudo /usr/bin/bash" toggle-bash-environment-lockdown"
     [ "$status" -eq 0 ]
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	[ "$change_to_make" == "unlocked" ] || exit 1
@@ -63,7 +63,7 @@ setup() {
     else
     	change_to_make="locked"
     fi
-    run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust toggle-bash-environment-lockdown"
+    run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust --set=shell "sudo /usr/bin/bash" toggle-bash-environment-lockdown"
     [ "$status" -eq 0 ]
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	[ "$change_to_make" == "unlocked" ] || exit 1
@@ -75,7 +75,7 @@ setup() {
     else
     	change_to_make="locked"
     fi
-    run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust toggle-bash-environment-lockdown"
+    run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust --set=shell "sudo /usr/bin/bash" toggle-bash-environment-lockdown"
     [ "$status" -eq 0 ]
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	[ "$change_to_make" == "unlocked" ] || exit 1
