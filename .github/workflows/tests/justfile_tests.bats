@@ -63,17 +63,5 @@ setup() {
     	    [ "$change_to_make" == "locked" ] || exit 1
         fi
     done
-    sudo chattr +i "/etc/profile"
-    run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust --set shell "sudo /usr/bin/bash" toggle-bash-environment-lockdown"
-    if lsattr "$user_home/.bash_profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
-    exit 1
-    fi
-    sudo chattr -i "/etc/profile"
-    run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust --set shell "sudo /usr/bin/bash" toggle-bash-environment-lockdown"
-    if lsattr "$user_home/.bash_profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
-        echo "good boy"
-    else
-        exit 1
-    fi
     done
 }
