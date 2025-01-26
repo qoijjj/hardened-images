@@ -34,6 +34,9 @@ setup() {
 }
 
 @test "Ensure bash lockdown works" {
+    x=0
+    while [ $x -le 5 ]
+    do
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	change_to_make="unlocked"
     else
@@ -46,4 +49,6 @@ setup() {
     else
     	[ "$change_to_make" == "locked" ] || exit 1
     fi
+    x=$(( $x + 1 ))
+    done
 }
