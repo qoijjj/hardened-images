@@ -15,7 +15,6 @@ setup() {
         sudo sh -c "echo \"import '$filepath'\" >> /usr/share/ublue-os/just/60-custom.just"
     done
     alias run0='sudo'
-    alias "/usr/bin/run0"='sudo'
 }
 
 @test "Ensure ujust is configured correctly for tests" {
