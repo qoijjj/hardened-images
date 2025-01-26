@@ -16,7 +16,7 @@ setup() {
     done
     sudo_path=$(whereis sudo | awk -F' ' '{print $2}')
     echo "$sudo_path"
-    sudo ln -s "/usr/bin/run0" "$sudo_path"
+    sudo ln -sf "$sudo_path" "/usr/bin/run0"
 }
 
 @test "Ensure ujust is configured correctly for tests" {
