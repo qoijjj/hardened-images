@@ -32,6 +32,9 @@ setup() {
 }
 
 @test "Ensure bash lockdown works" {
+    function "/bin/run0"() {
+    sudo
+    }
     for (( i = 0; i < 5; ++i )); do
     if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	change_to_make="unlocked"
