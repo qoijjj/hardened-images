@@ -15,7 +15,8 @@ setup() {
         sudo sh -c "echo \"import '$filepath'\" >> /usr/share/ublue-os/just/60-custom.just"
     done
     sudo_path=$(whereis sudo | awk -F' ' '{print $2}')
-    sudo ln -s "$sudo_path" "/bin/run0"
+    echo "$sudo_path"
+    # sudo ln -s "$sudo_path" "/bin/run0"
 }
 
 @test "Ensure ujust is configured correctly for tests" {
