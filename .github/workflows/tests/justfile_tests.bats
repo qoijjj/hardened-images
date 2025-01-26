@@ -14,9 +14,6 @@ setup() {
     for filepath in /usr/share/bluebuild/justfiles/*.just; do
         sudo sh -c "echo \"import '$filepath'\" >> /usr/share/ublue-os/just/60-custom.just"
     done
-    # sudo_path=$(whereis sudo | awk -F' ' '{print $2}')
-    # echo "$sudo_path"
-    # sudo ln -sf "$sudo_path" "/usr/bin/run0"
 }
 
 @test "Ensure ujust is configured correctly for tests" {
@@ -49,6 +46,24 @@ setup() {
     else
     	[ "$change_to_make" == "locked" ] || exit 1
     fi
+    uid_min=$(grep -Po '^\s*UID_MIN\s+\K\d+' /etc/login.defs)
+    uid_max=$(grep -Po '^\s*UID_MAX\s+\K\d+' /etc/login.defs)
+    user_string=$(getent passwd | awk -F':' -v max="$uid_max" -v min="$uid_min" 'max >= $3 && $3 >= min {print $1}' | tr '\n' ',' | sed 's/,*$//')
+    for user in "${user_list[@]}"; do
+    	user_home=$(getent passwd "$user" | awk -F':' '{ print $6}')
+        if lsattr "$user_home/.bash_profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
+    	    change_to_make="unlocked"
+        else
+    	    change_to_make="locked"
+        fi
+        run bash -c "echo -e 'YES I UNDERSTAND\nn' | sudo ujust --set shell "sudo /usr/bin/bash" toggle-bash-environment-lockdown"
+        [ "$status" -eq 0 ]
+        if lsattr "$user_home/.bash_profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
+    	    [ "$change_to_make" == "unlocked" ] || exit 1
+        else
+    	    [ "$change_to_make" == "locked" ] || exit 1
+        fi
+    done
     x=$(( $x + 1 ))
     done
 }
