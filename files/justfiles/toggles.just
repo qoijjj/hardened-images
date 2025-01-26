@@ -177,7 +177,7 @@ toggle-xwayland ACTION="prompt":
 
 # Toggle bash environment lockdown (mitigates LD_PRELOAD attacks)
 toggle-bash-environment-lockdown:
-    #! run0 /usr/bin/bash
+    #! /bin/run0 /usr/bin/bash
     set -eou pipefail 
     uid_min=$(grep -Po '^\s*UID_MIN\s+\K\d+' /etc/login.defs)
     uid_max=$(grep -Po '^\s*UID_MAX\s+\K\d+' /etc/login.defs)
