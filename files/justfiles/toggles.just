@@ -177,7 +177,7 @@ toggle-xwayland ACTION="prompt":
 
 # Toggle bash environment lockdown (mitigates LD_PRELOAD attacks)
 toggle-bash-environment-lockdown:
-    #!/bin/run0 /bin/bash
+    #!/usr/bin/run0 /usr/bin/bash
     set -eou pipefail 
     [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1;} #almost certainly not needed, but doesn't hurt
     uid_min=$(grep -Po '^\s*UID_MIN\s+\K\d+' /etc/login.defs)
