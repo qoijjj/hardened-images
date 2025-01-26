@@ -190,8 +190,6 @@ toggle-bash-environment-lockdown:
     	change_to_make="locked"  #This means the bash files are currently UNLOCKED, and the script will lock them
     	chattr +i "/etc/profile"
     fi
-    b=$(tput bold) #I understand this is defined elsewhere, but this makes the script portable, and makes testing easier
-    n=$(tput sgr0)
     echo "${b}WARNING${n} This will overwrite your ~/.bashrc, ~/.bash_profile, ~/.config/bash-completion, ~/.profile, ~/.bash_logout, ~/.bash_login, ~/.bashrc.d/, and ~/.config/environment.d/"
     echo "This is needed to ensure the mitigation is effective."
     echo ".bashrc, .bash_profile, and more will be ""${b}""$change_to_make""${n}""."
