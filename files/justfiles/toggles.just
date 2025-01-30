@@ -94,7 +94,7 @@ toggle-debug-mode:
         echo "kernel.core_pattern = |/usr/lib/systemd/systemd-coredump %P %u %g %s %t %c %h" >/etc/sysctl.d/99-enable-coredump.conf
         echo "Debug mode enabled."
         if [[ $(</proc/sys/kernel/yama/ptrace_scope) != 1 ]]; then
-            echo "ptrace is restricted. Some debuggers may not work as intended."
+            echo "ptrace is restricted in this session. Some debuggers may not work as intended. Use ujust toggle-ptrace-scope to manage ptrace."
         fi
     fi
 
