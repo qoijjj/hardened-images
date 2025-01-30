@@ -83,14 +83,14 @@ toggle-debug-mode:
     #! /bin/run0 /bin/bash
     if test -e /etc/sysctl.d/99-enable-coredump.conf; then
         cp /usr/etc/security/limits.d/99-disable-coredump.conf /etc/security/limits.d/99-disable-coredump.conf
-        cp /usr/etc/systemd/system.conf.d/disable-coredump.conf /etc/systemd/system.conf.d/disable-coredump.conf
-        cp /usr/etc/systemd/user.conf.d/disable-coredump.conf /etc/systemd/user.conf.d/disable-coredump.conf
+        cp /usr/etc/systemd/system.conf.d/60-disable-coredump.conf /etc/systemd/system.conf.d/60-disable-coredump.conf
+        cp /usr/etc/systemd/user.conf.d/60-disable-coredump.conf /etc/systemd/user.conf.d/60-disable-coredump.conf
         rm /etc/sysctl.d/99-enable-coredump.conf
         echo "Debug mode disabled."
     else
         rm /etc/security/limits.d/99-disable-coredump.conf
-        rm /etc/systemd/system.conf.d/disable-coredump.conf
-        rm /etc/systemd/user.conf.d/disable-coredump.conf
+        rm /etc/systemd/system.conf.d/60-disable-coredump.conf
+        rm /etc/systemd/user.conf.d/60-disable-coredump.conf
         echo "kernel.core_pattern = |/usr/lib/systemd/systemd-coredump %P %u %g %s %t %c %h" >/etc/sysctl.d/99-enable-coredump.conf
         echo "Debug mode enabled."
         if [[ $(</proc/sys/kernel/yama/ptrace_scope) != 1 ]]; then
@@ -99,6 +99,7 @@ toggle-debug-mode:
     fi
 
 alias toggle-ptrace-scope := toggle-anticheat-support
+
 # Toggle anticheat support by changing ptrace scope (requires restart)
 toggle-anticheat-support:
     #! /bin/run0 /bin/bash
