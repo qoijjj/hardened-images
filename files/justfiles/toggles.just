@@ -93,9 +93,12 @@ toggle-debug-mode:
         rm /etc/systemd/user.conf.d/disable-coredump.conf
         echo "kernel.core_pattern = |/usr/lib/systemd/systemd-coredump %P %u %g %s %t %c %h" >/etc/sysctl.d/99-enable-coredump.conf
         echo "Debug mode enabled."
+        if [[ $(</proc/sys/kernel/yama/ptrace_scope) != 1 ]]; then
+            echo "ptrace is restricted. Some debuggers may not work as intended."
+        fi
     fi
 
-
+alias toggle-ptrace-scope := toggle-anticheat-support
 # Toggle anticheat support by changing ptrace scope (requires restart)
 toggle-anticheat-support:
     #! /bin/run0 /bin/bash
