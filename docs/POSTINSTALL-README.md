@@ -38,7 +38,7 @@ This command applies a fixed set of hardened boot parameters, and asks you wheth
 ### 32-bit support
 If you answer `N`, or press enter without any input, support for 32-bit programs will be disabled on the next boot. If you run exclusively modern software, chances are likely you don't need this, so it's safe to disable for additional attack surface reduction.
 
-However, there are certain exceptions. A couple common usecases are if you need Steam, or run an ocassional application in Wine you'll likely want to keep support for 32-bit programs. If this is the case, answer `Y`.
+However, there are certain exceptions. A couple common usecases are if you need Steam, or run an occasional application in Wine you'll likely want to keep support for 32-bit programs. If this is the case, answer `Y`.
 
 ### Force disable simultaneous multithreading
 If you answer `Y` when prompted, simultaneous multithreading (SMT, often called Hyperthreading) will be disabled on all hardware, regardless of known vulnerabilities. This can cause a reduction in the performance of certain tasks in favor of security.
@@ -89,21 +89,23 @@ Creating a dedicated wheel user and removing wheel from your primary user helps 
 > We log in as admin to do the final step of removing the user account's wheel privileges in order to make the operation of removing those privileges depend on having access to your admin account, and the admin account functioning correctly first.
 
 5. Log in as `admin`
-6. `run0 gpasswd -d {your username here} wheel`
-7. `reboot`
+6. `run0`
+7. `gpasswd -d {your username here} wheel`
+8. `reboot`
 
 When using a non-wheel user, you can add the user to other groups if you want. For example:
 
 - use libvirt: `libvirt`
 - use `adb` and `fastboot`: `plugdev`
 - use systemwide flatpaks: `flatpak`
+- use usbguard: `usbguard`
 
 > [!NOTE]
 > You don't need to login using your wheel user to use it for privileged operations. When logged in as your non-wheel user, polkit will prompt you to authenticate as your wheel user as needed, or when requested by calling `run0`.
 
 ## Setup system DNS
 
-Interactively setup system DNS resolution for systemd-resolved (optionally also set the resolver for hardened-chromium via management policy):
+Interactively setup system DNS resolution for systemd-resolved (optionally also set the resolver for Trivalent via management policy):
 
 ```
 ujust dns-selector
@@ -139,9 +141,9 @@ To validate your secureblue setup, run:
 ujust audit-secureblue
 ```
 
-## Optional: `hardened-chromium` Flags
-The included [hardened-chromium](https://github.com/secureblue/hardened-chromium) browser has some additional settings in `chrome://flags` you *may* want to set for additional hardening and convenience (can cause functionality issues in some cases).
-You can read about these settings [here](https://github.com/secureblue/hardened-chromium?tab=readme-ov-file#post-install).
+## Optional: Trivalent Flags
+The included [Trivalent](https://github.com/secureblue/Trivalent) browser has some additional settings in `chrome://flags` you *may* want to set for additional hardening and convenience (can cause functionality issues in some cases).
+You can read about these settings [here](https://github.com/secureblue/Trivalent?tab=readme-ov-file#post-install).
 
 ## Read the FAQ
 

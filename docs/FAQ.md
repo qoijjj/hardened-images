@@ -18,15 +18,12 @@ During rpm-ostree operations, it's normal. Outside of that, make sure you follow
 
 #### An app I use won't start due to a malloc issue. How do I fix it?
 
-Override `LD_PRELOAD` for that app. For flatpaks, this is as simple as removing the environment variable via Flatseal.
+- For flatpaks, remove the `LD_PRELOAD` environment variable via Flatseal. To re-enable hardened_malloc for the respective flatpak, replace the removed variable.
+- For layered packages and packages installed via brew, run the application with `ujust with-standard-malloc APP`. This starts the app without hardened_malloc only once, it does not disable hardened_malloc for the app persistently.
 
 #### On secureblue half of my CPU cores are gone. Why is this?
 
 `mitigations=auto,nosmt` is set on secureblue. This means that if your CPU is vulnerable to attacks that utilize [Simultaneous Multithreading](https://en.wikipedia.org/wiki/Simultaneous_multithreading), SMT will be disabled.
-
-#### Should I use a userns image or not? What's the difference?
-
-[USERNS](USERNS.md)
 
 #### How do I install software?
 
@@ -41,11 +38,9 @@ First check if the README already has an equivalent or better feature. If it doe
 
 #### How do I install Steam?
 
-To use Steam you can either:
-
-- Install the [flatpak](https://flathub.org/apps/com.valvesoftware.Steam)
-- Install Steam via the [bazzite-arch](https://github.com/ublue-os/bazzite-arch) distrobox
-- Layering Steam is not recommended
+```
+ujust install-steam
+```
 
 #### Why are bluetooth kernel modules disabled? How do I enable them?
 
@@ -94,10 +89,6 @@ If your system time is off by an excessive amount due to rare conditions like a 
 
 For more technical detail, see [#268](https://github.com/secureblue/secureblue/issues/268)
 
-#### Why is DNS broken on my secureblue VM?
-
-The DNSSEC setting we set in `/etc/systemd/resolved.conf.d/securedns.conf` causes known issues with network connectivity when secureblue is used in a VM. To fix it, comment out `DNSSEC=allow-downgrade` in that file and manually set a dns provider in network settings.
-
 #### Releases
 
 To subscribe to release notifications, on the secureblue github page, click "Watch", and then "Custom", and select Releases like so:
@@ -124,23 +115,49 @@ Similar to the AppImage FAQ, the KDE Vault default backend `cryfs` depends on fu
 ujust distrobox-assemble
 ```
 
-#### Why aren't my apps loading on Nvidia Optimus?
+#### Why won't Trivalent start when bubblejailed?
 
-There is an [upstream bug](https://discussion.fedoraproject.org/t/gdk-message-error-71-protocol-error-dispatching-to-wayland-display/127927/21). You may need to run:
+`bubblejail` ***SHOULD NOT*** be used on Trivalent, there are issues reported with the pairing and removing the `bubblejail` config after it is applied can be difficult. It should also be noted that applying additional sandboxing may interfere with chromium's own internal sandbox, so it can end up reducing security.
 
-```
-mkdir -p ~/.config/environment.d && echo "GSK_RENDERER=gl" >> ~/.config/environment.d/gsk.conf
-```
+#### Why won't Trivalent start on Nvidia?
 
-This should no longer be required as of F41: https://discussion.fedoraproject.org/t/gdk-message-error-71-protocol-error-dispatching-to-wayland-display/127927/42
+On some Nvidia machines, Trivalent defaults to the X11 backend. Since secureblue disables Xwayland by default, this means that you will need to run `ujust toggle-xwayland` and reboot, for Trivalent to work.
 
-#### Why won't `hardened-chromium` start?
-Try starting `hardened-chromium` from the commandline by running `chromium-browser`. If you get an error about the current profile already running on another device, this is an issue with upstream chromium which can happen when you `rpm-ostree update` or `rpm-ostree rebase`. To fix this, simply run `rm ~/.config/chromium/Singleton*`
-
-#### Why won't `hardened-chromium` start on Nvidia?
-
-On some Nvidia machines, `hardened-chromium` defaults to the X11 backend. Since secureblue disables Xwayland by default, this means that you will need to run `ujust toggle-xwayland` and reboot, for `hardened-chromium` to work.
-
-#### Why don't some websites that require JIT/WebAssembly work in hardened-chromium even with the V8 Optimizer toggle enabled?
+#### Why don't some websites that require JIT/WebAssembly work in Trivalent even with the V8 Optimizer toggle enabled?
 
 This is an [upstream bug](https://issues.chromium.org/issues/373893056) that prevents V8 optimization settings from being applied to iframes embedded within a parent website. As a result, WebAssembly may not function on services that use a separate URL for their content delivery network or other included domains, such as VSCode Web (https://github.dev). To make VSCode Web work properly, you need to manually allow V8 optimizations for the CDN by adding `https://[*.]vscode-cdn.net` to your list of trusted websites.
+
+#### Why don't extensions work in Trivalent?
+
+Extensions in Trivalent are disabled by default, for security reasons it is not advised to use them. If you want content/ad blocking, that is already built into Trivalent and enabled by default. If you require extensions, you can re-enable them by disabling the `Disable Extensions` toggle under `chrome://settings/security`, then restart your browser (this toggle is per-profile).
+\
+\
+If the extension you installed doesn't work, it is likely because it requires WebAssembly (WASM) for some cryptographic library or some other optimizations (this is the case with the Bitwarden extension). To re-enable JavaScript JIT and WASM for extensions, enable the feature `chrome://flags/#internal-page-jit`.
+
+#### Why doesn't SPICE features like automatic window resizing and shared clipboard work?
+
+The SPICE protocol uses an agent called `spice-vdagentd` which handles these various features. However, the implementation of this requires an X server. This is why it works on standard Silverblue and not secureblue. 
+
+To enable this, run `ujust toggle-xwayland` and reboot. This will allow `spice-vdagentd` to use an X server and will enable these features.
+
+#### I can't use podman, distrobox, toolbox, or containers in general, why?
+
+If you see errors such as:
+
+```
+cannot clone: Permission denied
+Error: cannot re-exec process
+```
+
+when running container tools, this indicates that `ujust toggle-container-domain-userns-creation` is needed to permit the container domain to create user namespaces. This has security implications. See the [v4.3.0 release notes](https://github.com/secureblue/secureblue/releases/tag/v4.3.0) for more information.
+
+#### I can't use bubblewrap or bubblejail, why?
+
+If you see errors such as:
+
+```
+cannot clone: Permission denied
+Error: cannot re-exec process
+```
+
+when running bubblewrap or bubblejail, this indicates that `ujust toggle-unconfined-domain-userns-creation` is needed to permit the unconfined domain to create user namespaces. This has security implications. See the [v4.3.0 release notes](https://github.com/secureblue/secureblue/releases/tag/v4.3.0) for more information.

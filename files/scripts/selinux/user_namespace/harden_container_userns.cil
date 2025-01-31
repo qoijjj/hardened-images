@@ -1,0 +1,2 @@
+(deny container_domain self (user_namespace (create)))
+(deny container_runtime_domain self (user_namespace (create)))

@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/secureblue/secureblue">
-    <img src="https://github.com/secureblue/secureblue/assets/129108030/292e0ecc-50b8-4de5-a11a-bfe292489f6c" href="https://github.com/secureblue/secureblue" width=180 />
+    <img src="https://github.com/secureblue/secureblue/blob/live/docs/secureblue.png" href="https://github.com/secureblue/secureblue" width=180 />
   </a>
 </p>
 
@@ -22,16 +22,15 @@ secureblue applies hardening with the following goals in mind:
 - Avoid sacrificing usability for most use cases where possible.
 
 The following are not in scope:
-- Anything that sacrifices security for "privacy". Fedora is already sufficiently private and "privacy" often serves as a euphemism for security theater. This is especially true when at odds with improving security.
-- Anything related to "degoogling" chromium. For example, we will not be replacing [hardened-chromium](https://github.com/secureblue/hardened-chromium) with Brave or ungoogled-chromium. Both of them make changes that sacrifice security for "privacy", such as enabling MV2. <sup>[why?](https://developer.chrome.com/docs/extensions/develop/migrate/improve-security)</sup>
+- Changes that sacrifice security for "privacy". Fedora is already sufficiently private and "privacy" often serves as a euphemism for security theater. This is especially true when at odds with improving security.
 
 # Hardening
 
 - Installing and enabling [hardened_malloc](https://github.com/GrapheneOS/hardened_malloc) globally, including for flatpaks. <sup>[Thanks to rusty-snake's spec](https://github.com/rusty-snake/fedora-extras)</sup>
-- Installing [hardened-chromium](https://github.com/secureblue/hardened-chromium), which is inspired by [Vanadium](https://github.com/GrapheneOS/Vanadium). <sup>[Why chromium?](https://grapheneos.org/usage#web-browsing)</sup> <sup>[Why not flatpak chromium?](https://forum.vivaldi.net/post/669805)</sup>
+- Installing [Trivalent](https://github.com/secureblue/Trivalent), which is inspired by [Vanadium](https://github.com/GrapheneOS/Vanadium). <sup>[Why chromium?](https://grapheneos.org/usage#web-browsing)</sup> <sup>[Why not flatpak chromium?](https://forum.vivaldi.net/post/669805)</sup>
 - Setting numerous hardened sysctl values <sup>[details](https://github.com/secureblue/secureblue/blob/live/files/system/etc/sysctl.d/hardening.conf)</sup>
-- Remove SUID-root from [numerous binaries](https://github.com/secureblue/secureblue/blob/live/files/scripts/removesuid.sh) and replace functionality [using capabilities](https://github.com/secureblue/secureblue/blob/live/files/system/usr/bin/setcapsforunsuidbinaries)
-- Disable Xwayland by default (for GNOME, Plasma, and Sway images)
+- Remove SUID-root from [numerous binaries](https://github.com/secureblue/secureblue/blob/live/files/scripts/removesuid.sh), replace functionality [using capabilities](https://github.com/secureblue/secureblue/blob/live/files/system/usr/bin/setcapsforunsuidbinaries), and remove `sudo`, `su`, and `pkexec` entirely in favor of `run0` <sup>[why?](https://mastodon.social/@pid_eins/112353324518585654)</sup>
+- Disabling Xwayland by default (for GNOME, Plasma, and Sway images)
 - Mitigation of [LD_PRELOAD attacks](https://github.com/Aishou/wayland-keylogger) via `ujust toggle-bash-environment-lockdown`
 - Disabling coredumps
 - Disabling all ports and services for firewalld
@@ -51,8 +50,7 @@ The following are not in scope:
 - Set all default container policies to `reject`, `signedBy`, or `sigstoreSigned`
 - Disable a variety of services by default (including cups, geoclue, passim, and others)
 - Removal of the unmaintained and suid-root fuse2 by default
-- (Non-userns variants) Disabling unprivileged user namespaces
-- (Non-userns variants) Replacing bubblewrap with suid-root bubblewrap so flatpak can be used without unprivileged user namespaces
+- Disabling unprivileged user namespaces by default for the unconfined domain and the container domain
 
 # Rationale
 
@@ -82,8 +80,10 @@ Have a look at [PREINSTALL-README](PREINSTALL-README.md) before proceeding.
 > If you don't already have a Fedora Atomic installation, use a Fedora Atomic ISO that matches your secureblue target image to install one. If you want to use a secureblue Silverblue image, start with the Fedora Silverblue ISO, Kinoite for Kinoite, Sericea (Sway Atomic) for Sericea and all the Wayblue images, and CoreOS for all the securecore images.
 > 
 > For more details on the available images, have a look at [IMAGES](IMAGES.md) before proceeding.
+>
+> For instructions on installing Fedora CoreOS, please see the documentation [here](https://docs.fedoraproject.org/en-US/fedora-coreos/). There is a sample butane configuration file [here](example.butane).
 
-To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, download the script below:
+To rebase a [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) or [Fedora CoreOS](https://fedoraproject.org/coreos/) installation, download the script below. This script does not install secureblue into the existing system. It rebases (fully replaces the existing system) with secureblue.
 
 [![Download](https://shields.io/badge/-Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/secureblue/secureblue/releases/latest/download/install_secureblue.sh)
 

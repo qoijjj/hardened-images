@@ -78,6 +78,28 @@ override-reset-module mod_name:
       echo "No override found for $MOD_NAME module."
     fi
 
+# Toggle debug mode (requires restart)
+toggle-debug-mode:
+    #! /bin/run0 /bin/bash
+    if test -e /etc/sysctl.d/99-enable-coredump.conf; then
+        cp /usr/etc/security/limits.d/60-disable-coredump.conf /etc/security/limits.d/60-disable-coredump.conf
+        cp /usr/etc/systemd/system.conf.d/60-disable-coredump.conf /etc/systemd/system.conf.d/60-disable-coredump.conf
+        cp /usr/etc/systemd/user.conf.d/60-disable-coredump.conf /etc/systemd/user.conf.d/60-disable-coredump.conf
+        rm /etc/sysctl.d/99-enable-coredump.conf
+        echo "Debug mode disabled."
+    else
+        rm /etc/security/limits.d/60-disable-coredump.conf
+        rm /etc/systemd/system.conf.d/60-disable-coredump.conf
+        rm /etc/systemd/user.conf.d/60-disable-coredump.conf
+        echo "kernel.core_pattern = |/usr/lib/systemd/systemd-coredump %P %u %g %s %t %c %h" >/etc/sysctl.d/99-enable-coredump.conf
+        echo "Debug mode enabled."
+        if [[ $(</proc/sys/kernel/yama/ptrace_scope) != 1 ]]; then
+            echo "ptrace is restricted in this session. Some debuggers may not work as intended. Use ujust toggle-ptrace-scope to manage ptrace."
+        fi
+    fi
+
+alias toggle-ptrace-scope := toggle-anticheat-support
+
 # Toggle anticheat support by changing ptrace scope (requires restart)
 toggle-anticheat-support:
     #! /bin/run0 /bin/bash
@@ -123,9 +145,18 @@ toggle-xwayland ACTION="prompt":
     source /usr/lib/ujust/ujust.sh
     OPTION={{ ACTION }}
     if [ "$OPTION" == "prompt" ]; then
-      echo "${bold}Toggling Xwayland (requires logout)${normal}"
-      echo 'For which DE/WM do you want to toggle Xwayland?'
-      OPTION=$(ugum choose "GNOME" "KDE Plasma" "Sway")
+      IMAGE="$(rpm-ostree status | grep '●')"
+      if [ -n "$(echo $IMAGE | grep 'silverblue')" ] ; then
+          OPTION=gnome
+      elif [ -n "$(echo $IMAGE | grep 'kinoite')" ] ; then
+          OPTION=plasma
+      elif [ -n "$(echo $IMAGE | grep 'sericea')" ] || [ -n "$(echo $IMAGE | grep 'sway')" ] ; then
+          OPTION=sway
+      else
+        echo "${bold}Toggling Xwayland (requires logout)${normal}"
+        echo 'For which DE/WM do you want to toggle Xwayland?'
+        OPTION=$(ugum choose "GNOME" "KDE Plasma" "Sway")
+      fi
     elif [ "$OPTION" == "help" ]; then
       echo "Usage: ujust toggle-xwayland <option>"
       echo "  <option>: Specify the quick option - 'gnome', 'plasma', or 'sway'"
@@ -134,7 +165,7 @@ toggle-xwayland ACTION="prompt":
       echo "  Use 'sway' to Toggle Xwayland for Sway."
       exit 0
     fi
-    if [ "$OPTION" == "GNOME" ] || [ "${OPTION,,}" == "gnome" ]; then
+    if [ "${OPTION,,}" == "gnome" ]; then
       GNOME_XWAYLAND_FILE="/etc/systemd/user/org.gnome.Shell@wayland.service.d/override.conf"
       if test -e $GNOME_XWAYLAND_FILE; then
         rm -f $GNOME_XWAYLAND_FILE
@@ -154,7 +185,7 @@ toggle-xwayland ACTION="prompt":
         chmod 644 $PLASMA_XWAYLAND_FILE
         echo "Xwayland for KDE Plasma has been disabled."
       fi
-    elif [ "$OPTION" == "Sway" ] || [ "${OPTION,,}" == "sway" ]; then
+    elif [ "${OPTION,,}" == "sway" ]; then
       SWAY_XWAYLAND_FILE="/etc/sway/config.d/99-noxwayland.conf"
       if test -e $SWAY_XWAYLAND_FILE; then
         rm -f $SWAY_XWAYLAND_FILE
@@ -220,4 +251,68 @@ toggle-bash-environment-lockdown:
       fi
     else
       echo "Capitalization matters when you type \"YES I UNDERSTAND\""
+    fi
+
+# Toggle unconfined domain userns creation
+toggle-unconfined-domain-userns-creation:
+    #! /bin/run0 /bin/bash
+    MODULE_NAME="harden_userns"
+
+    if semodule -l | grep -q "$MODULE_NAME"; then
+        echo "Module $MODULE_NAME is currently enabled. Disabling it..."
+        semodule --disable="$MODULE_NAME"
+        echo "Module $MODULE_NAME disabled."
+    else
+        echo "Module $MODULE_NAME is not currently enabled. Enabling it..."
+        semodule --enable="$MODULE_NAME"
+        echo "Module $MODULE_NAME enabled."
+    fi
+
+# Toggle container domain userns creation
+toggle-container-domain-userns-creation:
+    #! /bin/run0 /bin/bash
+    MODULE_NAME="harden_container_userns"
+
+    if semodule -l | grep -q "$MODULE_NAME"; then
+        echo "Module $MODULE_NAME is currently enabled. Disabling it..."
+        semodule --disable="$MODULE_NAME"
+        echo "Module $MODULE_NAME disabled."
+    else
+        echo "Module $MODULE_NAME is not currently enabled. Enabling it..."
+        semodule --enable="$MODULE_NAME"
+        echo "Module $MODULE_NAME enabled."
+    fi
+
+# Toggle MAC Randomization
+toggle-mac-randomization:
+    #! /bin/run0 /bin/bash
+    RAND_MAC_FILE="/etc/NetworkManager/conf.d/rand_mac.conf"
+
+    if test -e $RAND_MAC_FILE; then
+        rm -f $RAND_MAC_FILE
+        echo "MAC randomization disabled."
+        systemctl restart NetworkManager
+    else
+        echo "MAC randomization can be stable (persisting the same random MAC per access point across disconnects/reboots),"
+        echo "or it can be randomized per-connection (every time it connects to the same access point it uses a new MAC)."
+        read -p "Do you want to use per-connection Wi-Fi MAC address randomization? [y/N]" randomization_level
+        randomization_level=${randomization_level:-n}
+
+        if [ "$randomization_level" == [Yy]* ]; then
+            randomization_level=random
+        else
+            randomization_level=stable
+        fi
+        cat <<EOL > $RAND_MAC_FILE
+    [device-mac-randomization]
+    # "yes" is already the default for scanning
+    wifi.scan-rand-mac-address=yes
+
+    [connection-mac-randomization]
+    # Generate a random MAC for each Network and associate the two permanently.
+    ethernet.cloned-mac-address=stable
+    wifi.cloned-mac-address=$randomization_level
+    EOL
+        echo "MAC randomization enabled."
+        systemctl restart NetworkManager
     fi
