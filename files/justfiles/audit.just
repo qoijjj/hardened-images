@@ -99,7 +99,7 @@ audit-secureblue:
     done
 
     SYSCTL_TEST_STRING="Ensuring no sysctl overrides"
-    readarray -t sysctl_hardening_conf < <(grep -v -E -e "^#" -e "^$" </usr/etc/sysctl.d/hardening.conf)
+    readarray -t sysctl_hardening_conf < <(grep -v -E -e "^#" -e "^$" </usr/etc/sysctl.d/60-hardening.conf)
     declare -A sysctl_hardening
     for line in "${sysctl_hardening_conf[@]}"; do
         parameter="$(sed -E -e "s/(.*) = .*/\1/"  <<<"$line")"
@@ -119,7 +119,7 @@ audit-secureblue:
             fi
         done
     done
-    if [[ "${#sysctl_errors}" == 0 ]] && diff /usr/etc/sysctl.d/hardening.conf /etc/sysctl.d/hardening.conf > /dev/null; then
+    if [[ "${#sysctl_errors}" == 0 ]] && diff /usr/etc/sysctl.d/60-hardening.conf /etc/sysctl.d/60-hardening.conf > /dev/null; then
         print_status "$SYSCTL_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$SYSCTL_TEST_STRING" "$STATUS_FAILURE"
