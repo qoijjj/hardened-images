@@ -6,3 +6,13 @@ set -euo pipefail
 # Install required brew packages
 /home/linuxbrew/.linuxbrew/bin/brew install fzf gum glow
 
+ujust harden-flatpak
+
+ujust toggle-bash-environment-lockdown
+
+flatpak remote-delete --system --force fedora
+flatpak remote-delete --user --force fedora
+flatpak remote-delete --system --force flathub
+flatpak remote-delete --user --force flathub
+flatpak remove --system --noninteractive --all
+flatpak remote-add --if-not-exists --user --subset=verified flathub-verified https://flathub.org/repo/flathub.flatpakrepo

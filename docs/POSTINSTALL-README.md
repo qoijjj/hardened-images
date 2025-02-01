@@ -4,7 +4,7 @@ After rebasing to secureblue, follow the following steps in order.
 
 ## Subscribe to secureblue release notifications
 
-[FAQ](FAQ.md#releases)
+[How to subscribe to secureblue release notifications](FAQ.md#releases)
 
 ## Nvidia
 If you are using an nvidia image, run this after installation:
@@ -13,7 +13,7 @@ If you are using an nvidia image, run this after installation:
 ujust set-kargs-nvidia
 ```
 
-You may also need this (solves flickering and luks issues on some nvidia hardware):
+If you encounter flickering or luks issues, you may also (rarely) need this karg:
 ```
 rpm-ostree kargs \
     --append-if-missing=initcall_blacklist=simpledrm_platform_driver_init
@@ -46,59 +46,26 @@ If you answer `Y` when prompted, simultaneous multithreading (SMT, often called 
 ### Unstable hardening kargs
 If you answer `Y` when prompted, unstable hardening kargs will be additionally applied, which can cause issues on some hardware, but are stable on other hardware.
 
-## Setup USBGuard
-
-*This will generate a policy based on your currently attached USB devices and block all others, then enable usbguard.*
-
-```
-ujust setup-usbguard
-```
-
-## GRUB
-### Set a password
-
-Setting a GRUB password helps protect the device from physical tampering and mitigates various attack vectors, such as booting from malicious media devices and changing boot or kernel parameters.
-
-To set a GRUB password, use the following command. By default, the password will be required when modifying boot entries, but not when booting existing entries.
-
-1. `run0`
-2. `grub2-setpassword`
-
-GRUB will prompt for a username and password. The default username is root.
-
-If you wish to password-protect booting existing entries, you can add the `grub_users root` entry in the specific configuration file located in the `/boot/loader/entries` directory.
 
 ## Create a separate wheel account for admin purposes
-
-Creating a dedicated wheel user and removing wheel from your primary user helps prevent certain attack vectors, like:
-
-- https://www.kicksecure.com/wiki/Dev/Strong_Linux_User_Account_Isolation#LD_PRELOAD
-- https://www.kicksecure.com/wiki/Root#Prevent_Malware_from_Sniffing_the_Root_Password
+Creating a dedicated wheel user and removing wheel from your primary user helps prevent certain attack vectors.
 
 > [!CAUTION]
 > If you do these steps out of order, it is possible to end up without the ability to administrate your system. You will not be able to use the [traditional GRUB-based method](https://linuxconfig.org/recover-reset-forgotten-linux-root-password) of fixing mistakes like this, either, as this will leave your system in a broken state. However, simply rolling back to an older snapshot of your system, should resolve the problem.
-> 
+
+> [!NOTE]
+> We log in as admin to do the final step of removing the user account's wheel privileges in order to make the operation of removing those privileges depend on having access to your admin account, and the admin account functioning correctly first.
+
 1. `run0`
 2. `adduser admin`
 3. `usermod -aG wheel admin`
 4. `passwd admin`
 5. `exit`
 6. `reboot`
-
-> [!NOTE]
-> We log in as admin to do the final step of removing the user account's wheel privileges in order to make the operation of removing those privileges depend on having access to your admin account, and the admin account functioning correctly first.
-
-5. Log in as `admin`
-6. `run0`
-7. `gpasswd -d {your username here} wheel`
-8. `reboot`
-
-When using a non-wheel user, you can add the user to other groups if you want. For example:
-
-- use libvirt: `libvirt`
-- use `adb` and `fastboot`: `plugdev`
-- use systemwide flatpaks: `flatpak`
-- use usbguard: `usbguard`
+7. Log in as `admin`
+8. `run0`
+9. `gpasswd -d {your username here} wheel`
+10. `reboot`
 
 > [!NOTE]
 > You don't need to login using your wheel user to use it for privileged operations. When logged in as your non-wheel user, polkit will prompt you to authenticate as your wheel user as needed, or when requested by calling `run0`.

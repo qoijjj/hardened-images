@@ -118,6 +118,8 @@ setup-usbguard:
         mkdir -p /var/log/usbguard
         mkdir -p /etc/usbguard
         chmod 755 /etc/usbguard
+        groupadd usbguard
+        usermod -aG usbguard $1
         usbguard generate-policy > /etc/usbguard/rules.conf
         sed -i "/IPCAllowedGroups=wheel/s/$/ usbguard/" /etc/usbguard/usbguard-daemon.conf
         restorecon -vR /var/log/usbguard
