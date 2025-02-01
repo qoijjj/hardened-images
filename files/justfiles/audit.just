@@ -24,7 +24,7 @@ audit-secureblue:
         printf "%-64s [ \033[%dm%s\033[0m ]\n" "$check_name"... "$color_code" "$formatted_status"
     }
 
-    if command -v gum; then
+    if command -v gum >/dev/null 2>&1; then
         HAS_GUM=true
     else
         HAS_GUM=false
