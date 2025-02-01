@@ -85,9 +85,6 @@ audit-secureblue:
         "l1tf=full,force"
         "kvm-intel.vmentry_l1d_flush=always"
     )
-    if grep VARIANT=\"CoreOS\" /etc/os-release >/dev/null; then
-        ON_SECURECORE=true
-    fi
 
     for karg in "${KARGS_LIST[@]}"; do
         KARG_TEST_STRING="Checking for $karg karg"
@@ -225,18 +222,16 @@ audit-secureblue:
         suggestions+="podman-auto-update.timer is not enabled globally	To enable, run:	$ run0 systemctl enable --global podman-auto-update.timer"
     fi
 
-    FLATPAK_USER_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-user-update.timer is enabled globally"
-    if command -v flatpak; then
+    if command -v flatpak >/dev/null 2>&1; then
+        FLATPAK_USER_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-user-update.timer is enabled globally"
         if systemctl --global is-enabled --quiet flatpak-user-update.timer; then
             print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
         else
             print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
             suggestions+="flatpak-user-update.timer is not enabled globally	To enable, run:	$ run0 systemctl enable --global flatpak-user-update.timer"
         fi
-    fi
 
-    FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-system-update.timer is enabled"
-    if command -v flatpak; then
+        FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-system-update.timer is enabled"
         if systemctl is-enabled --quiet flatpak-system-update.timer; then
             print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
         else
