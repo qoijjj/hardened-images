@@ -48,7 +48,6 @@ If you answer `Y` when prompted, unstable hardening kargs will be additionally a
 
 
 ## Create a separate wheel account for admin purposes
-
 Creating a dedicated wheel user and removing wheel from your primary user helps prevent certain attack vectors.
 
 > [!CAUTION]
