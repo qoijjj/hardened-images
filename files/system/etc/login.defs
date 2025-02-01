@@ -68,17 +68,6 @@ SUB_GID_COUNT		    65536
 #
 ENCRYPT_METHOD YESCRYPT
 
-# *REQUIRED*
-#   Directory where mailboxes reside, _or_ name of file, relative to the
-#   home directory.  If you _do_ define both, MAIL_DIR takes precedence.
-#
-MAIL_DIR	/var/spool/mail
-
-# HOME_MODE is used by useradd(8) and newusers(8) to set the mode for new
-# home directories.
-# If HOME_MODE is not set, the value of UMASK is used to create the mode.
-HOME_MODE	0700
-
 #
 # Only works if ENCRYPT_METHOD is set to YESCRYPT.
 #
