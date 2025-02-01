@@ -23,9 +23,19 @@ audit-secureblue:
 
         printf "%-64s [ \033[%dm%s\033[0m ]\n" "$check_name"... "$color_code" "$formatted_status"
     }
+
+    if command -v gum; then
+        HAS_GUM=true
+    else
+        HAS_GUM=false
+    fi
     print_heading() {
         echo
-        gum style --bold --background=63 --foreground=228 "$1"
+        if [[ $HAS_GUM == true ]]; then 
+            gum style --bold --background=63 --foreground=228 "$1"
+        else
+            echo "$1"
+        fi
         printf '=%.0s' {1..76}
         echo
     }
@@ -75,6 +85,9 @@ audit-secureblue:
         "l1tf=full,force"
         "kvm-intel.vmentry_l1d_flush=always"
     )
+    if grep VARIANT=\"CoreOS\" /etc/os-release >/dev/null; then
+        ON_SECURECORE=true
+    fi
 
     for karg in "${KARGS_LIST[@]}"; do
         KARG_TEST_STRING="Checking for $karg karg"
@@ -213,19 +226,23 @@ audit-secureblue:
     fi
 
     FLATPAK_USER_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-user-update.timer is enabled globally"
-    if systemctl --global is-enabled --quiet flatpak-user-update.timer; then
-        print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
-    else
-        print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="flatpak-user-update.timer is not enabled globally	To enable, run:	$ run0 systemctl enable --global flatpak-user-update.timer"
+    if command -v flatpak; then
+        if systemctl --global is-enabled --quiet flatpak-user-update.timer; then
+            print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
+        else
+            print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
+            suggestions+="flatpak-user-update.timer is not enabled globally	To enable, run:	$ run0 systemctl enable --global flatpak-user-update.timer"
+        fi
     fi
 
     FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-system-update.timer is enabled"
-    if systemctl is-enabled --quiet flatpak-system-update.timer; then
-        print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
-    else
-        print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="flatpak-system-update.timer is not enabled globally	To enable, run:	$ systemctl enable --now flatpak-system-update.timer"
+    if command -v flatpak; then
+        if systemctl is-enabled --quiet flatpak-system-update.timer; then
+            print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
+        else
+            print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
+            suggestions+="flatpak-system-update.timer is not enabled globally	To enable, run:	$ systemctl enable --now flatpak-system-update.timer"
+        fi
     fi
 
     BASH_TEST_STRING="Ensuring bash environment lockdown"
@@ -421,7 +438,11 @@ audit-secureblue:
             echo "${list[0]}"
             for (( i=1; i < ${#list[@]}; i++ )); do
                 if [[ ${list[i]} =~ ^"$" ]]; then
-                    gum style --bold "  ${list[i]}"
+                    if [[ $HAS_GUM == true ]]; then 
+                        gum style --bold "  ${list[i]}"
+                    else
+                        echo "  ${list[i]}"
+                    fi
                 else
                     echo -e "  ${list[i]}"
                 fi
