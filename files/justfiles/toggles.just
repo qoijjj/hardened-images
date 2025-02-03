@@ -199,22 +199,105 @@ toggle-xwayland ACTION="prompt":
 
 # Toggle bash environment lockdown (mitigates LD_PRELOAD attacks)
 toggle-bash-environment-lockdown:
-    #!/usr/bin/bash
-    BASH_ENV_FILES=("$HOME/.bashrc" "$HOME/.bash_profile")
-    echo "${b}WARNING${n} This will overwrite your .bashrc and .bash_profile."
+    #! /bin/run0 /usr/bin/bash
+    set -eou pipefail
+    # The below lines fetch the minimium and maximium UIDS as configured in /etc/login.defs. Any UIDs within this change are true user ids
+    # rather than system agents, and therefore should be locked down. The user_string variable uses this fetched UID range to find all 
+    # existing users and their home directory along with formatting this data for later use. The IFS line simple converts this data data 
+    # into a bash array.
+    uid_min=$(grep -Po '^\s*UID_MIN\s+\K\d+' /etc/login.defs)
+    uid_max=$(grep -Po '^\s*UID_MAX\s+\K\d+' /etc/login.defs)
+    user_string=$(getent passwd | awk -F':' -v max="$uid_max" -v min="$uid_min" 'max >= $3 && $3 >= min {print $1}' | tr '\n' ',' | sed 's/,*$//')
+    IFS=',' read -ra user_list <<< "$user_string"
+    # $SUDO_USER is the user who started the script instead of whichever authorized it via polkit or the root home. From there this 
+    # $USER_HOME uses getent to lookup their home directory to later check if they have an existing .bashrc file.
+    USER_HOME=$(getent passwd $SUDO_USER | cut -d: -f6)
+    if [[ ! -f "$USER_HOME/.bashrc" ]; then
+        echo "No $USER_HOME/.bashrc file found."
+        echo "Would you like this script to create one or terminate execution?"
+        read -r REPLY
+        if [[ "$REPLY" != [yY]* ]]; then
+    	exit
+        fi
+        # If .bashrc doesn't exist we can hardly unlock it, the script tells the user it intends to lock right below
+        change_to_make="locked"
+    else
+        if lsattr "$USER_HOME/.bashrc" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
+            # "unlocked" means that the bash files are currently LOCKED, and this script will unlock them
+    	    change_to_make="unlocked"
+    	    chattr -i "$USER_HOME/.bashrc"
+        else
+            # "locked" means the bash files are currently UNLOCKED, and the script will lock them
+    	    change_to_make="locked"
+    	    chattr +i "$USER_HOME/.bashrc"
+        fi
+    echo "${b}WARNING${n} This will overwrite your ~/.bashrc, ~/.bash_profile, ~/.config/bash-completion, ~/.profile, ~/.bash_logout, ~/.bash_login, ~/.bashrc.d/, and ~/.config/environment.d/"
     echo "This is needed to ensure the mitigation is effective."
+    echo ".bashrc, .bash_profile, and more will be ""${b}""$change_to_make""${n}""."
     echo "Do you understand?"
     echo "Please type in \"YES I UNDERSTAND\" and press enter"
-    read ACCEPT
-    if [ "$ACCEPT" == "YES I UNDERSTAND" ]; then
-      if lsattr "${BASH_ENV_FILES[0]}" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
-        echo "Bash environment '(${BASH_ENV_FILES[@]})' is locked down. Unlocking it."
-        for file in "${BASH_ENV_FILES[@]}"; do
-            run0 chattr -i "$file"
+    read -r ACCEPT
+    if [ "$ACCEPT" != "YES I UNDERSTAND" ]; then
+        exit
+    fi
+    echo "Do you want this change to apply to ""${b}""all""${n}"" users (""${user_list[@]}"")? [y/N]"
+    echo "Otherwise, it will only apply to the user who launched this script ($SUDO_USER)."
+    read -r REPLY
+    # Note this way the default if you press enter is to only effect the user who launched this script
+    if [[ "$REPLY" != [yY]* ]]; then
+    	user_list=("$SUDO_USER")
+    fi
+    for user in "${user_list[@]}"; do
+    	echo "Working user:$user"
+    	user_home=$(getent passwd "$user" | awk -F':' '{ print $6}')
+    	[[ -d "$user_home" ]] || {echo "Variable \$user_home for $user is somehow empty (check your getent passwd entries); safely exiting."; exit 1;}
+    	if [ "$change_to_make" == "locked" ]; then
+    		if [ -d "$user_home/.bashrc.d/" ]; then
+                # Below is done to allow this process to reset the locked files
+                chattr -R -i "$user_home/.bashrc.d/"
+    			rm -r "$user_home/.bashrc.d/"
+        	fi
+    		echo "Creating empty $user_home/.bashrc.d/"
+            # -p means mkdir will create folder if necessary
+            mkdir -p "$user_home/.bashrc.d/"
+            chown -R "$user:" "$user_home/.bashrc.d/" 
+    		chattr -R +i "$user_home/.bashrc.d/"
+    		if [ -d "$user_home/.config/environment.d/" ]; then
+                # Below is done to allow this process to reset the locked files
+                chattr -R -i "$user_home/.config/environment.d/"
+                rm -r "$user_home/.config/environment.d/"
+        	fi
+    		echo "Creating empty $user_home/.config/environment.d/"
+            # -p means mkdir will create folder if necessary
+         	mkdir -p "$user_home/.config/environment.d/"
+        	chown -R "$user:" "$user_home/.config/environment.d/"
+        	chattr -R +i "$user_home/.config/environment.d/"
+     	else
+     		if [ -d "$user_home/.bashrc.d/" ]; then	
+    			chattr -R -i "$user_home/.bashrc.d/"
+     		fi
+    		if [ -d "$user_home/.config/environment.d/" ]; then
+            	chattr -R -i "$user_home/.config/environment.d/"
+     		fi
+        fi
+    	BASH_ENV_FILES=("$user_home/.bashrc" "$user_home/.bash_profile" "$user_home/.config/bash-completion" "$user_home/.profile" "$user_home/.bash_logout" "$user_home/.bash_login")
+    	for file in "${BASH_ENV_FILES[@]}"; do
+            if [ -f "$file" ]; then
+                chattr -i "$file"
+            fi
+            if [ "$change_to_make" == "locked" ]; then
+                [ -f "$file" ] && rm "$file"
+                echo "Creating empty $file"
+                # Below will create a parent directory if necessary
+                install -D -o "$user" -g "$user" -m 600 "/dev/null" "$file" 
+            fi
         done
-      else
-        echo "Bash environment '(${BASH_ENV_FILES[@]})' is unlocked. Locking it."
-        echo "
+    	if [ "$change_to_make" == "unlocked" ]; then
+            echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is locked down. Unlocking it."
+            # In truth it's already unlocked, but *shrug*
+        else
+            echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is unlocked. Locking it."
+            echo "
     # .bashrc
 
     # Source global definitions
@@ -232,7 +315,7 @@ toggle-bash-environment-lockdown:
     # export SYSTEMD_PAGER=
 
     unset rc
-          " > ~/.bashrc
+          " > "$user_home/.bashrc"
 
         echo "
     # .bash_profile
@@ -243,15 +326,16 @@ toggle-bash-environment-lockdown:
     fi
 
     # User specific environment and startup programs
-        " > ~/.bash_profile
-
+        " > "$user_home/.bash_profile"
         for file in "${BASH_ENV_FILES[@]}"; do
-            run0 chattr +i "$file"
+            chattr +i "$file"
         done
-      fi
-    else
-      echo "Capitalization matters when you type \"YES I UNDERSTAND\""
-    fi
+    fi 
+    # Inside for loop over all $user_list (don't want to mess with the indentation for the default .bashrc and .bash_profiles)
+    done
+    # Outside for loop over all $user_list
+    echo "${user_list[@]}" "$change_to_make."
+    echo "WARNING: until a reboot, any process with an open file descriptor will continue to have the access they had before this script was run."
 
 # Toggle unconfined domain userns creation
 toggle-unconfined-domain-userns-creation:
