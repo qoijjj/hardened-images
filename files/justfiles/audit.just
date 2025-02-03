@@ -429,3 +429,19 @@ audit-secureblue:
             echo
         done
     fi
+
+    BASH_ENV_FILES=("$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.config/bash-completion" "$HOME/.profile" "$HOME/.bash_logout" "$HOME/.bash_login")
+    for file in "${BASH_ENV_FILES[@]}"; do
+        BASH_ENV_STRING="Ensuring $file exists and is immutable"
+        if lsattr "$file" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
+            immut="true"
+        else
+            immut="false"
+        fi
+        if [ -f "$file" ] && [ "$immut" == "true" ]; then
+            print_status "$BASH_ENV_STRING" "$STATUS_SUCCESS"
+        else
+            print_status "$BASH_ENV_STRING" "$STATUS_FAILURE"
+            suggestions+="$file does not appear to be immutable or doesn't exits, run 'ujust toggle-bash-environment-lockdown'"
+        fi
+    done
