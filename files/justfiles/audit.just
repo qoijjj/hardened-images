@@ -86,7 +86,7 @@ audit-secureblue:
     done
 
     SYSCTL_TEST_STRING="Ensuring no sysctl overrides"
-    readarray -t sysctl_hardening_conf < <(grep -v -E -e "^#" -e "^$" </usr/etc/sysctl.d/hardening.conf)
+    readarray -t sysctl_hardening_conf < <(grep -v -E -e "^#" -e "^$" </usr/etc/sysctl.d/60-hardening.conf)
     declare -A sysctl_hardening
     for line in "${sysctl_hardening_conf[@]}"; do
         parameter="$(sed -E -e "s/(.*) = .*/\1/"  <<<"$line")"
@@ -106,7 +106,7 @@ audit-secureblue:
             fi
         done
     done
-    if [[ "${#sysctl_errors}" == 0 ]] && diff /usr/etc/sysctl.d/hardening.conf /etc/sysctl.d/hardening.conf > /dev/null; then
+    if [[ "${#sysctl_errors}" == 0 ]] && diff /usr/etc/sysctl.d/60-hardening.conf /etc/sysctl.d/60-hardening.conf > /dev/null; then
         print_status "$SYSCTL_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$SYSCTL_TEST_STRING" "$STATUS_FAILURE"
@@ -120,7 +120,7 @@ audit-secureblue:
         print_status "$SIGNED_IMAGE_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$SIGNED_IMAGE_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="The current image is not signed.	To rebase to a signed image download and run or re-run install_secureblue.sh from the secureblue github"
+        suggestions+=("The current image is not signed.	To rebase to a signed image download and run or re-run install_secureblue.sh from the secureblue github")
     fi
 
     MODPROBE_TEST_STRING="Ensuring no modprobe overrides"
@@ -181,11 +181,11 @@ audit-secureblue:
             print_status "$SECUREDNS_TEST_STRING" "$STATUS_SUCCESS"
         else
             print_status "$SECUREDNS_TEST_STRING" "$STATUS_FAILURE"
-            suggestions+="System DNS resolution is not secure	To select a secure resolver, run:	$ ujust dns-selector"
+            suggestions+=("System DNS resolution is not secure	To select a secure resolver, run:	$ ujust dns-selector")
         fi
     else
         print_status "$SECUREDNS_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="systemd-resolved is inactive	To start and enable it, run:	$ systemctl enable --now systemd-resolved"
+        suggestions+=("systemd-resolved is inactive	To start and enable it, run:	$ systemctl enable --now systemd-resolved")
     fi
 
     RPM_OSTREED_AUTOMATIC_TIMER_TEST_STRING="Ensuring rpm-ostreed-automatic.timer is enabled"
@@ -193,7 +193,7 @@ audit-secureblue:
         print_status "$RPM_OSTREED_AUTOMATIC_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$RPM_OSTREED_AUTOMATIC_TIMER_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="rpm-ostreed-automatic.timer is disabled	To enable, run:	$ systemctl enable --now rpm-ostreed-automatic.timer"
+        suggestions+=("rpm-ostreed-automatic.timer is disabled	To enable, run:	$ systemctl enable --now rpm-ostreed-automatic.timer")
     fi
 
     PODMAN_AUTO_UPDATE_TIMER_TEST_STRING="Ensuring podman-auto-update.timer is enabled"
@@ -201,7 +201,7 @@ audit-secureblue:
         print_status "$PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="podman-auto-update.timer is disabled	To enable, run:	$ systemctl enable --now podman-auto-update.timer"
+        suggestions+=("podman-auto-update.timer is disabled	To enable, run:	$ systemctl enable --now podman-auto-update.timer")
     fi
 
     GLOBAL_PODMAN_AUTO_UPDATE_TIMER_TEST_STRING="Ensuring podman-auto-update.timer is enabled globally"
@@ -209,7 +209,7 @@ audit-secureblue:
         print_status "$GLOBAL_PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$GLOBAL_PODMAN_AUTO_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="podman-auto-update.timer is not enabled globally	To enable, run:	$ run0 systemctl enable --global podman-auto-update.timer"
+        suggestions+=("podman-auto-update.timer is not enabled globally	To enable, run:	$ run0 systemctl enable --global podman-auto-update.timer")
     fi
 
     FLATPAK_USER_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-user-update.timer is enabled globally"
@@ -217,7 +217,7 @@ audit-secureblue:
         print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$FLATPAK_USER_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="flatpak-user-update.timer is not enabled globally	To enable, run:	$ run0 systemctl enable --global flatpak-user-update.timer"
+        suggestions+=("flatpak-user-update.timer is not enabled globally	To enable, run:	$ run0 systemctl enable --global flatpak-user-update.timer")
     fi
 
     FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING="Ensuring flatpak-system-update.timer is enabled"
@@ -225,32 +225,7 @@ audit-secureblue:
         print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$FLATPAK_SYSTEM_UPDATE_TIMER_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="flatpak-system-update.timer is not enabled globally	To enable, run:	$ systemctl enable --now flatpak-system-update.timer"
-    fi
-
-    BASH_TEST_STRING="Ensuring bash environment lockdown"
-    BASH_ENV_FILES=(~/.bashrc ~/.bash_profile)
-    all_locked=1
-
-    for file in "${BASH_ENV_FILES[@]}"; do
-        if [ -f "$file" ]; then
-            if lsattr "$file" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
-                continue
-            else
-                all_locked=0
-                break
-            fi
-        else
-            all_locked=0
-            break
-        fi
-    done
-
-    if [ "$all_locked" -eq 1 ]; then
-        print_status "$BASH_TEST_STRING" "$STATUS_SUCCESS"
-    else
-        print_status "$BASH_TEST_STRING" "$STATUS_FAILURE"
-        suggestions+="The bash environment is not locked down	Run:	$ ujust toggle-bash-environment-lockdown"
+        suggestions+=("flatpak-system-update.timer is not enabled globally	To enable, run:	$ systemctl enable --now flatpak-system-update.timer")
     fi
 
     WHEEL_TEST_STRING="Ensuring user is not a member of wheel"
@@ -328,7 +303,43 @@ audit-secureblue:
     else
         print_status "$SECUREBOOT_TEST_STRING" "$STATUS_FAILURE"
     fi
-
+    
+    
+    BASH_ENV_FILES=("$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.config/bash-completion" "$HOME/.profile" "$HOME/.bash_logout" "$HOME/.bash_login")
+    for file in "${BASH_ENV_FILES[@]}"; do
+        BASH_ENV_STRING="Ensuring $file exists and is immutable"
+        if lsattr "$file" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
+            immut="true"
+        else
+            immut="false"
+        fi
+        if [ -f "$file" ] && [ "$immut" == "true" ]; then
+            print_status "$BASH_ENV_STRING" "$STATUS_SUCCESS"
+        else
+            print_status "$BASH_ENV_STRING" "$STATUS_FAILURE"
+            suggestions+=("Bash environment is not locked down; $file does not appear to be immutable or does not exits, run:	$ ujust toggle-bash-environment-lockdown")
+        fi
+    done
+    
+    echo "Do you want to audit flatpaks as well? [y/N] (Will generate a few lines for every flatpak currently installed.)"
+    read -r REPLY
+    if [[ "$REPLY" == [nN]* ]]; then
+    	print_heading Recommendations
+        for suggestion in "${suggestions[@]}"; do
+            readarray -t -d '	' list < <(printf "$suggestion")
+            echo "${list[0]}"
+            for (( i=1; i < ${#list[@]}; i++ )); do
+                if [[ ${list[i]} =~ ^"$" ]]; then
+                    gum style --bold "  ${list[i]}"
+                else
+                    echo -e "  ${list[i]}"
+                fi
+            done
+            echo
+        done
+        exit
+    fi
+    
     if command -v flatpak &> /dev/null; then
         remotes="$(flatpak remotes -d)"
         while read -r remote ; do
@@ -429,19 +440,3 @@ audit-secureblue:
             echo
         done
     fi
-
-    BASH_ENV_FILES=("$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.config/bash-completion" "$HOME/.profile" "$HOME/.bash_logout" "$HOME/.bash_login")
-    for file in "${BASH_ENV_FILES[@]}"; do
-        BASH_ENV_STRING="Ensuring $file exists and is immutable"
-        if lsattr "$file" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
-            immut="true"
-        else
-            immut="false"
-        fi
-        if [ -f "$file" ] && [ "$immut" == "true" ]; then
-            print_status "$BASH_ENV_STRING" "$STATUS_SUCCESS"
-        else
-            print_status "$BASH_ENV_STRING" "$STATUS_FAILURE"
-            suggestions+="$file does not appear to be immutable or doesn't exits, run 'ujust toggle-bash-environment-lockdown'"
-        fi
-    done
