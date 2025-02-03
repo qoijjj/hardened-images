@@ -33,14 +33,14 @@ setup() {
 @test "Ensure bash lockdown works" {
     for (( i = 0; i < 5; ++i ))
     do
-    if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
+    if lsattr "$HOME/.bashrc" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	change_to_make="unlocked"
     else
     	change_to_make="locked"
     fi
     run bash -c "echo -e 'YES I UNDERSTAND\ny' | sudo ujust --set shell "sudo /usr/bin/bash" toggle-bash-environment-lockdown"
     [ "$status" -eq 0 ]
-    if lsattr "/etc/profile" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
+    if lsattr "$HOME/.bashrc" 2>/dev/null | awk '{print $1}' | grep -q 'i'; then
     	[ "$change_to_make" == "unlocked" ] || exit 1
     else
     	[ "$change_to_make" == "locked" ] || exit 1
