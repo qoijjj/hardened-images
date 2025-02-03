@@ -259,7 +259,7 @@ toggle-bash-environment-lockdown:
      		fi
         fi
     	BASH_ENV_FILES=("$user_home/.bashrc" "$user_home/.bash_profile" "$user_home/.config/bash-completion" "$user_home/.profile" "$user_home/.bash_logout" "$user_home/.bash_login")
-    	for file in "${BASH_FILES[@]}"; do
+    	for file in "${BASH_ENV_FILES[@]}"; do
             if [ -f "$file" ]; then
                 chattr -i "$file"
             fi
@@ -269,7 +269,6 @@ toggle-bash-environment-lockdown:
                 # Below will create a parent directory if necessary
                 install -D -o "$user" -g "$user" -m 600 "/dev/null" "$file" 
             fi
-            BASH_ENV_FILES+=("$file")
         done
     	if [ "$change_to_make" == "unlocked" ]; then
             echo "Bash environment '(" "${BASH_ENV_FILES[@]}" ")' is locked down. Unlocking it."
