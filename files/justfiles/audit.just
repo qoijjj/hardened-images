@@ -116,7 +116,7 @@ audit-secureblue:
     fi
 
     SIGNED_IMAGE_TEST_STRING="Ensuring a signed image is in use"
-    if rpm-ostree status | grep -q "● ostree-image-signed"; then
+    if rpm-ostree status 2>/dev/null | grep -q "● ostree-image-signed"; then
         print_status "$SIGNED_IMAGE_TEST_STRING" "$STATUS_SUCCESS"
     else
         print_status "$SIGNED_IMAGE_TEST_STRING" "$STATUS_FAILURE"
