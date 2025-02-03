@@ -303,8 +303,7 @@ audit-secureblue:
     else
         print_status "$SECUREBOOT_TEST_STRING" "$STATUS_FAILURE"
     fi
-    
-    
+
     BASH_ENV_FILES=("$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.config/bash-completion" "$HOME/.profile" "$HOME/.bash_logout" "$HOME/.bash_login")
     for file in "${BASH_ENV_FILES[@]}"; do
         BASH_ENV_STRING="Ensuring $file exists and is immutable"
@@ -320,7 +319,7 @@ audit-secureblue:
             suggestions+=("Bash environment is not locked down; $file does not appear to be immutable or does not exits, run:	$ ujust toggle-bash-environment-lockdown")
         fi
     done
-    
+
     echo "Do you want to audit flatpaks as well? [y/N] (Will generate a few lines for every flatpak currently installed.)"
     read -r REPLY
     if [[ "$REPLY" == [nN]* ]]; then
@@ -339,7 +338,7 @@ audit-secureblue:
         done
         exit
     fi
-    
+
     if command -v flatpak &> /dev/null; then
         remotes="$(flatpak remotes -d)"
         while read -r remote ; do
