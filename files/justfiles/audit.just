@@ -21,7 +21,7 @@ audit-secureblue:
         formatted_status=$(printf "%*s" $(( (7 + ${#status}) / 2 )) "$status")
         formatted_status=$(printf "%-7s" "$formatted_status")
 
-        printf "%-64s [ \033[%dm%s\033[0m ]\n" "$check_name"... "$color_code" "$formatted_status"
+        printf "%-86s [ \033[%dm%s\033[0m ]\n" "$check_name"... "$color_code" "$formatted_status"
     }
     print_heading() {
         echo
